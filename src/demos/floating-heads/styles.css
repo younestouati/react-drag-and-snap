@@ -1,0 +1,123 @@
+body {
+    background: linear-gradient(to bottom, #7abcff 0%,#60abf8 44%,#4096ee 100%);
+}
+
+.app-container,
+.margin-container,
+.gradient {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    line-height: 0;
+}
+
+.margin-container {
+    margin: 24px;
+}
+
+.gradient {
+    opacity: 0;
+    transition: opacity .3s linear;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 75%,rgba(0,0,0,0.2) 100%);
+}
+
+.gradient.show-gradient {
+    opacity: 1;
+}
+
+.avatars {
+    z-index: 0;
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.avatar-container {
+    position: absolute;
+    line-height: 0;
+    transform: translateX(-50%);
+}
+
+.avatar {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+    background-size: cover;
+    border-radius: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 0 2px 2px rgba(51,51,51,.4);
+    transition: transform .1s ease-out;
+}
+
+.add-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    padding: 0;
+    border-radius: 100%;
+    border: 0;
+    background: #cddc39;
+    color: white;
+    font-size: 16px;
+    box-shadow: 1px 1px 0 0 rgba(91,91,91,.5);
+    outline: 0;
+}
+
+.add-button:before {
+    content: '+';
+}
+
+.trap-container {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.trap  {
+    border-radius: 100%;
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    box-sizing: border-box;
+    transition: transform 0.1s linear;
+}
+
+.trap-background {
+    content: '';
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.3);
+    border: 1px solid white;
+    display: inline-block;
+    border-radius: 100%;
+    z-index: 1;
+    box-sizing: border-box;
+    position:absolute;
+    box-shadow: 1px 1px 2px 2px rgba(91,91,91,.3);
+}
+
+.trap:after {
+    content: '';
+    display: inline-block;
+    box-sizing: border-box;
+    position:absolute;
+    left: 25%;
+    top: 25%;
+    width: 50%;
+    height: 50%;
+    transform: rotate(45deg);
+    background: linear-gradient(to bottom, transparent 45%, #fff 45%, #fff 55%,  transparent 55%),
+                linear-gradient(to right, transparent 45%, #fff 45%, #fff 55%, transparent 55%);
+    border-radius: 100%;
+    background-size: 90%;
+    background-position: 50% 50%;
+    z-index: 2;
+}

@@ -1,0 +1,26 @@
+import {EDGES, getClosestEdge} from '../utils/edge-utils';
+import {clamp} from '../utils/clamp';
+
+const VELOCITY_MULTIPLIER = 30;
+
+const snapToEdge = ({transform, velocity, targetWidth: width, targetHeight: height}) => {
+	const {x, y} = transform;
+	const {x: vx, y: vy} = velocity;
+
+console.log('Velocity was : ', velocity);
+
+	const extrapolatedPoint = {
+		x: clamp(x + vx * VELOCITY_MULTIPLIER, -width/2, width/2),
+		y: clamp(y + vy * VELOCITY_MULTIPLIER, -height/2, height/2)
+	};
+
+	const closestEdge = EDGES[getClosestEdge(extrapolatedPoint, {width, height}).edge];
+
+	return {
+		x: closestEdge.x(extrapolatedPoint, {width, height}),
+		y: closestEdge.y(extrapolatedPoint, {width, height}),
+		rotation: closestEdge.rotation
+	};
+};
+
+export {snapToEdge}

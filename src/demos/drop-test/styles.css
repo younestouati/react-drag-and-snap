@@ -1,0 +1,30 @@
+.drop-test {
+    width: 100%;
+    height: 100%;
+    padding: 50px;
+    box-sizing: border-box;
+    line-height: 0;
+}
+
+.drop-test .square-wrapper {
+    position: absolute;
+    display: inline-block;
+    line-height: 0;
+}
+
+.drop-test .drag-square {
+    display: inline-block;
+    background: white;
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.drop-test .snapper {
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    pointer-events: none;
+}

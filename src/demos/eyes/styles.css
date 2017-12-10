@@ -1,0 +1,39 @@
+.eye-demo {
+    width: 100%;
+    height: 100%;
+}
+
+.eye-demo .eye-wrapper {
+    position: absolute
+}
+
+.eye-demo .eye {
+    border-radius: 100%;
+    border: 1px solid darkgray;
+    position: relative;
+    background: white;
+}
+
+.eye-demo .eye .iris {
+    background: black;
+    border-radius: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+
+.eye-demo .ball {
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    background: red;
+    border-radius: 100%;
+}
+
+.eye-demo .ball:before {
+    content: 'Drag me!';
+    font-size: 10px;
+    color: white;
+    text-align: center;
+    display: block;
+}

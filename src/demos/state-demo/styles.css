@@ -1,0 +1,22 @@
+.state-demo {
+     color: white;
+ }
+
+.row {
+    display: flex;
+}
+
+.row > div {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.state-square {
+    display: inline-block;
+    height: 100px;
+    background: red;
+    width: 100px;
+    line-height: 100px;
+    text-align: center;
+    color: white;
+}
