@@ -8,16 +8,17 @@ const extractStaticProps = (draggable) => ({
     targetHeight: draggable.targetHeight 
 });
 
-const extractBooleanProps = (draggable) => ({
+const extractLowFrequencyProps = (draggable) => ({
+    dragState: draggable.dragState,
     isSnappingToThisTarget: draggable.isSnappingToThisTarget,
     isSnappingToOtherTarget: draggable.isSnappingToOtherTarget   
 });
 
 const staticProps = (draggables) => draggables.map(extractStaticProps);
 
-const staticAndBooleanProps = (draggables) => draggables.map((draggable) => extend(
+const staticAndLowFrequencyProps = (draggables) => draggables.map((draggable) => extend(
     extractStaticProps(draggable),
-    extractBooleanProps(draggable)
+    extractLowFrequencyProps(draggable)
 ));
 
 const allProps = (draggables) => draggables;
@@ -25,7 +26,7 @@ const allProps = (draggables) => draggables;
 const snapTargetCollectors = {
     noProps,
     staticProps,
-    staticAndBooleanProps,
+    staticAndLowFrequencyProps,
     allProps
 };
 

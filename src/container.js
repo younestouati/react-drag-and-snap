@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import {Square} from './square';
 import {Target} from './target';
-import makeDraggable from '../../lib/make-draggable';
-import makeSnapTarget from '../../lib/make-snap-target';
-import DragSnapContext from '../../lib/drag-snap-context';
-import {Criteria} from '../../lib/defaults/default-snap-criteria';
-import {snapTargetCollectors} from '../../lib/defaults/default-snap-target-collectors';
-import {snapProportionally, withCustomSnapProps} from '../../lib/defaults/default-snap-descriptors';
+import makeDraggable from './lib/make-draggable';
+import makeSnapTarget from './lib/make-snap-target';
+import DragSnapContext from './lib/drag-snap-context';
+import {Criteria} from './lib/defaults/default-snap-criteria';
+import {snapTargetCollectors} from './lib/defaults/default-snap-target-collectors';
+import {snapProportionally, withCustomSnapProps} from './lib/defaults/default-snap-descriptors';
 
-const DraggableSquare = makeDraggable(Square);
+const DraggableSquare = makeDraggable()(Square);
 
 const config1 = {
     dragSnapCriteria: Criteria.isCenterWithinRadius(200),
@@ -122,7 +122,7 @@ import DragSnapContext from './lib/drag-snap-context';
 import Criteria from './lib/defaults/default-snap-criteria';
 import {snapProportionally} from './lib/defaults/default-snap-descriptors';
 
-const DraggableSquare = makeDraggable(Square);
+const DraggableSquare = makeDraggable()(Square);
 
 const config = {
 	snapCriteria: [

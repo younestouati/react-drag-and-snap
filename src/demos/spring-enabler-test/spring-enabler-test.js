@@ -1,8 +1,20 @@
 import React, {Component} from 'react';
 import {SpringRenderer} from './renderers/spring-renderer';
+import { setTimeout } from 'timers';
 
 let DELTA = 20;
-const SPRING_CONFIG = {stiffness: 120, damping: 14};
+const SPRING_CONFIG = {stiffness: 800, damping: 100};
+
+//THIS SEEMS TO WORK FINE, EXCEPT WHEN THE SYSTEM IS OVERDAMPED!!
+function getRestTime() {
+	const t = 10 / SPRING_CONFIG.damping * 1000;
+
+	if (Math.pow(SPRING_CONFIG.damping, 2) > 4 * SPRING_CONFIG.stiffness) {
+		console.log('It is overdamped!!!');
+	}
+
+	return t;
+}
 
 class SpringEnablerTest extends Component {
 	constructor(props) {
@@ -11,7 +23,8 @@ class SpringEnablerTest extends Component {
 		this.state = {
 			x: 0,
 			y: 20,
-			ignoreSticky: false
+			ignoreSticky: false,
+			isAtRest: false
 		}
 
 		this.animationId = requestAnimationFrame(this.animate.bind(this));
@@ -29,7 +42,8 @@ class SpringEnablerTest extends Component {
 			DELTA++;
 			this.animationId = requestAnimationFrame(this.animate.bind(this));
 		} else {
-			this.setState({x: x + 10, ignoreSticky: true});	
+			this.setState({x: x + 10, ignoreSticky: true});
+			setTimeout(() => this.setState({isAtRest: true}), getRestTime());	
 		}
 	}
 
@@ -41,18 +55,9 @@ class SpringEnablerTest extends Component {
 					y={this.state.y}
 					ignoreSticky={this.state.ignoreSticky}
 					springConfig={SPRING_CONFIG}
-					sticky={false}
-				>
-					<div style={{width: '50px', height: '50px', display: 'inline-block', background: 'red', opacity: 0.3}}/>
-				</SpringRenderer>
-				<SpringRenderer
-					x={this.state.x}
-					y={this.state.y}
-					ignoreSticky={this.state.ignoreSticky}
-					springConfig={SPRING_CONFIG}
 					sticky={true}
 				>
-					<div style={{width: '50px', height: '50px', display: 'inline-block', background: 'red'}}/>
+					<div style={{width: '50px', height: '50px', display: 'inline-block', background: this.state.isAtRest ? 'green' : 'red'}}/>
 				</SpringRenderer>
 			</div>
 		);
@@ -60,3 +65,13 @@ class SpringEnablerTest extends Component {
 }
 
 export {SpringEnablerTest};
+/*
+				<SpringRenderer
+					x={this.state.x}
+					y={this.state.y}
+					ignoreSticky={this.state.ignoreSticky}
+					springConfig={SPRING_CONFIG}
+					sticky={false}
+				>
+					<div style={{width: '50px', height: '50px', display: 'inline-block', background: this.state.isAtRest ? 'green' : 'red', opacity: 0.3}}/>
+				</SpringRenderer>*/

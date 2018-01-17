@@ -30,7 +30,7 @@ class SquareWithDeepState extends Component {
 	}
 }
 
-const DraggableSquareWithDeepState = makeDraggable(SquareWithDeepState);
+const DraggableSquareWithDeepState = makeDraggable()(SquareWithDeepState);
 
 export {DraggableSquareWithDeepState};
 

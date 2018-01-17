@@ -37,8 +37,6 @@ class MovingTargetDemo extends Component {
 	render() {
         const {x} = this.state;
 
-        console.log('Will render target at: ', x);
-
 		return (
 			<DragSnapContext>
                 <div className="ball-wrapper">

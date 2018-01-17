@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import makeSnapTarget from '../../lib/make-snap-target';
 import {isMoveLegal} from './custom-snap-criteria/is-move-legal';
 import {Criteria} from '../../lib/defaults/default-snap-criteria';
@@ -16,14 +15,16 @@ class Square extends Component {
 
 	render() {
 		const {position, children, width, height, isCenterOverTarget, isLegalMove} = this.props;
-		const classes = classNames('square', { //TODO: GET RID OF CLASS NAMES DEPENDENCY!!
-			'is-over': isCenterOverTarget,
-			'legal-move': isLegalMove,
-			'black': (position[0] + position[1]) % 2 === 0
-		});
+
+		const classes = [
+			'square',
+			isCenterOverTarget ? 'is-over' : '',
+			isLegalMove ? 'legal-move' : '',
+			(position[0] + position[1]) % 2 === 0 ? 'black' : ''
+		];
 
 		return (
-			<div className={classes} style={{width, height}}>
+			<div className={classes.join(' ')} style={{width, height}}>
 				{children}
 			</div>
 		);
@@ -37,11 +38,6 @@ Square.propTypes = {
 	height: PropTypes.string.isRequired,
 	isCenterOverTarget: PropTypes.bool.isRequired,
 	isLegalMove: PropTypes.bool.isRequired
-};
-
-Square.defaultProps = { //TODO: GET RID OF THIS. SHOULD ALWAYS BE INJECTED BY SNAP TARGET HOC!
-	isLegalMove: false,
-	isCenterOverTarget: false
 };
 
 const snapConfig = {

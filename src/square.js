@@ -2,10 +2,9 @@ import React, {Component} from 'react';
 
 class Square extends Component {
 	render() {
-		const {isSnapping, isDragged, counter = ''} = this.props;
+		const {isSnapping, dragState} = this.props;
 
 		const snapText = isSnapping ? 'Is snapping' : '';
-		const dragText = isDragged ? 'Is dragged' : '';
 
 		return (
 			<div style={{
@@ -14,7 +13,7 @@ class Square extends Component {
 				width: '250px',
 				height: '100px'
 			}}>
-				Hej ({counter}) {dragText} and {snapText}
+				Hej {dragState} and {snapText}
 			</div>
 		);
 	}

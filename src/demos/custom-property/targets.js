@@ -7,12 +7,12 @@ const Square = () => <div className="square"/>;
 const Round = () => <div className="circle"/>;
 
 const squareConfigDefault = {
-    snapCriteria: Criteria.isCenterWithinRadius(200),
+    snapCriteria: Criteria.isCenterWithinRadius(100),
     snapDescriptor: withCustomSnapProps(defaultSnapping, {gray: 1})
 };
 
 const roundConfigDefault = {
-    snapCriteria: Criteria.isCenterWithinRadius(200),
+    snapCriteria: Criteria.isCenterWithinRadius(100),
     snapDescriptor: withCustomSnapProps(defaultSnapping, {radius: 50})
 };
 

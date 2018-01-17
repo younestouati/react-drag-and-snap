@@ -43,7 +43,9 @@ const isCenterWithinRadius = (radius, hysteresisRadius) => {
 };
 
 const isNoOtherDraggableSnapping = ({id}, {draggedItems}) => {
-	return !draggedItems.some((d) => d.isSnappingToOtherTarget);
+	return !draggedItems
+			.filter((d) => d.id !== id)
+			.some((d) => d.isSnappingToThisTarget);
 };
 
 const isDragDataProp = (prop, value) => {

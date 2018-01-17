@@ -84,3 +84,13 @@ body {
 .chess-demo .is-over.legal-move:after {
     background: green;
 }
+
+.is-clone:before {
+    color: lightgreen;
+    -webkit-text-fill-color: lightgreen;
+}
+
+.is-not-clone:before {
+    color: purple;
+    -webkit-text-fill-color: purple;
+}

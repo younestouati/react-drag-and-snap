@@ -3,8 +3,61 @@ import PropTypes from 'prop-types';
 import {Motion, spring} from 'react-motion';
 import {SmoothSpringDisabler} from './smooth-spring-disabler';
 import {SmoothSpringEnabler} from './smooth-spring-enabler';
+import {shallowEqual} from '../utils/object-utils';
 
-const movementProps = ['x', 'y', 'rotation', 'scaleX', 'scaleY', 'skewX', 'skewY'];
+class SpringRendererApplier extends Component {
+	render() {
+		const {onRegrab, isVisible, children, transform} = this.props;
+		const {x, y, rotation, scaleX, scaleY, skewX, skewY} = transform;
+
+		return (
+			<div
+				onTouchStart={onRegrab}
+				onMouseDown={onRegrab}
+				style={{
+					display: 'inline-block',
+					transformOrigin: '50% 50%',
+					transform: '' +
+						'translate3d(calc(' + x + 'px - 50%),calc(' + y + 'px - 50%), 0) ' +
+						'rotate(' + rotation + 'deg) ' +
+						'scaleX(' + scaleX + ') ' +
+						'scaleY(' + scaleY + ') ' +
+						'skewX(' + skewX + 'deg) ' +
+						'skewY(' + skewY + 'deg)' +
+					'',
+					WebkitTouchCallout: 'none',
+					WebkitUserSelect: 'none',
+					visibility: isVisible ? 'visible' : 'hidden',
+					userSelect: 'none',
+					position: 'absolute',
+					left: '50%',
+					top: '50%'
+				}}
+			>
+				{children}
+			</div>
+		);
+	}
+}
+
+SpringRendererApplier.propTypes = {
+	transform: PropTypes.shape({
+		x: PropTypes.number.isRequired,
+		y: PropTypes.number.isRequired,
+		rotation: PropTypes.number.isRequired,
+		scaleX: PropTypes.number.isRequired,
+		scaleY: PropTypes.number.isRequired,
+		skewX: PropTypes.number.isRequired,
+		skewY: PropTypes.number.isRequired
+	}).isRequired,
+	isVisible: PropTypes.bool.isRequired,
+	onRegrab: PropTypes.func.isRequired,
+	children: PropTypes.node.isRequired
+};
+
+//Component needed because react motion only support a single child, 
+//whereas we want to pass in an array of children (original element and drag clone)
+const Tweener = ({children, transform, displacement}) => children(transform, displacement);
 
 class SpringRenderer extends Component {
 	constructor(props) {
@@ -14,7 +67,7 @@ class SpringRenderer extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if (movementProps.some((prop) => this.props[prop] !== nextProps[prop])) {
+		if (nextProps.transform && !shallowEqual(this.props.transform || {}, nextProps.transform)) {
 			this.atRest = false;
 		}
 
@@ -35,22 +88,25 @@ class SpringRenderer extends Component {
 
 	render() {
 		const {
-			x,
-			y,
-			rotation,
-			scaleX,
-			scaleY,
-			skewX,
-			skewY,
+			transform,
 			children,
-			onRegrab,
 			springConfig,
 			ignoreSticky,
 			isReleased,
 			sticky
 		} = this.props;
 
-		const isSpringEnabled = !sticky || ignoreSticky || isReleased; //TODO: CONFIRM THAT isReleased IS NEEDED HERE AS WELL
+		const isSpringEnabled = !!transform && (!sticky || ignoreSticky || isReleased); //TODO: CONFIRM THAT isReleased IS NEEDED HERE AS WELL
+		
+		const {
+			x = 0,
+			y = 0,
+			rotation = 0,
+			scaleX = 1,
+			scaleY = 1,
+			skewX = 0,
+			skewY = 0
+		} = (transform || {});	
 
 		return (
 			<SmoothSpringDisabler
@@ -86,32 +142,14 @@ class SpringRenderer extends Component {
 												const _x = useSpring ? xSpring : x;
 												const _y = useSpring ? ySpring : y;
 
-												return(
-													<div
-														onTouchStart={onRegrab}
-														onMouseDown={onRegrab}
-														style={{
-															display: 'inline-block',
-															transformOrigin: '50% 50%',
-															transform: '' +
-																'translate3d(calc(' + _x + 'px - 50%),calc(' + _y + 'px - 50%), 0) ' +
-																'rotate(' + rotation + 'deg) ' +
-																'scaleX(' + scaleX + ') ' +
-																'scaleY(' + scaleY + ') ' +
-																'skewX(' + skewX + 'deg) ' +
-																'skewY(' + skewY + 'deg)' +
-															'',
-															WebkitTouchCallout: 'none',
-															WebkitUserSelect: 'none',
-															userSelect: 'none',
-															position: 'absolute',
-															left: '50%',
-															top: '50%'
-														}}
+												return (
+													<Tweener 
+														transform={{x: _x, y: _y, rotation, scaleX, scaleY, skewX, skewY}}
+														displacement={{x: x - _x, y: y - _y}}
 													>
 														{children}
-													</div>
-												)
+													</Tweener>
+												);
 											}
 										}
 									</SmoothSpringEnabler>
@@ -126,19 +164,20 @@ class SpringRenderer extends Component {
 }
 
 SpringRenderer.propTypes = {
-	x: PropTypes.number.isRequired,
-	y: PropTypes.number.isRequired,
-	rotation: PropTypes.number.isRequired,
-	scaleX: PropTypes.number.isRequired,
-	scaleY: PropTypes.number.isRequired,
-	skewX: PropTypes.number.isRequired,
-	skewY: PropTypes.number.isRequired,
-	children: PropTypes.node.isRequired,
+	transform: PropTypes.shape({
+		x: PropTypes.number.isRequired,
+		y: PropTypes.number.isRequired,
+		rotation: PropTypes.number.isRequired,
+		scaleX: PropTypes.number.isRequired,
+		scaleY: PropTypes.number.isRequired,
+		skewX: PropTypes.number.isRequired,
+		skewY: PropTypes.number.isRequired,
+	}),
+	children: PropTypes.func.isRequired,
 	onRestAfterRelease: PropTypes.func.isRequired,
 	onRest: PropTypes.func,
 	isReleased: PropTypes.bool.isRequired,
 	ignoreSticky: PropTypes.bool.isRequired,
-	onRegrab: PropTypes.func.isRequired,
 	springConfig: PropTypes.shape({
 		stiffness: PropTypes.number.isRequired,
 		damping: PropTypes.number.isRequired
@@ -150,4 +189,4 @@ SpringRenderer.defaultProps = {
 	onRest: () => {}
 };
 
-export {SpringRenderer};
+export {SpringRenderer, SpringRendererApplier};

@@ -1,13 +1,11 @@
 import {EDGES, getClosestEdge} from '../utils/edge-utils';
 import {clamp} from '../utils/clamp';
 
-const VELOCITY_MULTIPLIER = 30;
+const VELOCITY_MULTIPLIER = 80;
 
 const snapToEdge = ({transform, velocity, targetWidth: width, targetHeight: height}) => {
 	const {x, y} = transform;
 	const {x: vx, y: vy} = velocity;
-
-console.log('Velocity was : ', velocity);
 
 	const extrapolatedPoint = {
 		x: clamp(x + vx * VELOCITY_MULTIPLIER, -width/2, width/2),

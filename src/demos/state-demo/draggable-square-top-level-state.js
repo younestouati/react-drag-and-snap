@@ -24,7 +24,7 @@ class SquareWithTopLevelState extends Component {
 	}
 }
 
-const DraggableSquareWithTopLevelState = makeDraggable(SquareWithTopLevelState);
+const DraggableSquareWithTopLevelState = makeDraggable()(SquareWithTopLevelState);
 
 export {DraggableSquareWithTopLevelState};
 

@@ -9,7 +9,7 @@ const Eye = ({draggedItems}) => {
     let offsetX = 0;
     let offsetY = 0;
 
-    if (draggedItems.length) {
+    if (draggedItems.some(d => d.dragState === 'dragged')) {
         //The x and y are in the local coordinate system of the snapTarget (i.e. the eye). Origo is the center of the eye.
         const {x, y} = draggedItems[0].transform;
         const dist = Math.sqrt(x*x + y*y);

@@ -1,6 +1,25 @@
+const noProps = () => {};
+
+const staticAndLowFrequencyProps = (draggable) => ({
+    dragState: draggable.dragState,
+});
+
+const allProps = (draggable) => draggable;
+
+const draggableCollectors = {
+    noProps,
+    staticAndLowFrequencyProps,
+    allProps
+};
+
+export {draggableCollectors};
 
 /*
 Cheap
+
+1. dragState
+2. dragVelocity
+3. dragDisplacement
 
 Medium
 isBeingDragged      DONE

@@ -17,15 +17,16 @@ import {
 import {parseSnapDescriptor,  createSnappingMatrix} from './drag-snap-logic/create-snapping-matrix';
 import {makeClassBasedComponent} from './helper-hocs/make-class-based-component';
 import {snapTargetConfigBuilder} from './drag-snap-logic/snap-target-config-builder';
+import {DRAG_STATES} from './drag-snap-logic/drag-states'; 
 import {snapTargetCollectors} from './defaults/default-snap-target-collectors';
 import {distanceBasedWithOffset} from './defaults/default-snap-priority';
 import {extend, shallowCloneExcluding, shallowEqual} from './utils/object-utils';
 import {getDisplayName} from './utils/react-utils';
 import {toArray} from './utils/array-utils';
-import {isFunction, isObject, isNumber, isNullOrUndefined} from './utils/type-utils';
+import {isFunction, isObject, isNumber, isNullOrUndefined, isArray} from './utils/type-utils';
 import {createGuid} from './utils/guid-utils';
 import {distance} from './utils/point-utils';
-import { isArray } from 'util';
+import {byId} from './utils/sort';
 
 const defaultTransformation = {
     rotation: 0,
@@ -35,7 +36,7 @@ const defaultTransformation = {
     scale: 1
 };
 
-function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndBooleanProps) {
+function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndLowFrequencyProps) {
     const config = snapTargetConfigBuilder(customConfig);
 
     return function makeSnapTarget(WrappedComponent) {
@@ -45,7 +46,7 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndBo
 
                 this.state = {
                     collectedDragProps: this.collectDragProps().collectedDragProps
-                }
+                };
 
                 this.draggedItems = [];
                 this.baseExternalTransformation = null;
@@ -121,17 +122,18 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndBo
             }
 
             //Converts the descriptor, velocity and cursor point from the global (window) coordinate system, to the local coordinate system of the snap taget.
-            globalToLocal({id, dragData, matrix, dimensions, velocity, cursorPosition}) {
+            globalToLocal({id, dragState, dragData, matrix, dimensions, velocity, cursorPosition}) {
                 const globalDescriptor = matrixToDescriptor(matrix, dimensions);
                 const {width: targetWidth, height: targetHeight} = this.getBaseDimensions();
                 const transform = transformDescriptor(this.getMatrix(), globalDescriptor);
 
                 return {
                     id,
+                    dragState,
                     dragData,
                     targetWidth,
                     targetHeight,
-                    transform, //IF THIS ONE OR ONE THE 3 BELOW IS NEEDED, WE WILL NEED TO CONTINOUSLY UPDATE. OTHERWISE, NOT NEEDED
+                    transform,
                     distance: distance({x: transform.x, y: transform.y}),
                     velocity: velocity ? transformVelocity(this.getMatrix(), velocity) : null,
                     cursorPosition: cursorPosition ? transformPosition(this.getMatrix(), cursorPosition) : null
@@ -142,23 +144,23 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndBo
                 const {collectedDragProps} = this.state;
                 
                 return isArray(collectedDragProps) ?
-                extend(shallowCloneExcluding(this.props, LIBRARY_PROPS), {draggedItems: collectedDragProps}) :
-                extend(shallowCloneExcluding(this.props, LIBRARY_PROPS), collectedDragProps);
+                    extend(shallowCloneExcluding(this.props, LIBRARY_PROPS), {draggedItems: collectedDragProps}) :
+                    extend(shallowCloneExcluding(this.props, LIBRARY_PROPS), collectedDragProps);
             }
 
             getParams(...args) {
-                return [this.globalToLocal(...args), this.getProps(), {draggedItems: this.draggedItems}];
+                return [this.globalToLocal(...args), this.getProps(), {draggedItems: this.draggedItems}]; //TODO: SHOULD WE SOMEHOW INJECT THE draggableToTarget and targetToDraggable methods here?
             }
 
-            isSnapCriteriaMet(isReleased, draggableDescriptor) {
-                const criteria = toArray(isReleased ? config.releaseSnapCriteria : config.dragSnapCriteria);
+            isSnapCriteriaMet(dragState, draggableDescriptor) {
+                const criteria = toArray(dragState === DRAG_STATES.RELEASED ? config.releaseSnapCriteria : config.dragSnapCriteria);
                 const params = this.getParams(draggableDescriptor);
                 return criteria.every(criterium => criterium(...params));
             }
 
-            getSnapPriority(isReleased, draggableDescriptor) {
+            getSnapPriority(dragState, draggableDescriptor) {
                 const {releaseSnapPriority, dragSnapPriority, snapPriority: commonPriority} = this.props;
-                const snapPriority = (isReleased ? releaseSnapPriority : dragSnapPriority) || commonPriority;
+                const snapPriority = (dragState === DRAG_STATES.RELEASED ? releaseSnapPriority : dragSnapPriority) || commonPriority;
                 const params = this.getParams(draggableDescriptor);
                 const priority = isFunction(snapPriority) ? snapPriority(...params) : snapPriority;
 
@@ -168,8 +170,8 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndBo
                 return priority;
             }
 
-            getSnapping(isReleased, draggableDescriptor) {
-                const snapDescriptor = isReleased ? config.releaseSnapDescriptor : config.dragSnapDescriptor;
+            getSnapping(dragState, draggableDescriptor) {
+                const snapDescriptor = dragState === DRAG_STATES.RELEASED ? config.releaseSnapDescriptor : config.dragSnapDescriptor;
                 const params = this.getParams(draggableDescriptor);
                 const descriptor = isFunction(snapDescriptor) ? snapDescriptor(...params) : snapDescriptor;
                 const parsedSnapDescriptor = parseSnapDescriptor(descriptor, this.getBaseDimensions(), draggableDescriptor.dimensions);
@@ -228,39 +230,39 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndBo
 
             collectDragProps(cur) {
                 const items = this.draggedItems || [];
-                items.sort(({id: a}, {id: b}) => a > b ? -1 : 1);
+                items.sort(byId);
                 const next = collect(items, shallowCloneExcluding(this.props, LIBRARY_PROPS));
-                
+
                 invariant(
-                isObject(next) || (isArray(next) && next.length === items.length),
-                `collect function must return an object or an array of objects equal to the number of dragged items`
+                    isObject(next) || (isArray(next) && next.length === items.length),
+                    `collect function must return an object or an array of objects equal to the number of dragged items`
                 );
-                
+
                 const hasChanged = (
                     isNullOrUndefined(cur) ||
                     (isObject(next) && !shallowEqual(cur, next)) ||
                     (isArray(next) && (cur.length !== next.length || next.some((o, i) => !shallowEqual(o, cur[i]))))
-                );
-                
+                ); 
+
                 return {
                     hasChanged,
                     collectedDragProps: next
                 };
             }
-                
+
             updateDragProps() {
                 const {collectedDragProps, hasChanged} = this.collectDragProps(this.state.collectedDragProps);
-                
+
                 if (hasChanged) {
                     this.setState({collectedDragProps})
                 }
             }
-                
+
             updateItem(idOfTargetSnappedTo, draggableDescriptor) {
                 const draggable = this.globalToLocal(draggableDescriptor);
                 draggable.isSnappingToThisTarget = false;
                 draggable.isSnappingToOtherTarget = false;
-                
+
                 if (!isNullOrUndefined(idOfTargetSnappedTo)) {
                     if (this.id === idOfTargetSnappedTo) {
                         draggable.isSnappingToThisTarget = true;
@@ -268,11 +270,11 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndBo
                         draggable.isSnappingToOtherTarget = true;
                     }
                 }
-                
+
                 this.draggedItems = this.draggedItems.filter(p => p.id !== draggableDescriptor.id).concat(draggable);
                 this.updateDragProps();
             }
-                
+
             removeItem(id) {
                 this.draggedItems = this.draggedItems.filter(d => d.id !== id);
                 this.updateDragProps();

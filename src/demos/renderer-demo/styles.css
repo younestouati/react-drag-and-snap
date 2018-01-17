@@ -1,0 +1,53 @@
+.renderer-demo {
+    width: 100%;
+    height: 100%;
+}
+
+.renderer-demo .target-wrapper {
+    top: 10%;
+    left: 10%;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    display: flex;
+}
+
+.renderer-demo .target-wrapper:nth-of-type(2) {
+    left: 20%;
+}
+
+.renderer-demo .target-wrapper:nth-of-type(3) {
+    top: 60%;
+    transform: rotate(25deg);
+}
+
+.renderer-demo .ball-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.renderer-demo .square,
+.renderer-demo .ball {
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    box-sizing: border-box;
+}
+
+.renderer-demo .square {
+    border: 1px solid red;
+}
+
+.renderer-demo .ball {
+    border-radius: 100%;
+    background: red;
+}
+
+.renderer-demo .ball:before {
+    content: 'Drag me!';
+    font-size: 10px;
+    color: white;
+    text-align: center;
+    display: block;
+}

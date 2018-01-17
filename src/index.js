@@ -1,18 +1,26 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Container} from './demos/basic/container';
+import {Container} from './container';
 import {FloatingHeadsDemo} from './demos/floating-heads/index';
 import {StateDemo} from './demos/state-demo/index';
 import {ChessBoard} from './demos/chess-board/index';
 import {DropTest} from './demos/drop-test/index';
+import {RendererDemo} from './demos/renderer-demo/index';
 import {EyeDemo} from './demos/eyes/index';
 import {MovingTargetDemo} from './demos/moving-target/index';
 import {MovingTargetDemoSimple} from './demos/moving-target-simple/index';
 import {CustomPropertyDemo} from './demos/custom-property/index';
 import {SpringEnablerTest} from './demos/spring-enabler-test/spring-enabler-test';
+import {Overlap} from './demos/overlap/overlap';
+import {CSSTransitionDemo} from './demos/css-transition/index';
+import {Hexagon} from './lib/hexagon/hexagon';
 import './index.css';
 
 const demoComponents = {
+    rendererDemo: {
+        component: <RendererDemo/>,
+        displayName: 'Renderer Demo'
+    },
     eyeDemo: {
         component: <EyeDemo/>,
         displayName: 'Eye Demo'
@@ -52,6 +60,14 @@ const demoComponents = {
     springEnablerTest: {
         component: <SpringEnablerTest/>,
         displayName: 'Spring Enabler Test'
+    },
+    cssTransitionDemo: {
+        component: <CSSTransitionDemo/>,
+        displayName: 'CSS Transition Demo'
+    },
+    overlap: {
+        component: <Overlap/>,
+        displayName: 'Overlap'
     }
 }
 
@@ -59,7 +75,7 @@ class Demos extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentDemo: 'chess'
+            currentDemo: 'floatingHeads'
         };
     }
 

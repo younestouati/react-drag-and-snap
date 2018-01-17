@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {CustomPropTypes} from './prop-types/custom-prop-types';
 import {inverse, transform} from 'transformation-matrix';
 import {getTransformationMatrix} from './drag-snap-logic/matrix';
 import {lowestPriority} from './defaults/default-snap-priority';
@@ -13,8 +12,9 @@ class DragSnapContext extends Component {
         super(props);
 
         this.snapTargets = [];
-        this.numberBeingDragged = 0;
-        this.numberNotAtRest = 0;
+        this.grabbedCount = 0;
+        this.draggedCount = 0;
+        this.releasedCount = 0;
         this.styleInjector = new StyleInjector();
         this.windowSizeMonitor = new WindowSizeMonitor();
     }
@@ -28,8 +28,6 @@ class DragSnapContext extends Component {
             relayDropEvent: this.relayDropEvent.bind(this),
             registerAsSnapTarget: this.registerAsSnapTarget.bind(this),
             unregisterAsSnapTarget: this.unregisterAsSnapTarget.bind(this),
-            getDefaultSpringConfig: this.getDefaultSpringConfig.bind(this),
-            getDefaultStickyValue: this.getDefaultStickyValue.bind(this),
             getDragContainerDOMElement: this.getDragContainerDOMElement.bind(this),
             relayDraggableUpdateToTargets: this.relayDraggableUpdateToTargets.bind(this),
             relayDraggableRemovalToTargets: this.relayDraggableRemovalToTargets.bind(this)
@@ -56,14 +54,6 @@ class DragSnapContext extends Component {
         return this.container;
     }
 
-    getDefaultSpringConfig() {
-        return this.props.springConfig;
-    }
-
-    getDefaultStickyValue() {
-        return this.props.sticky;
-    }
-
     registerAsSnapTarget(id, snapTargetComponent) {
         this.snapTargets.push(snapTargetComponent);
     }
@@ -87,7 +77,7 @@ class DragSnapContext extends Component {
         this.snapTargets.forEach((target) => target.removeItem(id));
     }
 
-    snap(hasEscaped, isReleased, draggableDescriptor) {
+    snap(hasEscaped, dragState, draggableDescriptor) {
         let isInSnappingArea = false; //When true it doesn't necessarily mean it will snap (if target allows easyEscape)
         let snapping = null;
         let maxPriority = lowestPriority;
@@ -95,15 +85,15 @@ class DragSnapContext extends Component {
         this.snapTargets.forEach((target) => {
             target.continuousUpdateIfEnabled();
 
-            if (target.isSnapCriteriaMet(isReleased, draggableDescriptor)) {
+            if (target.isSnapCriteriaMet(dragState, draggableDescriptor)) {
                 isInSnappingArea = true;
 
                 if (hasEscaped || !target.allowsEasyEscape(draggableDescriptor)) {
-                    const priority = target.getSnapPriority(isReleased, draggableDescriptor);
+                    const priority = target.getSnapPriority(dragState, draggableDescriptor);
 
                     if (priority <= maxPriority) {  //Smaller number means higher priority
                         maxPriority = priority;
-                        snapping = target.getSnapping(isReleased, draggableDescriptor);
+                        snapping = target.getSnapping(dragState, draggableDescriptor);
                     }
                 }
             }
@@ -128,33 +118,38 @@ class DragSnapContext extends Component {
     }
 
     onDragStateUpdate(update) {
-        const {onDragStart, onDragEnding, onDragResume, onDragEnded} = this.props;
-
         switch (update) {
+            case 'grab':
+                this.grabbedCount++;
+                break;
             case 'start':
-                this.numberBeingDragged === 0 && onDragStart();
-                this.numberBeingDragged++;
-                this.numberNotAtRest++;
+                this.grabbedCount--;
+                this.draggedCount++;
+                break;
+            case 'cancel':
+                this.grabbedCount--;
                 break;
             case 'ending':
-                this.numberBeingDragged === 1 && onDragEnding();
-                this.numberBeingDragged--;
+                this.draggedCount--;
+                this.releasedCount++
                 break;
             case 'resume':
-                this.numberBeingDragged === 0 && onDragResume();
-                this.numberBeingDragged++;
+                this.draggedCount++;
+                this.releasedCount--;
                 break;
             case 'ended':
-                this.numberNotAtRest === 1 && onDragEnded();
-                this.numberNotAtRest--;
-
-                //Recalculate the position of context and snapTargets. TODO: CONSIDER IF THIS MAKES SENSE??
-                this.inverseContainerMatrix = inverse(getTransformationMatrix(this.container));
-                this.snapTargets.forEach((snapTarget) => snapTarget.update());
+                this.releasedCount--;
                 break;
             default:
                 break;
         }
+
+        this.props.onChange({
+            grabbedCount: this.grabbedCount,
+            draggedCount: this.draggedCount,
+            releasedCount: this.releasedCount,
+            totalCount: this.grabbedCount + this.draggedCount + this.releasedCount
+        });
     }
 
     render() {
@@ -175,8 +170,6 @@ DragSnapContext.childContextTypes = {
     contextToWindow: PropTypes.func,
     onDragStateUpdate: PropTypes.func,
     relayDropEvent: PropTypes.func,
-    getDefaultSpringConfig: PropTypes.func,
-    getDefaultStickyValue: PropTypes.func,
     relayDraggableUpdateToTargets: PropTypes.func,
     relayDraggableRemovalToTargets: PropTypes.func,
     getDragContainerDOMElement: PropTypes.func,
@@ -185,21 +178,11 @@ DragSnapContext.childContextTypes = {
 };
 
 DragSnapContext.propTypes = {
-    onDragStart: PropTypes.func,
-    onDragEnding: PropTypes.func,
-    onDragEnded: PropTypes.func,
-    onDragResume: PropTypes.func,
-    springConfig: CustomPropTypes.springConfig,
-    sticky: PropTypes.bool
+    onChange: PropTypes.func
 };
 
 DragSnapContext.defaultProps = {
-    onDragStart: () => {},
-    onDragEnding: () => {},
-    onDragEnded: () => {},
-    onDragResume: () => {},
-    springConfig: {stiffness: 390, damping: 35},
-    sticky: true
+    onChange: () => {}
 };
 
 export default DragSnapContext;

@@ -11,10 +11,6 @@ import {EdgeSnapTarget} from './edge-snap-target';
 import {ScaleEntry} from '../shared/scale-entry';
 import './styles.css';
 
-//{stiffness: 180, damping: 12} (wobbly gives a pretty nice effect, although more wobbly that fb)
-//{stiffness: 120, damping: 14} (gentle) is also alright...
-const SPRING_CONFIG = {stiffness: 120, damping: 14};
-
 class FloatingHeadsDemo extends Component {
 	constructor(props) {
 		super(props);
@@ -81,10 +77,15 @@ class FloatingHeadsDemo extends Component {
 				<div className={`gradient ${isDragging ? 'show-gradient' : ''}`}/>
 				<div className="margin-container">
 					<DragSnapContext
-						onDragStart={() => this.setState({isDragging: true, trappedUser: null})}
-						onDragResume={() => this.setState({isDragging: true})}
-						onDragEnding={() => this.setState({isDragging: false})}
-						springConfig={SPRING_CONFIG}
+						onChange={({grabbedCount, draggedCount, releasedCount}) => {
+							if (grabbedCount || draggedCount) {
+								this.setState({isDragging: true});
+							} else if (releasedCount) {
+								this.setState({isDragging: false});
+							} else {
+								this.setState({isDragging: false, trappedUser: null});
+							}
+						}}
 					>
 						<EdgeSnapTarget
 							snapPriority={2}
@@ -95,7 +96,7 @@ class FloatingHeadsDemo extends Component {
 								(user, scale) => (
 									<AvatarContainer {...user} scale={scale} key={user.id}>
 										<DraggableAvatar
-											onClick={() =>alert('hej')}
+											onClick={() => alert('Hej')}
 											dragData={user}
 											id={user.id}
 										/>
@@ -107,7 +108,6 @@ class FloatingHeadsDemo extends Component {
 							<TrapTarget
 								snapPriority={1}
 								show={isDragging && !trappedUser}
-								springConfig={SPRING_CONFIG}
 								onDropStart={this.trapUser.bind(this)}
 								onKillUser={() => this.killUser()}
 								trappedUser={trappedUser}

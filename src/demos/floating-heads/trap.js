@@ -46,7 +46,7 @@ class Trap extends Component {
 
 	render() {
 		const {trappedUserPosition} = this.state;
-		const {draggedItems, trappedUser, onKillUser, springConfig, show} = this.props;
+		const {draggedItems, trappedUser, onKillUser, show} = this.props;
 		const basePosition = {
 			x: 0,
 			y: show ? -20 : 200
@@ -57,8 +57,8 @@ class Trap extends Component {
 		return (
 			<Motion
 				style={{
-					x: spring(x, springConfig),
-					y: spring(y, springConfig),
+					x: spring(x, {stiffness: 120, damping: 14}),
+					y: spring(y, {stiffness: 120, damping: 14}),
 					scale: spring(scale, presets.wobbly)
 				}}
 				onRest={onKillUser}
@@ -89,8 +89,7 @@ Trap.propTypes = {
 	onKillUser: PropTypes.func.isRequired,
 	show: PropTypes.bool.isRequired,
 	trappedUser: PropTypes.object,
-	trappedUserPosition: CustomPropTypes.point2D,
-	springConfig: CustomPropTypes.springConfig.isRequired
+	trappedUserPosition: CustomPropTypes.point2D
 };
 
 const snapConfig = {

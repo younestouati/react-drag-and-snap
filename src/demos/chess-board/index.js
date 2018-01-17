@@ -5,8 +5,6 @@ import {DraggablePiece} from './piece';
 import './styles.css';
 
 const ROWS = 8;
-const SPRING_CONFIG = {stiffness: 600, damping: 30};
-
 class ChessBoard extends Component {
 	constructor(props) {
 		super(props);
@@ -24,7 +22,7 @@ class ChessBoard extends Component {
 	render() {
 		return (
 			<div className="chess-demo">
-				<DragSnapContext springConfig={SPRING_CONFIG}>
+				<DragSnapContext>
 					<div className="chess-board">
 						{
 							Array(Math.pow(ROWS, 2)).fill().map((_, i) => {
@@ -39,7 +37,7 @@ class ChessBoard extends Component {
 										position={position}
 										key={i}
 									>
-										{piece && <DraggablePiece piece={piece} dragData={{piece, position}} dragMode="clone"/>}
+										{piece && <DraggablePiece piece={piece} dragData={{piece, position}}/>}
 									</SquareTarget>
 								);
 							})

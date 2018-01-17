@@ -18,6 +18,10 @@ class PointerTracker {
 		this.eventThrottler = new eventThrottler(moveCallback);
 	}
 
+	destroy() {
+		this.removeEventHandlers();
+	}
+
 	removeEventHandlers() {
 		window.removeEventListener('mousemove', this.boundMoveHandler);
 		window.removeEventListener('mouseup', this.boundEndHandler);
@@ -86,7 +90,6 @@ class PointerTracker {
 		const point = extractPointFromEvent(e, this.pointerIdentifier);
 
 		if (point) {
-			e.preventDefault();
 			this.endCallback({position: point, velocity: this.getVelocity()});
 			this.removeEventHandlers();
 			this.eventThrottler.pause();
