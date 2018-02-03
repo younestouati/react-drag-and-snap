@@ -85,7 +85,7 @@ class SpringRenderer extends Component {
         propMonitor.ifShallowChange('transform', () => this.atRest = !nextProps.isActive);
         propMonitor.ifBecomingTrue('isReleased', () => this.atRest ? nextProps.onRestAfterRelease() : null);
         
-        propMonitor.ifValueChange('snapTargetId', this.activateSpring.bind(this));
+        propMonitor.ifDefinedValueChange('snapTargetId', this.activateSpring.bind(this));
         propMonitor.ifBooleanChange('isPositionSnapped', this.activateSpring.bind(this));
         propMonitor.ifBecomingTrue('isSnappingBack', this.activateSpring.bind(this));
 
