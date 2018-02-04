@@ -117,7 +117,7 @@ function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
                 return this.context.snap(
                     state.hasEscaped,
                     dragState,
-                    this.getDraggableDescriptor(dragState, draggedMatrix, cursorPosition, velocity)
+                    this.getDragStateDescriptor(dragState, draggedMatrix, cursorPosition, velocity)
                 );
             }
 
@@ -130,7 +130,7 @@ function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
                 const {snapTargetId, matrix} = this.state;
 
                 if (snapTargetId) {
-                    this.context.relayDropEvent(snapTargetId, 'complete', this.getDraggableDescriptor(DRAG_STATES.INACTIVE, matrix));
+                    this.context.relayDropEvent(snapTargetId, 'complete', this.getDragStateDescriptor(DRAG_STATES.INACTIVE, matrix));
                 }
 
                 this.context.relayDraggableRemovalToTargets(this.id);
@@ -156,7 +156,7 @@ function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
                     relayDropEvent(
                         snapTargetId,
                         'start',
-                        this.getDraggableDescriptor(
+                        this.getDragStateDescriptor(
                             dragState,
                             priorMatrix,
                             position,
@@ -182,7 +182,7 @@ function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
 
                 this.context.relayDraggableUpdateToTargets(
                     snapTargetId, 
-                    this.getDraggableDescriptor(
+                    this.getDragStateDescriptor(
                         dragState,
                         matrix,
                         position,
@@ -223,7 +223,7 @@ function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
 
                 this.context.relayDraggableUpdateToTargets(
                     snapTargetId,
-                    this.getDraggableDescriptor(
+                    this.getDragStateDescriptor(
                         dragState,
                         matrix,
                         position,
@@ -246,8 +246,8 @@ function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
                     isSnappingBack: false
                 };
             }
-            //TODO: RENAME THIS!!
-            getDraggableDescriptor(dragState, matrix, cursorPosition, velocity) {
+
+            getDragStateDescriptor(dragState, matrix, cursorPosition, velocity) {
                 return {
                     id: this.id,
                     dragData: this.props.dragData,
@@ -280,7 +280,7 @@ function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
 
                 this.context.relayDraggableUpdateToTargets(
                     null,
-                    this.getDraggableDescriptor(
+                    this.getDragStateDescriptor(
                         initialState.dragState,
                         matrix,
                         position,
@@ -316,7 +316,7 @@ function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
                 this.context.onDragStateUpdate('resume');
                 this.context.relayDraggableUpdateToTargets(
                     snapTargetId, 
-                    this.getDraggableDescriptor(
+                    this.getDragStateDescriptor(
                         dragState, 
                         matrix, 
                         position,
@@ -325,7 +325,7 @@ function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
                 );
 
                 if (snapTargetId) {
-                    this.context.relayDropEvent(snapTargetId, 'cancel', this.getDraggableDescriptor(dragState, matrix));
+                    this.context.relayDropEvent(snapTargetId, 'cancel', this.getDragStateDescriptor(dragState, matrix));
                 }   
             }
 
