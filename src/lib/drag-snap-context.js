@@ -104,7 +104,7 @@ class DragSnapContext extends Component {
             customSnapProps: snapping ? snapping.customSnapProps : {},
             isPositionSnapped: snapping ? snapping.isPositionSnapped : false,
             isSnapping: !!snapping,
-            isInSnappingArea,
+            hasEscaped: hasEscaped || !isInSnappingArea,
             snapTargetId: snapping ? snapping.snapTargetId : null,
         };
     }

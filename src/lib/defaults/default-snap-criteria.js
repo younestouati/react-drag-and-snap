@@ -18,21 +18,20 @@ const parsePercentageString = function (value) {
 const always = () => true;
 const never = () => false;
 
-const isCenterOverTarget = ({transform, targetWidth, targetHeight}) => {
+const isCenterOverTarget = ({transform}, {width, height}) => {
 	const {x,y} = transform;
-	return x > -targetWidth/2 && x < targetWidth/2 && y > -targetHeight/2 && y < targetHeight/2;
+	return x > -width/2 && x < width/2 && y > -height/2 && y < height/2;
 };
 
 const isCenterWithinRadius = (radius, hysteresisRadius) => {
-	return ({id, transform, targetWidth, targetHeight}, {draggedItems}) => {
+	return ({id, transform, isSnappingToThisTarget}, {width, height}, {draggedItems}) => {
 		const {x, y} = transform;
-		const isSnapping = draggedItems.filter((d) => d.id === id).some((d) => d.isSnappingToThisTarget);
-		const _radius = (isSnapping && hysteresisRadius) ? hysteresisRadius : radius;
+		const _radius = (isSnappingToThisTarget && hysteresisRadius) ? hysteresisRadius : radius;
 
 		let r = _radius;
 
 		if (isPercentageString(_radius)) {
-			const diagonal = Math.sqrt(Math.pow(targetWidth, 2) + Math.pow(targetHeight, 2));
+			const diagonal = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
 			const percentage = parsePercentageString(_radius);
 
 			r = ((diagonal/2) / 100) * percentage;
@@ -42,10 +41,21 @@ const isCenterWithinRadius = (radius, hysteresisRadius) => {
 	}
 };
 
-const isNoOtherDraggableSnapping = ({id}, {draggedItems}) => {
+const isNoOtherDraggableSnapping = ({id}, _, {draggedItems}) => {
 	return !draggedItems
 			.filter((d) => d.id !== id)
 			.some((d) => d.isSnappingToThisTarget);
+};
+
+/*
+ * Usually a target doesn't need to worry about whether or not the draggable is snapping to another target.
+ * It is only possible to for draggables to snap to one target at a time, and if multiple targets want the same 
+ * draggable to snap simultanously, the conflict is resolved based on the target's snap priorities. This snap
+ * criteria allows a target to be 'polite', so that it doesn't take over a draggable that is already 
+ * (that is, was in previous 'frame') snapping to another target with a lower snap priority.
+ */
+const draggableIsNotSnappingToOtherTarget = ({isSnappingToOtherTarget}) => {
+	return !isSnappingToOtherTarget;
 };
 
 const isDragDataProp = (prop, value) => {
@@ -58,7 +68,8 @@ const Criteria = {
 	isCenterOverTarget,
 	isCenterWithinRadius,
 	isDragDataProp,
-	isNoOtherDraggableSnapping
+	isNoOtherDraggableSnapping,
+	draggableIsNotSnappingToOtherTarget
 }
 
 export default Criteria;

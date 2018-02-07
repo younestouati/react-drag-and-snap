@@ -9,34 +9,34 @@ test('Criteria.never returns false', () => {
 });
 
 test('Criteria.isCenterOverTarget returns true when center is over target, false otherwise', () => {
-    const targetWidth = 20;
-    const targetHeight = 20;
+    const width = 20;
+    const height = 20;
 
-    expect(Criteria.isCenterOverTarget({transform: {x: 5, y: 5}, targetWidth, targetHeight})).toBe(true);
-    expect(Criteria.isCenterOverTarget({transform: {x: 15, y: 15}, targetWidth, targetHeight})).toBe(false);
+    expect(Criteria.isCenterOverTarget({transform: {x: 5, y: 5}}, {width, height})).toBe(true);
+    expect(Criteria.isCenterOverTarget({transform: {x: 15, y: 15}}, {width, height})).toBe(false);
 });
 
 test('Criteria.isCenterWithinRadius returns true when center is within given radius (no hysteresis)', () => {
     const criterium = Criteria.isCenterWithinRadius(10);
-    const ownProps = {draggedItems: [{id: 1, isSnappingToThisTarget: false}]};
+    const props = {draggedItems: [{id: 1, isSnappingToThisTarget: false}]};
 
-    const targetWidth = 20;
-    const targetHeight = 20;
+    const width = 20;
+    const height = 20;
 
-    expect(criterium({id: 1, transform: {x: 5, y: 5}, targetWidth, targetHeight}, ownProps)).toBe(true);
-    expect(criterium({id: 1, transform: {x: 15, y: 15}, targetWidth, targetHeight}, ownProps)).toBe(false);
+    expect(criterium({id: 1, transform: {x: 5, y: 5}}, {width, height, props})).toBe(true);
+    expect(criterium({id: 1, transform: {x: 15, y: 15}}, {width, height, props})).toBe(false);
 });
 
 test('Criteria.isCenterWithinRadius returns true when center is within given radius (with hysteresis)', () => {
     const id = 1;
     const criterium = Criteria.isCenterWithinRadius(10, 30);
-    const ownProps = {draggedItems: [{id, isSnappingToThisTarget: true}]};
+    const props = {draggedItems: [{id, isSnappingToThisTarget: true}]};
 
-    const targetWidth = 20;
-    const targetHeight = 20;
+    const width = 20;
+    const height = 20;
 
-    expect(criterium({transform: {x: 5, y: 5}, id, targetWidth, targetHeight}, ownProps)).toBe(true);
-    expect(criterium({transform: {x: 15, y: 15}, id, targetWidth, targetHeight}, ownProps)).toBe(true);
+    expect(criterium({transform: {x: 5, y: 5}, id}, {width, height, props})).toBe(true);
+    expect(criterium({transform: {x: 15, y: 15}, id}, {width, height, props})).toBe(true);
 });
 
 test('Criteria.isNoOtherDraggableSnapping returns true when no other draggable is snapping, false if it is', () => {

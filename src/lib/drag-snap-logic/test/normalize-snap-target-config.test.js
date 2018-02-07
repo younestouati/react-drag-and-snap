@@ -3,16 +3,17 @@ import {normalizeSnapTargetConfig} from '../normalize-snap-target-config';
 test('SnapTargetConfigBuilder returns a config with the default criteria when no custom config is provided', () => {
     const config = normalizeSnapTargetConfig();
     const draggedItems = [{id: 1}];
+    const targetDescriptor = {width:3, height: 4}
 
-    const withinRadiusDescriptor = {id: 1, transform: {x: 2, y: 0}, targetWidth:3, targetHeight: 4};
-    const outsideRadiusDescriptor = {id: 1, transform: {x: 3, y: 0}, targetWidth:3, targetHeight: 4};
+    const withinRadiusDescriptor = {id: 1, transform: {x: 2, y: 0}};
+    const outsideRadiusDescriptor = {id: 1, transform: {x: 3, y: 0}};
 
-    expect(config.snapCriteria(withinRadiusDescriptor, {draggedItems})).toBe(true);
-    expect(config.snapCriteria(outsideRadiusDescriptor, {draggedItems})).toBe(false);
-    expect(config.releaseSnapCriteria(withinRadiusDescriptor, {draggedItems})).toBe(true);
-    expect(config.releaseSnapCriteria(outsideRadiusDescriptor, {draggedItems})).toBe(false);
-    expect(config.dragSnapCriteria(withinRadiusDescriptor, {draggedItems})).toBe(true);
-    expect(config.dragSnapCriteria(outsideRadiusDescriptor, {draggedItems})).toBe(false);
+    expect(config.snapCriteria(withinRadiusDescriptor, targetDescriptor, {draggedItems})).toBe(true);
+    expect(config.snapCriteria(outsideRadiusDescriptor, targetDescriptor, {draggedItems})).toBe(false);
+    expect(config.releaseSnapCriteria(withinRadiusDescriptor, targetDescriptor, {draggedItems})).toBe(true);
+    expect(config.releaseSnapCriteria(outsideRadiusDescriptor, targetDescriptor, {draggedItems})).toBe(false);
+    expect(config.dragSnapCriteria(withinRadiusDescriptor, targetDescriptor, {draggedItems})).toBe(true);
+    expect(config.dragSnapCriteria(outsideRadiusDescriptor, targetDescriptor, {draggedItems})).toBe(false);
 });
 
 test('SnapTargetConfigBuilder returns a config with the default snap descriptors when no custom config is provided', () => {

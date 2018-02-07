@@ -3,7 +3,7 @@ import {clamp} from '../utils/clamp';
 
 const VELOCITY_MULTIPLIER = 80;
 
-const snapToEdge = ({transform, velocity, targetWidth: width, targetHeight: height}) => {
+const snapToEdge = ({transform, velocity}, {width, height}) => {
 	const {x, y} = transform;
 	const {x: vx, y: vy} = velocity;
 

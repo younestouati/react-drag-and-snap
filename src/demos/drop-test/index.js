@@ -13,9 +13,9 @@ class DropTest extends Component {
 		};
 	}
 
-	targetDropHandler({transform, targetWidth, targetHeight}) {
-		const x = (transform.x + targetWidth/2 - transform.width/2);
-		const y = (transform.y + targetHeight/2 - transform.height/2);
+	targetDropHandler({transform}, {width, height}) {
+		const x = (transform.x + width/2 - transform.width/2);
+		const y = (transform.y + height/2 - transform.height/2);
 
 		this.setState({x, y});
 	}

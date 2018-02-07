@@ -1,6 +1,6 @@
 import {getClosestEdge} from '../utils/edge-utils';
 
-const whenCloseToEdge = (dist) => ({transform, targetWidth: width, targetHeight: height}) => (
+const whenCloseToEdge = (dist) => ({transform}, {width, height}) => (
 	getClosestEdge(transform, {width, height}).distance < dist
 );
 

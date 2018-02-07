@@ -45,11 +45,11 @@ class FloatingHeadsDemo extends Component {
 		})
 	}
 
-	updateUser({dragData, transform, targetWidth, targetHeight}) {
+	updateUser({dragData, transform}, {width, height}) {
 		const {users} = this.state;
 		const position = {
-			x: (transform.x)/targetWidth * 100,
-			y: (transform.y)/targetHeight * 100
+			x: (transform.x)/width * 100,
+			y: (transform.y)/height * 100
 		};
 
 		this.setState({
