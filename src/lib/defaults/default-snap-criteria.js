@@ -61,4 +61,4 @@ const Criteria = {
 	isNoOtherDraggableSnapping
 }
 
-export {Criteria};
+export default Criteria;

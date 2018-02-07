@@ -1,4 +1,4 @@
-import {Criteria} from '../default-snap-criteria';
+import Criteria from '../default-snap-criteria';
 
 test('Criteria.always returns true', () => {
     expect(Criteria.always()).toEqual(true);

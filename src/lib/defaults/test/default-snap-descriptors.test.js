@@ -1,12 +1,12 @@
 import {
-	defaultSnapping,
-	defaultSnappingAndSize,
+	snapAllButScale,
+	snapAll,
 	noSnapping,
 	snapPosition,
 	snapRotation,
 	snapSize,
 	snapPositionAndRotation,
-	snapPositionAndSize,
+	snapPositionAndScale,
 	snapSizeAndRotation,
 	snapProportionally,
 	snapRotationProportionally,
@@ -31,7 +31,7 @@ test('noSnapping returns the given transform', () => {
 });
 
 test('defaultSnapping returns correct transform', () => {
-    const outputTransform = defaultSnapping({transform: inputTransform});
+    const outputTransform = snapAllButScale({transform: inputTransform});
     expect(outputTransform).toEqual({
 		x: 0,
 		y: 0,
@@ -43,13 +43,12 @@ test('defaultSnapping returns correct transform', () => {
 	});
 });
 
-test('defaultSnappingAndSize returns correct transform', () => {
-    const outputTransform = defaultSnappingAndSize({transform: inputTransform});
+test('snapAll returns correct transform', () => {
+    const outputTransform = snapAll({transform: inputTransform});
     expect(outputTransform).toEqual({
 		x: 0,
 		y: 0,
-		width: '100%',
-		height: '100%',
+		scale: 1,
 		skewX: 0,
 		skewY: 0,
 		rotate: 0
@@ -109,7 +108,7 @@ test('snapPositionAndRotation returns correct transform', () => {
 });
 
 test('snapPositionAndSize returns correct transform', () => {
-    const outputTransform = snapPositionAndSize({transform: inputTransform});
+    const outputTransform = snapPositionAndScale({transform: inputTransform});
     expect(outputTransform).toEqual({
 		x: 0,
 		y: 0,

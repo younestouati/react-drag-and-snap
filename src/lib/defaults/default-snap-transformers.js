@@ -4,7 +4,7 @@ import {isFunction} from '../utils/type-utils';
 
 const noSnapping = ({transform}) => transform;
 
-const defaultSnapping = ({transform}) => (
+const snapAllButScale = ({transform}) => (
 	{
 		x: 0,
 		y: 0,
@@ -16,24 +16,13 @@ const defaultSnapping = ({transform}) => (
 	}
 );
 
-const defaultSnappingAndSize = (draggable) => {
-	return extend(
-		defaultSnapping(draggable),
-		{scaleX: 1, scaleY: 1}
-	);
-}
-
+const snapAll = () => ({scale: 1});
 const snapPosition = ({transform}) => extend(transform, {x: 0, y: 0});
-
 const snapRotation = ({transform}) => extend(transform, {rotate: 0});
-
-const snapSize = ({transform}) => extend(transform, {scaleX: 1, scaleY: 1});
-
+const snapScale = ({transform}) => extend(transform, {scale: 1});
 const snapPositionAndRotation = ({transform}) => extend(transform, {x: 0, y: 0, rotate: 0});
-
-const snapPositionAndSize = ({transform}) => extend(transform, {x: 0, y: 0, scaleX: 1, scaleY: 1});
-
-const snapSizeAndRotation = ({transform}) => extend(transform, {scaleX: 1, scaleY: 1, rotate: 0});
+const snapPositionAndScale = ({transform}) => extend(transform, {x: 0, y: 0, scale: 1});
+const snapScaleAndRotation = ({transform}) => extend(transform, {scale: 1, rotate: 0});
 
 const snapProportionally = (denominator, innerRadius = 0) => {
 	return (draggable) => {
@@ -42,7 +31,7 @@ const snapProportionally = (denominator, innerRadius = 0) => {
 		const dist = distance({x, y});
 
 		if (dist < innerRadius) {
-			return defaultSnappingAndSize(draggable);
+			return snapAll(draggable);
 		} else {
 			return {
 				x: x * dist/denominator,
@@ -63,19 +52,19 @@ const snapRotationProportionally = (denominator, innerRadius = 0) => {
 		const dist = distance(transform);
 
 		return dist < innerRadius  ?
-			defaultSnapping(draggable) :
+			snapAllButScale(draggable) :
 			extend(transform, {rotate: transform.rotate * dist/denominator})
 	};
 };
 
-const snapSizeProportionally = (denominator, innerRadius = 0) => {
+const snapScaleProportionally = (denominator, innerRadius = 0) => {
 	return (draggable) => {
 		const {transform} = draggable;
 		const {x, y, scaleX, scaleY} = transform;
 		const dist = distance({x, y});
 
 		return dist < innerRadius ?
-			defaultSnappingAndSize(draggable) :
+			snapAll(draggable) :
 			extend(
 				draggable.transform,
 				{
@@ -86,14 +75,14 @@ const snapSizeProportionally = (denominator, innerRadius = 0) => {
 	};
 };
 
-const snapSizeAndRotationProportionally = (denominator, innerRadius = 0) => {
+const snapScaleAndRotationProportionally = (denominator, innerRadius = 0) => {
 	return (draggable) => {
 		const {transform} = draggable;
 		const {x, y, scaleX, scaleY, rotate} = transform;
 		const dist = distance({x, y});
 
 		return dist < innerRadius ?
-			defaultSnappingAndSize(draggable) :
+			snapAll(draggable) :
 			extend(
 				draggable.transform,
 				{
@@ -114,19 +103,21 @@ const withCustomSnapProps = (_snapTransform, _customSnapProps) => {
 	};
 };
 
-export {
-	defaultSnapping,
-	defaultSnappingAndSize,
+const SnapTransformers = {
+	snapAllButScale,
+	snapAll,
 	noSnapping,
 	snapPosition,
 	snapRotation,
-	snapSize,
+	snapScale,
 	snapPositionAndRotation,
-	snapPositionAndSize,
-	snapSizeAndRotation,
+	snapPositionAndScale,
+	snapScaleAndRotation,
 	snapProportionally,
 	snapRotationProportionally,
-	snapSizeProportionally,
-	snapSizeAndRotationProportionally,
+	snapScaleProportionally,
+	snapScaleAndRotationProportionally,
 	withCustomSnapProps
 };
+
+export default SnapTransformers;

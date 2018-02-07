@@ -1,5 +1,5 @@
 import {EDGES, getClosestEdge} from '../utils/edge-utils';
-import {noSnapping} from '../../../lib/defaults/default-snap-transformers';
+import SnapTransformers from '../../../lib/defaults/default-snap-transformers';
 import {extend} from '../utils/extend';
 
 const snapRotation = (dragStateDescriptor) => {
@@ -9,7 +9,7 @@ const snapRotation = (dragStateDescriptor) => {
 	};
 
 	return extend(
-		noSnapping(dragStateDescriptor),
+		SnapTransformers.noSnapping(dragStateDescriptor),
 		{rotate: EDGES[getClosestEdge(dragStateDescriptor.transform, targetSize).edge].rotation}
 	);
 };

@@ -7,7 +7,7 @@ import {extend} from './utils/extend';
 import makeSnapTarget from '../../lib/make-snap-target';
 import {Motion, spring, presets} from 'react-motion';
 import InternalSnapTargetTransform from '../../lib/internal-snap-target-transform';
-import {Criteria} from '../../lib/defaults/default-snap-criteria';
+import Criteria from '../../lib/defaults/default-snap-criteria';
 import {snapTargetCollectors} from '../../lib/defaults/default-snap-target-collectors';
 import {AnimatedTransform} from '../shared/animated-transform';
 import {Avatar} from './avatar';

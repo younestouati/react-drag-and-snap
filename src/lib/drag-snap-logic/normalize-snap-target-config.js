@@ -1,12 +1,12 @@
 import invariant from 'invariant';
-import {Criteria} from '../defaults/default-snap-criteria';
-import {defaultSnapping} from '../defaults/default-snap-transformers';
+import Criteria from '../defaults/default-snap-criteria';
+import SnapTransformers from '../defaults/default-snap-transformers';
 import {extend} from '../utils/object-utils';
 import {isFunction, isObject, isArray} from '../utils/type-utils';
 
 const defaultConfig = {
 	snapCriteria: Criteria.isCenterWithinRadius('100%'),
-	snapTransform: defaultSnapping //TODO: CONSIDER WHY NO ON A SnapTransformers object like for Criteria
+	snapTransform: SnapTransformers.snapAllButScale
 };
 
 const normalizeSnapTargetConfig = (customConfig = {}) => {

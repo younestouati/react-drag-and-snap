@@ -1,6 +1,6 @@
 import React from 'react';
 import makeSnapTarget from '../../lib/make-snap-target';
-import {Criteria} from '../../lib/defaults/default-snap-criteria';
+import Criteria from '../../lib/defaults/default-snap-criteria';
 import {snapTargetCollectors} from '../../lib/defaults/default-snap-target-collectors';
 
 const EYE_RADIUS = 32;

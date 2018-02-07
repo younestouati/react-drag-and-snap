@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import makeSnapTarget from '../../lib/make-snap-target';
 import {isMoveLegal} from './custom-snap-criteria/is-move-legal';
-import {Criteria} from '../../lib/defaults/default-snap-criteria';
+import Criteria from '../../lib/defaults/default-snap-criteria';
 
 class Square extends Component {
 	shouldComponentUpdate(nextProps) {

@@ -4,15 +4,15 @@ import {Target} from './target';
 import makeDraggable from '../../lib/make-draggable';
 import makeSnapTarget from '../../lib/make-snap-target';
 import DragSnapContext from '../../lib/drag-snap-context';
-import {Criteria} from '../../lib/defaults/default-snap-criteria';
+import Criteria from '../../lib/defaults/default-snap-criteria';
 import {snapTargetCollectors} from '../../lib/defaults/default-snap-target-collectors';
-import {snapProportionally, withCustomSnapProps} from '../../lib/defaults/default-snap-transformers';
+import SnapTransformers from '../../lib/defaults/default-snap-transformers';
 
 const DraggableSquare = makeDraggable()(Square);
 
 const config1 = {
     dragSnapCriteria: Criteria.isCenterWithinRadius(200),
-    dragSnapTransform: withCustomSnapProps(snapProportionally(200, 10), {borderRadius: 100}),
+    dragSnapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.snapProportionally(200, 10), {borderRadius: 100}),
 	releaseSnapCriteria: Criteria.never,
 };
 
@@ -22,7 +22,7 @@ const config2 = {
 
 const config3 = {
     dragSnapCriteria: Criteria.isCenterWithinRadius(200),
-    dragSnapTransform: snapProportionally(200, 10),
+    dragSnapTransform: SnapTransformers.snapProportionally(200, 10),
     releaseSnapCriteria: Criteria.never
 };
 
