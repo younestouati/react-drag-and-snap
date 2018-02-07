@@ -149,15 +149,10 @@ function transformRotation(matrix, rotation) {
 	return rotation - extractRotation(matrix);
 }
 
-function transformScale(matrix, snapTargetSize, draggableTransform, draggableSize) {
-	const {scaleX: draggableScaleX, scaleY: draggableScaleY} = draggableTransform;
-	const {width: draggableWidth, height: draggableHeight} = draggableSize;
-	const {x: targetScaleX, y: targetScaleY} = extractScale(matrix);
-	const {width: targetWidth, height: targetHeight} = snapTargetSize;
-
+function transformScale(actualSnapTargetSize, actualDraggableSize) {
 	return {
-		scaleX: (draggableWidth * draggableScaleX) / (targetWidth * targetScaleX),
-		scaleY: (draggableHeight * draggableScaleY) / (targetHeight * targetScaleY)
+		scaleX: actualDraggableSize.width / actualSnapTargetSize.width,
+		scaleY: actualDraggableSize.height / actualSnapTargetSize.height
 	};
 }
 

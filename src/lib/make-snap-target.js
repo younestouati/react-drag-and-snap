@@ -135,14 +135,14 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             }
 
             //Converts the descriptor, velocity and cursor point from the global (window) coordinate system, to the local coordinate system of the snap taget.
-            globalToLocal({id, dragState, dragData, matrix, size, velocity, cursorPosition}) {                                
-                const {x, y, scaleX, scaleY, rotate, skewX, skewY} = qrDecompose(matrix);
+            globalToLocal({id, dragState, dragData, matrix, actualSize, velocity, cursorPosition}) {                                
+                const {x, y, rotate, skewX, skewY} = qrDecompose(matrix);
                 const localPosition = transformPosition(this.getMatrix(), {x, y});
                 const localRotation = transformRotation(this.getMatrix(), rotate);
-                const localSize = transformScale(this.getMatrix(), this.getSize(), {scaleX, scaleY}, size);
+                const localScale = transformScale(this.getActualSize(), actualSize);
                 const localSkew = transformSkew(this.getMatrix(), {x: skewX, y: skewY});
             
-                const localTransform = extend({rotate: localRotation}, localPosition, localSize, localSkew)
+                const localTransform = extend({rotate: localRotation}, localPosition, localScale, localSkew)
 
                 return {
                     id,
@@ -192,15 +192,8 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndLo
                 const params = this.getParams(dragStateDescriptor);
                 const snapTransform = isFunction(_snapTransform) ? _snapTransform(...params) : _snapTransform;
 
-                //TODO: DETERMINE THIS ELSEWHERE
-                const draggableTransform = qrDecompose(dragStateDescriptor.matrix);
-                const actualDraggableSize = {
-                    width: dragStateDescriptor.size.width * draggableTransform.scaleX,
-                    height: dragStateDescriptor.size.height * draggableTransform.scaleY
-                };
-
-                const normalizedSnapTransform = normalizeTransform(snapTransform, actualDraggableSize, this.getActualSize());
-                const snapMatrix = createSnapMatrix(this.getMatrix(), normalizedSnapTransform, actualDraggableSize, this.getActualSize());
+                const normalizedSnapTransform = normalizeTransform(snapTransform, dragStateDescriptor.actualSize, this.getActualSize());
+                const snapMatrix = createSnapMatrix(this.getMatrix(), normalizedSnapTransform, dragStateDescriptor.actualSize, this.getActualSize());
 
                 //TODO: CAN THIS COMPARISON BE DONE IN A MORE ELEGANT WAY. MAYBE COMPARING EXTRACTED X AND Y FROM snappingMatrix and dragStateDescriptor.matrix instead?
                 const {x, y} = transformPosition(this.getMatrix(), extractTranslation(dragStateDescriptor.matrix));

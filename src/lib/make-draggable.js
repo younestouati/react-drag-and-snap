@@ -248,10 +248,15 @@ function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
             }
 
             getDragStateDescriptor(dragState, matrix, cursorPosition, velocity) {
+                const {scaleX, scaleY} = qrDecompose(matrix);
+
                 return {
                     id: this.id,
                     dragData: this.props.dragData,
-                    size: this.DOMElementHelper.getSize(),
+                    actualSize: {
+                        width: this.DOMElementHelper.getSize().width * scaleX,
+                        height: this.DOMElementHelper.getSize().height * scaleY
+                    },
                     dragState,
                     velocity,
                     cursorPosition,

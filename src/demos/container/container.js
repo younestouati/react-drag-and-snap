@@ -17,7 +17,7 @@ const config1 = {
 };
 
 const config2 = {
-    releaseSnapCriteria: Criteria.never
+	releaseSnapCriteria: Criteria.never
 };
 
 const config3 = {
