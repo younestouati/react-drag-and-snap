@@ -208,9 +208,9 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             }
 
             allowsEasyEscape(dragStateDescriptor) {
-                const localDragStateDescriptor = this.globalToLocal(dragStateDescriptor);
                 const {easyEscape} = this.props;
-                return isFunction(easyEscape) ? easyEscape(localDragStateDescriptor) : easyEscape;
+                const params = this.getParams(dragStateDescriptor);
+                return isFunction(easyEscape) ? easyEscape(...params) : easyEscape;
             }
 
             onDropEvent(type, dragStateDescriptor, globalSnapMatrix) {
