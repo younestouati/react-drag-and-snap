@@ -80,8 +80,8 @@ class FloatingHeadsDemo extends Component {
 						onChange={({grabbedCount, draggedCount, releasedCount}) => {
 							if (grabbedCount || draggedCount) {
 								this.setState({isDragging: true});
-							} else if (releasedCount) {
-								this.setState({isDragging: false});
+							//} else if (releasedCount) {
+							//	this.setState({isDragging: false});
 							} else {
 								this.setState({isDragging: false, trappedUser: null});
 							}
