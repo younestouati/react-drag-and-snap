@@ -1,7 +1,7 @@
 import React from 'react';
 import makeSnapTarget from '../../lib/make-snap-target';
 import {Criteria} from '../../lib/defaults/default-snap-criteria';
-import {defaultSnapping, snapSizeAndRotation} from '../../lib/defaults/default-snap-descriptors';
+import {snapSizeAndRotation} from '../../lib/defaults/default-snap-descriptors';
 
 const Round = () => <div className="square"/>;
 

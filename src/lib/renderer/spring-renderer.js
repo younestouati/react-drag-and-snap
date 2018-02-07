@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {CustomPropTypes} from '../prop-types/custom-prop-types';
 import {Motion, spring} from 'react-motion';
-import {shallowClone} from '../utils/object-utils';
 import {PositionSpringSwitch} from './position-spring-switch';
 import {PropMonitor} from './prop-monitor';
 

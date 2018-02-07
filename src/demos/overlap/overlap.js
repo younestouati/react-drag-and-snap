@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {inverse, applyToPoint, applyToPoints} from 'transformation-matrix';
+import {inverse/*, applyToPoint, applyToPoints*/} from 'transformation-matrix';
 import {getTransformationMatrix, qrDecompose} from '../../lib/drag-snap-logic/matrix';
 
 class Overlap extends Component {
@@ -22,7 +22,7 @@ class Overlap extends Component {
         let transform = '';
 
         if (matrix) {
-            const {x, y, scaleX, scaleY, rotate, skewX, skewY} = qrDecompose(matrix);
+            const {x, y, scaleX, scaleY, rotate, skewX} = qrDecompose(matrix);
 
             transform = '' +
                 'translate3d(calc(' + x + 'px),calc(' + y + 'px), 0) ' +
@@ -30,7 +30,6 @@ class Overlap extends Component {
                 'scaleX(' + scaleX + ') ' +
                 'scaleY(' + scaleY + ') ' +
                 'skewX(' + skewX + 'deg) ' +
-                'skewY(' + skewY + 'deg)' +
             '';
         }
 

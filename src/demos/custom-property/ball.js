@@ -1,9 +1,9 @@
 import React from 'react';
 import makeDraggable from '../../lib/make-draggable';
-
+/*
 const distance = (p1, p2 = {x: 0, y: 0}) => (
 	Math.sqrt((p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y))
-);
+);*/
 /*
 TODO: MAKE SURE THAT IT REMEMBERS IF IT IS/WAS SNAPPING. MAKE SURE THAT
 EVERYTHING IS TRANSFERED AS CUSTOM PROPS. NO NUMBERS IN HERE!! 
