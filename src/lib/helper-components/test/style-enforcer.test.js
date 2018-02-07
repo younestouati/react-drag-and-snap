@@ -18,7 +18,7 @@ test('StyleEnforcer wraps children in a div, with classname and injects proper c
     };
 
     const DOMElementHelper = {
-        getDimensions: jest.fn(() => ({width: 10, height: 20})),
+        getSize: jest.fn(() => ({width: 10, height: 20})),
         getPadding: jest.fn(() => ({paddingLeft: 1, paddingRight: 2, paddingTop: 3,	paddingBottom: 4})),
         getComputedStyles: jest.fn((invalidate) => invalidate ? computedStyles1 : computedStyles2),
         startMonitoring: jest.fn(),

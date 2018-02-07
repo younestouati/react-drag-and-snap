@@ -22,11 +22,11 @@ class Overlap extends Component {
         let transform = '';
 
         if (matrix) {
-            const {x, y, scaleX, scaleY, rotation, skewX, skewY} = qrDecompose(matrix);
+            const {x, y, scaleX, scaleY, rotate, skewX, skewY} = qrDecompose(matrix);
 
             transform = '' +
                 'translate3d(calc(' + x + 'px),calc(' + y + 'px), 0) ' +
-                'rotate(' + rotation + 'deg) ' +
+                'rotate(' + rotate + 'deg) ' +
                 'scaleX(' + scaleX + ') ' +
                 'scaleY(' + scaleY + ') ' +
                 'skewX(' + skewX + 'deg) ' +

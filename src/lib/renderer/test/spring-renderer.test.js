@@ -7,7 +7,7 @@ test('Spring Renderer applies the given transform props to the wrapper div', () 
         <SpringRenderer
             x={1}
             y={2}
-            rotation={3}
+            rotate={3}
             scaleX={4}
             scaleY={5}
             skewX={6}
@@ -41,7 +41,7 @@ test('Spring Renderer invokes the onRestAfterRelease callback when coming to res
         <SpringRenderer
             x={1}
             y={2}
-            rotation={3}
+            rotate={3}
             scaleX={4}
             scaleY={5}
             skewX={6}
@@ -74,7 +74,7 @@ test('Spring Renderer will not invoke onRestAfterRelease when coming to rest, if
         <SpringRenderer
             x={1}
             y={2}
-            rotation={3}
+            rotate={3}
             scaleX={4}
             scaleY={5}
             skewX={6}
@@ -101,7 +101,7 @@ test('Spring Renderer invokes the onRestAfterRelease callback when released whil
         <SpringRenderer
             x={1}
             y={2}
-            rotation={3}
+            rotate={3}
             scaleX={4}
             scaleY={5}
             skewX={6}
@@ -128,7 +128,7 @@ test('Spring Renderer invokes onRegrab callback when mouse is down', (done) => {
         <SpringRenderer
             x={1}
             y={2}
-            rotation={3}
+            rotate={3}
             scaleX={4}
             scaleY={5}
             skewX={6}
@@ -154,7 +154,7 @@ test('Spring Renderer invokes onRegrab callback when touch start', (done) => {
         <SpringRenderer
             x={1}
             y={2}
-            rotation={3}
+            rotate={3}
             scaleX={4}
             scaleY={5}
             skewX={6}

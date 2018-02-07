@@ -10,7 +10,7 @@ test('parseSnapDescriptor fills in missing values with defaults', () => {
     expect(descriptor.height).toBe(400);
     expect(descriptor.skewX).toBe(0);
     expect(descriptor.skewY).toBe(0);
-    expect(descriptor.rotation).toBe(0);
+    expect(descriptor.rotate).toBe(0);
 });
 
 test('parseSnapDescriptor returns a fully specificied numeric descriptor as-is', () => {
@@ -21,7 +21,7 @@ test('parseSnapDescriptor returns a fully specificied numeric descriptor as-is',
         height: 4,
         skewX: 5,
         skewY: 6,
-        rotation: 7,
+        rotate: 7,
     };
 
     const parsedDescriptor = parseSnapDescriptor(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400});
@@ -36,7 +36,7 @@ test('parseSnapDescriptor correctly interprets percentages', () => {
         height: '100%',
         skewX: 5,
         skewY: 6,
-        rotation: 7
+        rotate: 7
     };
 
     const parsedDescriptor = parseSnapDescriptor(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400});
@@ -47,7 +47,7 @@ test('parseSnapDescriptor correctly interprets percentages', () => {
         width: 50,
         skewX: 5,
         skewY: 6,
-        rotation: 7, 
+        rotate: 7, 
         customSnapProps: {}  
     });
 });
@@ -62,7 +62,7 @@ test('parseSnapDescriptor throws if given an invalid string value (not a percent
         height: '100%',
         skewX: 5,
         skewY: 6,
-        rotation: 7,
+        rotate: 7,
     };
 
     expect(() => parseSnapDescriptor(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400})).toThrow();
@@ -84,11 +84,11 @@ test('createSnappingMatrix correctly calculates the snapping matrix', () => {
         height: 100,
         skewX: 15,
         skewY: 0,
-        rotation: 45,
+        rotate: 45,
     };
-    const draggableDimensions = {width: 20, height: 30};
+    const draggableSize = {width: 20, height: 30};
 
-    const m = createSnappingMatrix(baseMatrix, descriptor, draggableDimensions);
+    const m = createSnappingMatrix(baseMatrix, descriptor, draggableSize);
 
     expect(m.a).toBeCloseTo(-1.77);
     expect(m.b).toBeCloseTo(5.3);

@@ -9,7 +9,7 @@ import {PropMonitor} from './prop-monitor';
 class SpringRendererApplier extends Component {
 	render() {
 		const {onRegrab, isVisible, children, transform} = this.props;
-		const {x, y, rotation, scaleX, scaleY, skewX} = transform;
+		const {x, y, rotate, scaleX, scaleY, skewX} = transform;
 
 		return (
 			<div
@@ -20,7 +20,7 @@ class SpringRendererApplier extends Component {
 					transformOrigin: '50% 50%',
 					transform: '' +
 						'translate3d(calc(' + x + 'px - 50%),calc(' + y + 'px - 50%), 0) ' +
-						'rotate(' + rotation + 'deg) ' +
+						'rotate(' + rotate + 'deg) ' +
 						'scaleX(' + scaleX + ') ' +
 						'scaleY(' + scaleY + ') ' +
 						'skewX(' + skewX + 'deg) ' +
@@ -54,7 +54,7 @@ const Tweener = ({children, transform, displacement}) => children(transform, dis
 const nullTransform = {
     x: 0,
     y: 0,
-    rotation: 0,
+    rotate: 0,
     scaleX: 1,
     scaleY: 1,
     skewX: 0
@@ -114,7 +114,7 @@ class SpringRenderer extends Component {
                 style={{
                     x: useSpring ? spring(transform.x, springConfig) : transform.x,
                     y: useSpring ? spring(transform.y, springConfig) : transform.y,
-                    rotation: useSpring ? spring(transform.rotation, springConfig) : transform.rotation,
+                    rotate: useSpring ? spring(transform.rotate, springConfig) : transform.rotate,
                     scaleX: useSpring ? spring(transform.scaleX, springConfig) : transform.scaleX,
                     scaleY: useSpring ? spring(transform.scaleY, springConfig) : transform.scaleY,
                     skewX: useSpring ? spring(transform.skewX, springConfig) : transform.skewX,

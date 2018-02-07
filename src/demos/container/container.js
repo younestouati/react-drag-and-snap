@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {Square} from './square';
 import {Target} from './target';
-import makeDraggable from './lib/make-draggable';
-import makeSnapTarget from './lib/make-snap-target';
-import DragSnapContext from './lib/drag-snap-context';
-import {Criteria} from './lib/defaults/default-snap-criteria';
-import {snapTargetCollectors} from './lib/defaults/default-snap-target-collectors';
-import {snapProportionally, withCustomSnapProps} from './lib/defaults/default-snap-descriptors';
+import makeDraggable from '../../lib/make-draggable';
+import makeSnapTarget from '../../lib/make-snap-target';
+import DragSnapContext from '../../lib/drag-snap-context';
+import {Criteria} from '../../lib/defaults/default-snap-criteria';
+import {snapTargetCollectors} from '../../lib/defaults/default-snap-target-collectors';
+import {snapProportionally, withCustomSnapProps} from '../../lib/defaults/default-snap-descriptors';
 
 const DraggableSquare = makeDraggable()(Square);
 
@@ -26,7 +26,7 @@ const config3 = {
     releaseSnapCriteria: Criteria.never
 };
 
-const additions = {rotation: 25, skewX: 65, x: 10, y: 10, width: 100, height: 160, scaleX: .4, scaleY: 1.6};
+const additions = {rotate: 25, skewX: 65, x: 10, y: 10, width: 100, height: 160, scaleX: .4, scaleY: 1.6};
 const config4 = {
     dragSnapCriteria: Criteria.isCenterWithinRadius(200),
     dragSnapDescriptor: additions,
@@ -91,7 +91,7 @@ class Container extends Component {
 							<SnapTargetType4 ref={(el) => this.target4 = el}>
 								<div
 									style={{
-										transform: `translate(calc(${additions.x}px - 50%), calc(${additions.y}px - 50%)) rotate(${additions.rotation}deg) skewX(${additions.skewX}deg)`,
+										transform: `translate(calc(${additions.x}px - 50%), calc(${additions.y}px - 50%)) rotate(${additions.rotate}deg) skewX(${additions.skewX}deg)`,
 										display: 'inline-block',
 										position: 'absolute',
 										top: '50%',

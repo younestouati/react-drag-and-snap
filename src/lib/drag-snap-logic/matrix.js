@@ -90,7 +90,7 @@ function qrDecompose(matrix) {
 	const skew = extractSkew(matrix);
 
 	return {
-		rotation: extractRotation(matrix), 	// rotation in degrees
+		rotate: extractRotation(matrix), 	// rotation in degrees
 		scaleX: scale.x,
 		scaleY: scale.y,
 		skewX: skew.x,		 			 	// skewX in degrees
@@ -140,15 +140,6 @@ function matrixToDescriptor(matrix, {width, height}) {
 	};
 }
 
-function descriptorToMatrix(descriptor, {width, height}) {
-	return transformMultiple(
-		translate(descriptor.x, descriptor.y),            
-		rotateDEG(descriptor.rotation),
-		scale(descriptor.width / width, descriptor.height / height),
-		skewXMatrix(descriptor.skewX)
-	);
-}
-
 function transformPosition(matrix, position) {
 	return applyToPoint(inverse(matrix), position);
 }
@@ -167,11 +158,11 @@ function transformRotation(matrix, rotation) {
 	return rotation - extractRotation(matrix);
 }
 
-function transformScale(matrix, snapTargetDimensions, draggableTransform, draggableDimensions) {
+function transformScale(matrix, snapTargetSize, draggableTransform, draggableSize) {
 	const {scaleX: draggableScaleX, scaleY: draggableScaleY} = draggableTransform;
-	const {width: draggableWidth, height: draggableHeight} = draggableDimensions;
+	const {width: draggableWidth, height: draggableHeight} = draggableSize;
 	const {x: targetScaleX, y: targetScaleY} = extractScale(matrix);
-	const {width: targetWidth, height: targetHeight} = snapTargetDimensions;
+	const {width: targetWidth, height: targetHeight} = snapTargetSize;
 
 	return {
 		scaleX: (draggableWidth * draggableScaleX) / (targetWidth * targetScaleX),
@@ -188,18 +179,6 @@ function transformSkew(matrix, skew) {
 	};
 }
 
-//TODO: MOVE THIS ONE TO snapTarget
-//Converts the draggableTransform so that it is expressed in the coordinate system of the snapTarget
-function convertTransform(snapTargetMatrix, snapTargetDimensions, draggableTransform, draggableDimensions) {
-	const {x, y, scaleX, scaleY, rotation, skewX, skewY} = draggableTransform;
-	const localPosition = transformPosition(snapTargetMatrix, {x, y});
-	const localRotation = transformRotation(snapTargetMatrix, rotation);
-	const localSize = transformScale(snapTargetMatrix, snapTargetDimensions, {scaleX, scaleY}, draggableDimensions);
-	const localSkew = transformSkew(snapTargetMatrix, {x: skewX, y: skewY});
-
-	return extend({rotation: localRotation}, localPosition, localSize, localSkew);
-}
-
 function deltaMatrix (oldDescriptor = {}, newDescriptor = {}, defaultDescriptor = {}) {
 	const o = extend(defaultDescriptor, oldDescriptor);
 	const n = extend(defaultDescriptor, newDescriptor);
@@ -212,7 +191,7 @@ function deltaMatrix (oldDescriptor = {}, newDescriptor = {}, defaultDescriptor 
 
 	return transform(
 		translate(n.x - o.x, n.y - o.y),
-		rotateDEG(n.rotation - o.rotation),
+		rotateDEG(n.rotate - o.rotate),
 		scale(nScaleX/oScaleX, nScaleY/oScaleY),
 		skewXMatrix(n.skewX - o.skewX)
 	);
@@ -232,8 +211,9 @@ export {
 	deltaMatrix,
 	overrideTranslation,
 	matrixToDescriptor,
-	descriptorToMatrix,
-	convertTransform,
 	transformVelocity,
-	transformPosition
+	transformPosition,
+	transformRotation,
+	transformScale,
+	transformSkew
 };

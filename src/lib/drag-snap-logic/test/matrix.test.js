@@ -12,7 +12,6 @@ import {
 	deltaMatrix,
 	overrideTranslation,
 	matrixToDescriptor,
-	descriptorToMatrix,
 	transformDescriptor,
 	transformVelocity,
 	transformPosition
@@ -25,7 +24,7 @@ import {
     y: 20,
     scaleX: 2,
     scaleY: 3
-    rotation: 30
+    rotate: 30
     skewX: 15
     skewY: 0 
 */
@@ -46,7 +45,7 @@ test('qrDecompose correctly decomposes a matrix', () => {
     expect(qrd.scaleX).toBeCloseTo(2);
     expect(qrd.scaleY).toBeCloseTo(3);
     expect(qrd.skewX).toBeCloseTo(15);
-    expect(qrd.rotation).toBeCloseTo(30);
+    expect(qrd.rotate).toBeCloseTo(30);
 });
 
 test('overrideTranslation overrides the translation for the given matrix', () => {
@@ -98,7 +97,7 @@ test('extractSkew returns an object representing the skew of the given matrix', 
     expect(s.y).toBeCloseTo(0);
 });
 
-test('skewXMatrix return a matrix representing the given skew in the X dimensions', () => {
+test('skewXMatrix return a matrix representing the given skew in the X dimension', () => {
     const sm = skewXMatrix(60);
 
     expect(sm.a).toBeCloseTo(1);
@@ -118,28 +117,7 @@ test('matrixToDescriptor returns a descriptor describing the given matrix', () =
     expect(d.height).toBeCloseTo(5 * 3);
     expect(d.skewX).toBeCloseTo(15);
     expect(d.skewY).toBeCloseTo(0);
-    expect(d.rotation).toBeCloseTo(30);
-});
-
-test('descriptorToMatrix returns a matrix corresponding to the given descriptor', () => {
-    const d = {
-        x: 10,
-        y: 20,
-        width: 4 * 2,
-        height: 5 * 3,
-        skewX: 15,
-        skewY: 0,
-        rotation: 30
-    };
-
-    const m1 = descriptorToMatrix(d, {width: 4, height: 5});
-
-    expect(m1.a).toBeCloseTo(m.a);
-    expect(m1.b).toBeCloseTo(m.b);
-    expect(m1.c).toBeCloseTo(m.c);
-    expect(m1.d).toBeCloseTo(m.d);
-    expect(m1.e).toBeCloseTo(m.e);
-    expect(m1.f).toBeCloseTo(m.f);
+    expect(d.rotate).toBeCloseTo(30);
 });
 
 test('transformPosition transforms the given point by the given matrix', () => {
@@ -223,7 +201,7 @@ test('deltaMatrix returns matrix that represents the delta between the two given
         scaleY: 2,
         skewX: 15,
         skewY: 0,
-        rotation: 30
+        rotate: 30
     };
 
     const newDescriptor = {
@@ -233,7 +211,7 @@ test('deltaMatrix returns matrix that represents the delta between the two given
         scaleY: 4,
         skewX: 30,
         skewY: 0,
-        rotation: 45   
+        rotate: 45   
     };
 
     const m1 = deltaMatrix(oldDescriptor, newDescriptor);
@@ -254,7 +232,7 @@ test('transformDescriptor returns the given descriptor transformed by the given 
         height: 4,
         skewX: 5,
         skewY: 6,
-        rotation: 7
+        rotate: 7
     };
 
     const d = transformDescriptor(m, descriptor);
@@ -265,5 +243,5 @@ test('transformDescriptor returns the given descriptor transformed by the given 
     expect(d.height).toBeCloseTo(1.33);
     expect(d.skewX).toBeCloseTo(-10);
     expect(d.skewY).toBeCloseTo(6);
-    expect(d.rotation).toBeCloseTo(-23);
+    expect(d.rotate).toBeCloseTo(-23);
 });

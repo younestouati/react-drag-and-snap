@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Motion, spring, presets} from 'react-motion';
 
-const TRANSFORM_PROPS = ['x', 'y', 'scale', 'scaleX', 'scaleY', 'rotation', 'skewX', 'skewY'];
+const TRANSFORM_PROPS = ['x', 'y', 'scale', 'scaleX', 'scaleY', 'rotate', 'skewX', 'skewY'];
 
 const AnimatedTransform = (props) =>  {
 	const style = {};
@@ -19,14 +19,14 @@ const AnimatedTransform = (props) =>  {
 			onRest={props.onRest}
 		>
 		{
-			({x, y, scale, scaleX, scaleY, rotation, skewX, skewY}) => {
+			({x, y, scale, scaleX, scaleY, rotate, skewX, skewY}) => {
 				const transforms = [`translateZ(0)`];
 				if (typeof x !== "undefined") transforms.push(`translateX(${x}px)`);
 				if (typeof y !== "undefined") transforms.push(`translateY(${y}px)`);
 				if (typeof scale !== "undefined") transforms.push(`scale(${scale})`);
 				if (typeof scaleX !== "undefined") transforms.push(`scaleX(${scaleX})`);
 				if (typeof scaleY !== "undefined") transforms.push(`scaleY(${scaleY})`);
-				if (typeof rotation !== "undefined") transforms.push(`rotate(${rotation}deg)`);
+				if (typeof rotate !== "undefined") transforms.push(`rotate(${rotate}deg)`);
 				if (typeof skewX !== "undefined") transforms.push(`skewX(${skewX}deg)`);
 				if (typeof skewY !== "undefined") transforms.push(`skewY(${skewY}deg)`);
 
@@ -39,7 +39,7 @@ const AnimatedTransform = (props) =>  {
 						}}>
 						{
 							typeof props.children === 'function' ?
-								props.children({x, y, scale, scaleX, scaleY, rotation, skewX, skewY}) :
+								props.children({x, y, scale, scaleX, scaleY, rotate, skewX, skewY}) :
 								props.children
 						}
 					</div>

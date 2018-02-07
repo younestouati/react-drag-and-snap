@@ -25,7 +25,7 @@ test('SnapTargetConfigBuilder returns a config with the default snap descriptors
 		height: 20,
 		skewX: 0,
 		skewY: 0,
-		rotation: 0    
+		rotate: 0    
     }
 
     expect(config.snapDescriptor({transform})).toEqual(expectedDescriptor);

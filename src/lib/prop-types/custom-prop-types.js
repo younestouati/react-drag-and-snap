@@ -37,7 +37,7 @@ const createDragModePropType = (isRequired) => {
 
 const createTransformPropType = (isRequired) => {
 	const shape = PropTypes.shape({
-		rotation: PropTypes.number,
+		rotate: PropTypes.number,
 		skewX: PropTypes.number,
 		x: PropTypes.number,
 		y: PropTypes.number,

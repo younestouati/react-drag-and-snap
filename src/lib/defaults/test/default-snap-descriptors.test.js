@@ -22,7 +22,7 @@ const inputTransform = {
     height: 4,
     skewX: 5,
     skewY: 6,
-    rotation: 7
+    rotate: 7
 };
 
 test('noSnapping returns the given transform', () => {
@@ -39,7 +39,7 @@ test('defaultSnapping returns correct transform', () => {
 		height: 4,
 		skewX: 0,
 		skewY: 0,
-		rotation: 0
+		rotate: 0
 	});
 });
 
@@ -52,7 +52,7 @@ test('defaultSnappingAndSize returns correct transform', () => {
 		height: '100%',
 		skewX: 0,
 		skewY: 0,
-		rotation: 0
+		rotate: 0
 	});
 });
 
@@ -65,7 +65,7 @@ test('snapPosition returns correct transform', () => {
 		height: 4,
 		skewX: 5,
 		skewY: 6,
-		rotation: 7
+		rotate: 7
 	});
 });
 
@@ -78,7 +78,7 @@ test('snapRotation returns correct transform', () => {
 		height: 4,
 		skewX: 5,
 		skewY: 6,
-		rotation: 0
+		rotate: 0
 	});
 });
 
@@ -91,7 +91,7 @@ test('snapSize returns correct transform', () => {
 		height: '100%',
 		skewX: 5,
 		skewY: 6,
-		rotation: 7
+		rotate: 7
 	});
 });
 
@@ -104,7 +104,7 @@ test('snapPositionAndRotation returns correct transform', () => {
 		height: 4,
 		skewX: 5,
 		skewY: 6,
-		rotation: 0
+		rotate: 0
 	});
 });
 
@@ -117,7 +117,7 @@ test('snapPositionAndSize returns correct transform', () => {
 		height: '100%',
 		skewX: 5,
 		skewY: 6,
-		rotation: 7
+		rotate: 7
 	});
 });
 
@@ -130,7 +130,7 @@ test('snapSizeAndRotation returns correct transform', () => {
 		height: '100%',
 		skewX: 5,
 		skewY: 6,
-		rotation: 0
+		rotate: 0
 	});
 });
 
@@ -145,7 +145,7 @@ test('snapProportionally returns correct transform when within inner radius', ()
 		height: '100%',
 		skewX: 0,
 		skewY: 0,
-		rotation: 0
+		rotate: 0
 	});
 });
 
@@ -161,7 +161,7 @@ test('snapProportionally returns correct transform when outside inner radius', (
 		height: 4 + (20 - 4) * (1 - 20/30),
 		skewX: 5 * 20/30,
 		skewY: 6 * 20/30,
-		rotation: 7 * 20/30
+		rotate: 7 * 20/30
 	});
 });
 
@@ -176,7 +176,7 @@ test('snapRotationProportionally returns correct transform when within inner rad
 		height: 4,
 		skewX: 0,
 		skewY: 0,
-		rotation: 0
+		rotate: 0
 	});
 });
 
@@ -192,7 +192,7 @@ test('snapRotationProportionally returns correct transform when outside inner ra
 		height: 4,
 		skewX: 5,
 		skewY: 6,
-		rotation: 7 * 20/30
+		rotate: 7 * 20/30
 	});
 });
 
@@ -207,7 +207,7 @@ test('snapSizeProportionally returns correct transform when within inner radius'
 		height: '100%',
 		skewX: 0,
 		skewY: 0,
-		rotation: 0
+		rotate: 0
 	});
 });
 
@@ -223,7 +223,7 @@ test('snapSizeProportionally returns correct transform when outside inner radius
 		height: 4 + (20 - 4) * (1 - 20/30),
 		skewX: 5,
 		skewY: 6,
-		rotation: 7
+		rotate: 7
 	});
 });
 
@@ -238,7 +238,7 @@ test('snapSizeAndRotationProportionally returns correct transform when within in
 		height: '100%',
 		skewX: 0,
 		skewY: 0,
-		rotation: 0
+		rotate: 0
 	});
 });
 
@@ -254,7 +254,7 @@ test('snapSizeAndRotationProportionally returns correct transform when outside i
 		height: 4 + (20 - 4) * (1 - 20/30),
 		skewX: 5,
 		skewY: 6,
-		rotation: 7 * 20/30
+		rotate: 7 * 20/30
 	});
 });
 
@@ -266,7 +266,7 @@ test('withCustomSnapProps correctly appends custom snapProps', () => {
 		height: 4,
 		skewX: 5,
 		skewY: 6,
-		rotation: 7
+		rotate: 7
 	}, {someProp: 'someValue'});
 
     const outputTransform = snapper({transform: inputTransform});
@@ -277,7 +277,7 @@ test('withCustomSnapProps correctly appends custom snapProps', () => {
 		height: 4,
 		skewX: 5,
 		skewY: 6,
-        rotation: 7,
+        rotate: 7,
         customSnapProps: {
             someProp: 'someValue'
         }
@@ -295,7 +295,7 @@ test('withCustomSnapProps works with callback functions ', () => {
 		height: 4,
 		skewX: 5,
 		skewY: 6,
-        rotation: 7,
+        rotate: 7,
         customSnapProps: {
             someProp: 'someValue'
         }

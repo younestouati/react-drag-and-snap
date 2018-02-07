@@ -1,5 +1,3 @@
-function getDisplayName(WrappedComponent) {
-	return WrappedComponent.displayName || WrappedComponent.name || 'Component';
-}
+const getDisplayName = (component) => component.displayName || component.name || 'Component';
 
 export {getDisplayName};

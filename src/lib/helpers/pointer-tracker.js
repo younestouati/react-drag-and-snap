@@ -97,7 +97,7 @@ class PointerTracker {
 	}
 
 	cancelHandler(e) {
-		console.log('We had a touch cancel!!!!');
+		this.endHandler(e);
 	}
 
 	track(e) {

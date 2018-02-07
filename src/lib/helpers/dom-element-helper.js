@@ -1,7 +1,7 @@
 class DOMElementHelper {
 	constructor(el) {
 		this.basePosition = null;
-		this.dimensions = null;
+		this.size = null;
 		this.computedStyles = this.getEmptyComputedStyles();
 		this.padding = null;
 		this.el = el;
@@ -61,7 +61,7 @@ class DOMElementHelper {
 			paddingBottom
 		};
 
-		this.dimensions = {
+		this.size = {
 			width: this.el.clientWidth - (paddingLeft + paddingRight),
 			height: this.el.clientHeight - (paddingTop + paddingBottom)
 		};
@@ -83,8 +83,8 @@ class DOMElementHelper {
         this.observer.disconnect();
     }
 
-	getDimensions() {
-		return this.dimensions;
+	getSize() {
+		return this.size;
 	}
 
 	getPadding() {

@@ -17,7 +17,7 @@ const snapToEdge = ({transform, velocity, targetWidth: width, targetHeight: heig
 	return {
 		x: closestEdge.x(extrapolatedPoint, {width, height}),
 		y: closestEdge.y(extrapolatedPoint, {width, height}),
-		rotation: closestEdge.rotation
+		rotate: closestEdge.rotation
 	};
 };
 

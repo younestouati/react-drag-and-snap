@@ -72,16 +72,16 @@ class StyleEnforcer extends Component {
 	}
 
 	componentWillMount() {
-		const dimensions = this.props.DOMElementHelper.getDimensions();
+		const size = this.props.DOMElementHelper.getSize();
 		const padding = this.props.DOMElementHelper.getPadding();
 		const computedStyles = this.props.DOMElementHelper.getComputedStyles();
 
-		this.injectStyles(extend(dimensions, padding, {computedStyles}));
+		this.injectStyles(extend(size, padding, {computedStyles}));
 
 		this.props.DOMElementHelper.startMonitoring(() => {
 			this.removeStyles(); //Remove old styles
 			this.injectStyles(extend(
-				dimensions,
+				size,
 				padding,
 				{computedStyles: this.props.DOMElementHelper.getComputedStyles(true)}
 			)); 

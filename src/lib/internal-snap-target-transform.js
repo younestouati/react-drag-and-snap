@@ -2,14 +2,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {shallowClone} from './utils/object-utils'; 
 
-const transformProps = ['x', 'y', 'scaleX', 'scaleY', 'scale', 'skewX', 'skewY', 'rotation'];
+const transformProps = ['x', 'y', 'scaleX', 'scaleY', 'scale', 'skewX', 'skewY', 'rotate'];
 const defaultTransform = {
 	x: 0,
 	y: 0,
 	scale: 1,
 	skewX: 0,
 	skewY: 0,
-	rotation: 0
+	rotate: 0
 };
 
 class InternalSnapTargetTransform extends Component {
@@ -26,7 +26,7 @@ class InternalSnapTargetTransform extends Component {
 	}
 
 	render() {
-		const {children, x, y, scale, scaleX, scaleY, rotation, skewX, skewY} = this.props;
+		const {children, x, y, scale, scaleX, scaleY, rotate, skewX, skewY} = this.props;
 
 		const _scaleX = typeof scaleX !== 'undefined' ? `scaleX(${scaleX})` : '';
 		const _scaleY = typeof scaleY !== 'undefined' ? `scaleY(${scaleY})` : '';
@@ -42,7 +42,7 @@ class InternalSnapTargetTransform extends Component {
 							scale(${scale})
 							${_scaleX}
 							${_scaleY}
-							rotate(${rotation}deg)
+							rotate(${rotate}deg)
 							skewX(${skewX}deg)
 							skewY(${skewY}deg)
 						`
@@ -65,7 +65,7 @@ InternalSnapTargetTransform.propTypes = {
 	scale: PropTypes.number,
 	scaleX: PropTypes.number,
 	scaleY: PropTypes.number,
-	rotation: PropTypes.number,
+	rotate: PropTypes.number,
 	skewX: PropTypes.number,
 	skewY: PropTypes.number
 };

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Container} from './container';
+import {Container} from './demos/container/container';
 import {FloatingHeadsDemo} from './demos/floating-heads/index';
 import {StateDemo} from './demos/state-demo/index';
 import {ChessBoard} from './demos/chess-board/index';
@@ -13,7 +13,6 @@ import {CustomPropertyDemo} from './demos/custom-property/index';
 import {SpringEnablerTest} from './demos/spring-enabler-test/spring-enabler-test';
 import {Overlap} from './demos/overlap/overlap';
 import {CSSTransitionDemo} from './demos/css-transition/index';
-import {Hexagon} from './lib/hexagon/hexagon';
 import './index.css';
 
 const demoComponents = {

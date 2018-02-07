@@ -10,7 +10,7 @@ const snapRotation = (dragStateDescriptor) => {
 
 	return extend(
 		noSnapping(dragStateDescriptor),
-		{rotation: EDGES[getClosestEdge(dragStateDescriptor.transform, targetSize).edge].rotation}
+		{rotate: EDGES[getClosestEdge(dragStateDescriptor.transform, targetSize).edge].rotation}
 	);
 };
 

@@ -251,7 +251,7 @@ function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
                 return {
                     id: this.id,
                     dragData: this.props.dragData,
-                    dimensions: this.DOMElementHelper.getDimensions(),
+                    size: this.DOMElementHelper.getSize(),
                     dragState,
                     velocity,
                     cursorPosition,

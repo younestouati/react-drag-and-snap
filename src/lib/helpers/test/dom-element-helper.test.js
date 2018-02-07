@@ -50,15 +50,15 @@ describe('DOMElementHelper tests', () => {
         .mockReturnValueOnce(afterComputedStyle);
     const domElementHelper = new DOMElementHelper(element);
 
-    test('DOMElementHelper returns correct dimensions for DOM given DOM element', () => {
-        expect(domElementHelper.getDimensions()).toEqual({width: 170, height: 230});
+    test('DOMElementHelper returns correct size for given DOM element', () => {
+        expect(domElementHelper.getSize()).toEqual({width: 170, height: 230});
     });
 
-    test('DOMElementHelper returns correct dimensions for DOM given DOM element', () => {     
+    test('DOMElementHelper returns correct size for given DOM element', () => {     
         expect(domElementHelper.getPadding()).toEqual({paddingBottom: 40, paddingLeft: 10, paddingRight: 20, paddingTop: 30});
     });
 
-    test('DOMElementHelper returns correct computedStyles for DOM given DOM element', () => {     
+    test('DOMElementHelper returns correct computedStyles for given DOM element', () => {     
         expect(domElementHelper.getComputedStyles()).toEqual({
             base: [
                 {key: 'padding-left', value: '10px'},
