@@ -3,7 +3,7 @@ import {isNullOrUndefined, isNumber} from '../utils/type-utils';
 
 const isPercentage = (value) => typeof value === 'string' && value.slice(-1) === '%';
 
-function firstDefinedValue(...values) {
+function getFirstDefinedValue(...values) {
     let firstDefinedValue;
     
     values.some((value) => {
@@ -42,13 +42,13 @@ const TRANSFORM_PROPS = ['x', 'y', 'rotate', 'scaleX', 'scaleY', 'skewX'];
 */
 function normalizeTransform(inputTransform, draggableActualSize, snapTargetActualSize) {
 	const normalizedTransform = {};;
-    normalizedTransform.x =  firstDefinedValue(inputTransform.x, inputTransform.translateX, 0);
-    normalizedTransform.y = firstDefinedValue(inputTransform.y, inputTransform.translateY, 0);
-    normalizedTransform.rotate = firstDefinedValue(inputTransform.rotate, 0);
-    normalizedTransform.scaleX = firstDefinedValue(inputTransform.scaleX, inputTransform.scale, (draggableActualSize.width/snapTargetActualSize.width));
-    normalizedTransform.scaleY = firstDefinedValue(inputTransform.scaleY, inputTransform.scale, (draggableActualSize.height/snapTargetActualSize.height));
-    normalizedTransform.skewX = firstDefinedValue(inputTransform.skewX, 0);
-    normalizedTransform.customSnapProps = firstDefinedValue(inputTransform.customSnapProps, {});
+    normalizedTransform.x =  getFirstDefinedValue(inputTransform.x, inputTransform.translateX, 0);
+    normalizedTransform.y = getFirstDefinedValue(inputTransform.y, inputTransform.translateY, 0);
+    normalizedTransform.rotate = getFirstDefinedValue(inputTransform.rotate, 0);
+    normalizedTransform.scaleX = getFirstDefinedValue(inputTransform.scaleX, inputTransform.scale, (draggableActualSize.width/snapTargetActualSize.width));
+    normalizedTransform.scaleY = getFirstDefinedValue(inputTransform.scaleY, inputTransform.scale, (draggableActualSize.height/snapTargetActualSize.height));
+    normalizedTransform.skewX = getFirstDefinedValue(inputTransform.skewX, 0);
+    normalizedTransform.customSnapProps = getFirstDefinedValue(inputTransform.customSnapProps, {});
 
     normalizedTransform.x = isPercentage(normalizedTransform.x) 
         ? parseFloat(normalizedTransform.x) / 100 * snapTargetActualSize.width 

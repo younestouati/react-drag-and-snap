@@ -19,7 +19,7 @@ import {
 import {createSnapMatrix} from './drag-snap-logic/create-snapping-matrix';
 import {normalizeTransform} from './drag-snap-logic/normalize-transform';
 import {makeClassBasedComponent} from './helpers/higher-order-components/make-class-based-component';
-import {snapTargetConfigBuilder} from './drag-snap-logic/snap-target-config-builder';
+import {normalizeSnapTargetConfig} from './drag-snap-logic/normalize-snap-target-config';
 import {DRAG_STATES} from './drag-snap-logic/drag-states'; 
 import {snapTargetCollectors} from './defaults/default-snap-target-collectors';
 import {distanceBasedWithOffset} from './defaults/default-snap-priority';
@@ -40,7 +40,7 @@ const defaultTransformation = {
 };
 
 function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndLowFrequencyProps) {
-    const config = snapTargetConfigBuilder(customConfig);
+    const config = normalizeSnapTargetConfig(customConfig);
 
     return function makeSnapTarget(WrappedComponent) {
         class SnapTarget extends Component {

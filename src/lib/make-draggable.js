@@ -14,18 +14,12 @@ import {StyleEnforcer} from './helpers/components/style-enforcer';
 import {makeClassBasedComponent} from './helpers/higher-order-components/make-class-based-component';
 import {asStatePublisher, asStateSubscriber} from './helpers/higher-order-components/state-sharing';
 import {DRAG_MODES, getDragModeAttribute} from './drag-snap-logic/drag-modes';
+import {normalizeDraggableConfig} from './drag-snap-logic/normalize-draggable-config';
 import {DRAG_STATES} from './drag-snap-logic/drag-states';
 import {draggableCollectors} from './defaults/default-draggable-collectors';
 
-const defaultDraggableConfig = {
-    stiffness: 390,
-    damping: 35,
-    sticky: true,
-    mode: 'default'
-};
-
 function setConfig(customConfig = {}, collect = draggableCollectors.allProps) {
-    const config = extend(defaultDraggableConfig, customConfig);
+    const config = normalizeDraggableConfig(customConfig);
 
     return function makeDraggable(WrappedComponent, helpers = {DOMElementHelper, PointerTracker}) {
         class Draggable extends Component {

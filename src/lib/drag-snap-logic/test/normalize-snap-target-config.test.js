@@ -1,7 +1,7 @@
-import {snapTargetConfigBuilder} from '../snap-target-config-builder';
+import {normalizeSnapTargetConfig} from '../normalize-snap-target-config';
 
 test('SnapTargetConfigBuilder returns a config with the default criteria when no custom config is provided', () => {
-    const config = snapTargetConfigBuilder();
+    const config = normalizeSnapTargetConfig();
     const draggedItems = [{id: 1}];
 
     const withinRadiusDescriptor = {id: 1, transform: {x: 2, y: 0}, targetWidth:3, targetHeight: 4};
@@ -16,7 +16,7 @@ test('SnapTargetConfigBuilder returns a config with the default criteria when no
 });
 
 test('SnapTargetConfigBuilder returns a config with the default snap descriptors when no custom config is provided', () => {
-    const config = snapTargetConfigBuilder();
+    const config = normalizeSnapTargetConfig();
     const transform = {width: 10, height: 20};
     const expectedDescriptor = {
         x: 0,
@@ -36,7 +36,7 @@ test('SnapTargetConfigBuilder returns a config with the default snap descriptors
 test('SnapTargetConfigBuilder lets snapCriteria override releaseCriteria and dragCriteria if these are not explicitly set', () => {
     const customSnapCriteria = ({transform}) => transform.x > 2;
     
-    const config = snapTargetConfigBuilder({
+    const config = normalizeSnapTargetConfig({
         snapCriteria: customSnapCriteria
     });
 
@@ -47,7 +47,7 @@ test('SnapTargetConfigBuilder lets snapCriteria override releaseCriteria and dra
 
 test('SnapTargetConfigBuilder lets snapTransform override releaseSnapTransform and dragSnapTransform if these are not explicitly set', () => {
     const snapTransform = () => {};
-    const config = snapTargetConfigBuilder({snapTransform});
+    const config = normalizeSnapTargetConfig({snapTransform});
 
     expect(config.snapTransform).toEqual(snapTransform);
     expect(config.dragSnapTransform).toEqual(snapTransform);
@@ -57,7 +57,7 @@ test('SnapTargetConfigBuilder lets snapTransform override releaseSnapTransform a
 test('SnapTargetConfigBuilder allows independently setting dragSnapCriteria and releaseSnapCriteria', () => {
     const dragSnapCriteria = () => {};
     const releaseSnapCriteria = () => {};
-    const config = snapTargetConfigBuilder({dragSnapCriteria, releaseSnapCriteria});
+    const config = normalizeSnapTargetConfig({dragSnapCriteria, releaseSnapCriteria});
 
     expect(config.dragSnapCriteria).toEqual(dragSnapCriteria);
     expect(config.releaseSnapCriteria).toEqual(releaseSnapCriteria);
@@ -66,7 +66,7 @@ test('SnapTargetConfigBuilder allows independently setting dragSnapCriteria and 
 test('SnapTargetConfigBuilder allows independently setting dragSnapTransform and releaseSnapTransform', () => {
     const dragSnapTransform = () => {};
     const releaseSnapTransform = () => {};
-    const config = snapTargetConfigBuilder({dragSnapTransform, releaseSnapTransform});
+    const config = normalizeSnapTargetConfig({dragSnapTransform, releaseSnapTransform});
 
     expect(config.dragSnapTransform).toEqual(dragSnapTransform);
     expect(config.releaseSnapTransform).toEqual(releaseSnapTransform);
