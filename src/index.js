@@ -13,7 +13,6 @@ import {CustomPropertyDemo} from './demos/custom-property/index';
 import {SpringEnablerTest} from './demos/spring-enabler-test/spring-enabler-test';
 import {Overlap} from './demos/overlap/overlap';
 import {CSSTransitionDemo} from './demos/css-transition/index';
-import './index.css';
 
 const demoComponents = {
     rendererDemo: {
