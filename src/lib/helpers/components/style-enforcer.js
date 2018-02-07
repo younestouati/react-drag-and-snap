@@ -46,7 +46,7 @@ class StyleEnforcer extends Component {
 		//[style] is a way of overwriting even inline styles (https://css-tricks.com/override-inline-styles-with-css/)
 		this.highPriorityStyles = this.styleInjector.inject(`
 			#${this.state.id} > *,
-			#${this.state.id} > * {
+			#${this.state.id} > *[style] {
 				display: inline-block !important;
 				box-sizing: content-box !important;
 				float: none !important;
