@@ -100,7 +100,6 @@ const snapConfig = {
 };
 
 const collect = snapTargetCollectors.allProps;
-
 const TrapTarget = makeSnapTarget(snapConfig, collect)(Trap);
 
 export {TrapTarget};

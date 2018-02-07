@@ -77,11 +77,9 @@ class FloatingHeadsDemo extends Component {
 				<div className={`gradient ${isDragging ? 'show-gradient' : ''}`}/>
 				<div className="margin-container">
 					<DragSnapContext
-						onChange={({grabbedCount, draggedCount, releasedCount}) => {
+						onChange={({grabbedCount, draggedCount}) => {
 							if (grabbedCount || draggedCount) {
 								this.setState({isDragging: true});
-							//} else if (releasedCount) {
-							//	this.setState({isDragging: false});
 							} else {
 								this.setState({isDragging: false, trappedUser: null});
 							}
