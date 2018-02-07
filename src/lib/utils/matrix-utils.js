@@ -1,4 +1,5 @@
 import {transform, translate, identity, fromObject, rotateDEG, scale, applyToPoint, inverse} from 'transformation-matrix';
+import {isNullOrUndefined} from './type-utils';
 import {extend} from './object-utils';
 
 const floating = '(\\-?[\\d\\.e]+)';
@@ -169,15 +170,21 @@ function transformSkew(matrix, skew) {
 	};
 }
 
-function deltaMatrix (oldDescriptor = {}, newDescriptor = {}, defaultDescriptor = {}) {
-	const o = extend(defaultDescriptor, oldDescriptor);
-	const n = extend(defaultDescriptor, newDescriptor);
+/* 
+ * Given to transforms (objects with properties x, y, rotate, scale (or scaleX and scaleY), and skewX),
+ * this function returns the matrix that represents the transformation from the first transform to the second.
+ * If any of the transforms is only partially defined, any missing value will default to 0, except scale which
+ * defaults to 1.
+ */
+function deltaMatrix (oldTransform = {}, newTransform = {}) {
+	const DETAULT_TRANSFORM = {x: 0, y: 0, rotate: 0, skewX: 0, scale: 1};
+	const o = extend(DETAULT_TRANSFORM, oldTransform);
+	const n = extend(DETAULT_TRANSFORM, newTransform);
 
-	const oScaleX = typeof o.scaleX !== 'undefined' ? o.scaleX : o.scale;
-	const oScaleY = typeof o.scaleY !== 'undefined' ? o.scaleY : o.scale;
-
-	const nScaleX = typeof n.scaleX !== 'undefined' ? n.scaleX : n.scale;
-	const nScaleY = typeof n.scaleY !== 'undefined' ? n.scaleY : n.scale;
+	const oScaleX = !isNullOrUndefined(o.scaleX) ? o.scaleX : o.scale;
+	const oScaleY = !isNullOrUndefined(o.scaleY) ? o.scaleY : o.scale;
+	const nScaleX = !isNullOrUndefined(n.scaleX) ? n.scaleX : n.scale;
+	const nScaleY = !isNullOrUndefined(n.scaleY) ? n.scaleY : n.scale;
 
 	return transform(
 		translate(n.x - o.x, n.y - o.y),
