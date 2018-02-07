@@ -1,8 +1,9 @@
 import {MODES, modeStyles, getModeAttribute} from '../modes';
-import { parseSnapDescriptor, createSnappingMatrix } from '../create-snapping-matrix';
+import {createSnapMatrix} from '../create-snapping-matrix';
+import {normalizeTransform} from '../normalize-transform';
 
-test('parseSnapDescriptor fills in missing values with defaults', () => {
-    const descriptor = parseSnapDescriptor({}, {width: 100, height: 200}, {width: 300, height: 400});
+test('parseSnapTransform fills in missing values with defaults', () => {
+    const descriptor = normalizeTransform({}, {width: 100, height: 200}, {width: 300, height: 400});
 
     expect(descriptor.x).toBe(0);
     expect(descriptor.y).toBe(0);
@@ -13,7 +14,7 @@ test('parseSnapDescriptor fills in missing values with defaults', () => {
     expect(descriptor.rotate).toBe(0);
 });
 
-test('parseSnapDescriptor returns a fully specificied numeric descriptor as-is', () => {
+test('parseSnapTransform returns a fully specificied numeric descriptor as-is', () => {
     const inputDescriptor = {
         x: 1,
         y: 2,
@@ -24,11 +25,11 @@ test('parseSnapDescriptor returns a fully specificied numeric descriptor as-is',
         rotate: 7,
     };
 
-    const parsedDescriptor = parseSnapDescriptor(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400});
+    const parsedDescriptor = normalizeTransform(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400});
     expect(parsedDescriptor).toEqual(Object.assign({}, inputDescriptor, {customSnapProps: {}}));
 });
 
-test('parseSnapDescriptor correctly interprets percentages', () => {
+test('parseSnapTransform correctly interprets percentages', () => {
     const inputDescriptor = {
         x: '10%',
         y: '-10%',
@@ -39,7 +40,7 @@ test('parseSnapDescriptor correctly interprets percentages', () => {
         rotate: 7
     };
 
-    const parsedDescriptor = parseSnapDescriptor(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400});
+    const parsedDescriptor = normalizeTransform(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400});
     expect(parsedDescriptor).toEqual({
         x: 10,
         y: -20,
@@ -54,7 +55,7 @@ test('parseSnapDescriptor correctly interprets percentages', () => {
 
 
 
-test('parseSnapDescriptor throws if given an invalid string value (not a percentage)', () => {
+test('parseSnapTransform throws if given an invalid string value (not a percentage)', () => {
     const inputDescriptor = {
         x: '10%',
         y: 'a',
@@ -65,7 +66,7 @@ test('parseSnapDescriptor throws if given an invalid string value (not a percent
         rotate: 7,
     };
 
-    expect(() => parseSnapDescriptor(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400})).toThrow();
+    expect(() => normalizeTransform(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400})).toThrow();
 });
 
 test('createSnappingMatrix correctly calculates the snapping matrix', () => {
@@ -88,7 +89,7 @@ test('createSnappingMatrix correctly calculates the snapping matrix', () => {
     };
     const draggableSize = {width: 20, height: 30};
 
-    const m = createSnappingMatrix(baseMatrix, descriptor, draggableSize);
+    const m = createSnapMatrix(baseMatrix, descriptor, draggableSize);
 
     expect(m.a).toBeCloseTo(-1.77);
     expect(m.b).toBeCloseTo(5.3);

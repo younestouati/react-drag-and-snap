@@ -6,14 +6,14 @@ import makeSnapTarget from '../../lib/make-snap-target';
 import DragSnapContext from '../../lib/drag-snap-context';
 import {Criteria} from '../../lib/defaults/default-snap-criteria';
 import {snapTargetCollectors} from '../../lib/defaults/default-snap-target-collectors';
-import {snapProportionally, withCustomSnapProps} from '../../lib/defaults/default-snap-descriptors';
+import {snapProportionally, withCustomSnapProps} from '../../lib/defaults/default-snap-transformers';
 
 const DraggableSquare = makeDraggable()(Square);
 
 const config1 = {
     dragSnapCriteria: Criteria.isCenterWithinRadius(200),
-    dragSnapDescriptor: withCustomSnapProps(snapProportionally(200, 10), {borderRadius: 100}),
-    releaseSnapCriteria: Criteria.never
+    dragSnapTransform: withCustomSnapProps(snapProportionally(200, 10), {borderRadius: 100}),
+	releaseSnapCriteria: Criteria.never,
 };
 
 const config2 = {
@@ -22,14 +22,14 @@ const config2 = {
 
 const config3 = {
     dragSnapCriteria: Criteria.isCenterWithinRadius(200),
-    dragSnapDescriptor: snapProportionally(200, 10),
+    dragSnapTransform: snapProportionally(200, 10),
     releaseSnapCriteria: Criteria.never
 };
 
 const additions = {rotate: 25, skewX: 65, x: 10, y: 10, width: 100, height: 160, scaleX: .4, scaleY: 1.6};
 const config4 = {
     dragSnapCriteria: Criteria.isCenterWithinRadius(200),
-    dragSnapDescriptor: additions,
+    dragSnapTransform: additions,
     releaseSnapCriteria: Criteria.never
 };
 
@@ -120,7 +120,7 @@ import makeDraggable from './lib/make-draggable';
 import makeSnapTarget from './lib/make-snap-target';
 import DragSnapContext from './lib/drag-snap-context';
 import Criteria from './lib/defaults/default-snap-criteria';
-import {snapProportionally} from './lib/defaults/default-snap-descriptors';
+import {snapProportionally} from './lib/defaults/default-snap-transfomers';
 
 const DraggableSquare = makeDraggable()(Square);
 
@@ -129,7 +129,7 @@ const config = {
 		Criteria.isCenterWithinRadius(200),
 		Criteria.isDragDataProp('type', 'square')
 	],
-	snapDescriptor: snapProportionally(200, 10)
+	snapTransform: snapProportionally(200, 10)
 };
 
 const SnapTarget = makeSnapTarget(config)(Target);

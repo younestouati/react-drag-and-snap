@@ -1,7 +1,7 @@
 import React from 'react';
 import makeSnapTarget from '../../lib/make-snap-target';
 import {Criteria} from '../../lib/defaults/default-snap-criteria';
-import {snapSizeAndRotation} from '../../lib/defaults/default-snap-descriptors';
+import {snapSizeAndRotation} from '../../lib/defaults/default-snap-transformers';
 
 const Round = () => <div className="square"/>;
 
@@ -11,7 +11,7 @@ const largeReachConfig = {
 
 const leavesPositionConfig= {
     snapCriteria: Criteria.isCenterWithinRadius(100),
-    snapDescriptor: snapSizeAndRotation
+    snapTransform: snapSizeAndRotation
 };
 
 const LargeReachTarget = makeSnapTarget(largeReachConfig)(Round);

@@ -1,12 +1,12 @@
 import React from 'react';
 import makeSnapTarget from '../../lib/make-snap-target';
-import {noSnapping} from '../../lib/defaults/default-snap-descriptors';
+import {noSnapping} from '../../lib/defaults/default-snap-transformers';
 import {Criteria} from '../../lib/defaults/default-snap-criteria';
 
 const Snapper = () => <div className="snapper"/>;
 
 const snapConfig = {
-	snapDescriptor: noSnapping,
+	snapTransform: noSnapping,
 	dragSnapCriteria: Criteria.never,
 	releaseSnapCriteria: Criteria.always
 };

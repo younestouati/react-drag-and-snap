@@ -13,7 +13,7 @@ import {
 	snapSizeProportionally,
 	snapSizeAndRotationProportionally,
 	withCustomSnapProps
-} from '../default-snap-descriptors';
+} from '../default-snap-transformers';
 
 const inputTransform = {
     x: 1,

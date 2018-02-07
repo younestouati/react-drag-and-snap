@@ -106,11 +106,11 @@ const snapSizeAndRotationProportionally = (denominator, innerRadius = 0) => {
 };
 
 
-const withCustomSnapProps = (_snapDescriptor, _customSnapProps) => {
+const withCustomSnapProps = (_snapTransform, _customSnapProps) => {
 	return (...args) => {
-		const snapDescriptor = isFunction(_snapDescriptor) ? _snapDescriptor(...args) : _snapDescriptor;
+		const snapTransform = isFunction(_snapTransform) ? _snapTransform(...args) : _snapTransform;
 		const customSnapProps = isFunction(_customSnapProps) ? _customSnapProps(...args) : _customSnapProps;
-		return extend(snapDescriptor, {customSnapProps})
+		return extend(snapTransform, {customSnapProps})
 	};
 };
 

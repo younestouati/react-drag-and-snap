@@ -28,9 +28,9 @@ test('SnapTargetConfigBuilder returns a config with the default snap descriptors
 		rotate: 0    
     }
 
-    expect(config.snapDescriptor({transform})).toEqual(expectedDescriptor);
-    expect(config.dragSnapDescriptor({transform})).toEqual(expectedDescriptor);
-    expect(config.releaseSnapDescriptor({transform})).toEqual(expectedDescriptor);
+    expect(config.snapTransform({transform})).toEqual(expectedDescriptor);
+    expect(config.dragSnapTransform({transform})).toEqual(expectedDescriptor);
+    expect(config.releaseSnapTransform({transform})).toEqual(expectedDescriptor);
 });
 
 test('SnapTargetConfigBuilder lets snapCriteria override releaseCriteria and dragCriteria if these are not explicitly set', () => {
@@ -45,13 +45,13 @@ test('SnapTargetConfigBuilder lets snapCriteria override releaseCriteria and dra
     expect(config.releaseSnapCriteria).toEqual(customSnapCriteria);
 });
 
-test('SnapTargetConfigBuilder lets snapDescriptor override releaseSnapDescriptor and dragSnapDescriptor if these are not explicitly set', () => {
-    const snapDescriptor = () => {};
-    const config = snapTargetConfigBuilder({snapDescriptor});
+test('SnapTargetConfigBuilder lets snapTransform override releaseSnapTransform and dragSnapTransform if these are not explicitly set', () => {
+    const snapTransform = () => {};
+    const config = snapTargetConfigBuilder({snapTransform});
 
-    expect(config.snapDescriptor).toEqual(snapDescriptor);
-    expect(config.dragSnapDescriptor).toEqual(snapDescriptor);
-    expect(config.releaseSnapDescriptor).toEqual(snapDescriptor);
+    expect(config.snapTransform).toEqual(snapTransform);
+    expect(config.dragSnapTransform).toEqual(snapTransform);
+    expect(config.releaseSnapTransform).toEqual(snapTransform);
 });
 
 test('SnapTargetConfigBuilder allows independently setting dragSnapCriteria and releaseSnapCriteria', () => {
@@ -63,11 +63,11 @@ test('SnapTargetConfigBuilder allows independently setting dragSnapCriteria and 
     expect(config.releaseSnapCriteria).toEqual(releaseSnapCriteria);
 });
 
-test('SnapTargetConfigBuilder allows independently setting dragSnapDescriptor and releaseSnapDescriptor', () => {
-    const dragSnapDescriptor = () => {};
-    const releaseSnapDescriptor = () => {};
-    const config = snapTargetConfigBuilder({dragSnapDescriptor, releaseSnapDescriptor});
+test('SnapTargetConfigBuilder allows independently setting dragSnapTransform and releaseSnapTransform', () => {
+    const dragSnapTransform = () => {};
+    const releaseSnapTransform = () => {};
+    const config = snapTargetConfigBuilder({dragSnapTransform, releaseSnapTransform});
 
-    expect(config.dragSnapDescriptor).toEqual(dragSnapDescriptor);
-    expect(config.releaseSnapDescriptor).toEqual(releaseSnapDescriptor);
+    expect(config.dragSnapTransform).toEqual(dragSnapTransform);
+    expect(config.releaseSnapTransform).toEqual(releaseSnapTransform);
 });

@@ -1,8 +1,8 @@
 import React from 'react';
 import makeSnapTarget from '../../lib/make-snap-target';
 import {Criteria} from '../../lib/defaults/default-snap-criteria';
-import {snapToEdge} from './custom-snap-descriptors/snap-to-edge';
-import {snapRotation} from './custom-snap-descriptors/snap-rotation';
+import {snapToEdge} from './custom-snap-transformers/snap-to-edge';
+import {snapRotation} from './custom-snap-transformers/snap-rotation';
 import {whenCloseToEdge} from './custom-snap-criteria/when-close-to-edge';
 
 const Edge = () => (
@@ -20,9 +20,9 @@ const Edge = () => (
 
 const snapConfig = {
 	releaseSnapCriteria: Criteria.always,
-	releaseSnapDescriptor: snapToEdge,
+	releaseSnapTransform: snapToEdge,
 	dragSnapCriteria: whenCloseToEdge(40),
-	dragSnapDescriptor: snapRotation
+	dragSnapTransform: snapRotation
  };
 
 const EdgeSnapTarget = makeSnapTarget(snapConfig)(Edge);

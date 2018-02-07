@@ -189,9 +189,9 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             }
 
             getSnapping(dragState, dragStateDescriptor) {
-                const snapDescriptor = dragState === DRAG_STATES.RELEASED ? config.releaseSnapDescriptor : config.dragSnapDescriptor;
+                const _snapTransform = dragState === DRAG_STATES.RELEASED ? config.releaseSnapTransform : config.dragSnapTransform;
                 const params = this.getParams(dragStateDescriptor);
-                const snapTransform = isFunction(snapDescriptor) ? snapDescriptor(...params) : snapDescriptor;
+                const snapTransform = isFunction(_snapTransform) ? _snapTransform(...params) : _snapTransform;
 
                 //TODO: DETERMINE THIS ELSEWHERE
                 const draggableTransform = qrDecompose(dragStateDescriptor.matrix);
@@ -227,8 +227,8 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndLo
 
                 switch (type) {
                     case 'start':
-                        const globalSnapDescriptor = matrixToDescriptor(globalSnapMatrix, size);
-                        this.props.onDropStart(localDescriptor, globalSnapDescriptor); //TODO: FIGURE OUT IF THIS SHOULD INFACT BE GLOABEL? PROBABLY NOT!!!
+                        const globalSnapTransform = matrixToDescriptor(globalSnapMatrix, size);
+                        this.props.onDropStart(localDescriptor, globalSnapTransform); //TODO: FIGURE OUT IF THIS SHOULD INFACT BE GLOABEL? PROBABLY NOT!!!
                         break;
                     case 'complete':
                         this.props.onDropComplete(localDescriptor);
