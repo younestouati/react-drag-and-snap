@@ -18,8 +18,10 @@ import {normalizeDraggableConfig} from './drag-snap-logic/normalize-draggable-co
 import {DRAG_STATES} from './drag-snap-logic/drag-states';
 import {draggableCollectors} from './defaults/default-draggable-collectors';
 
+const {INACTIVE, GRABBED, DRAGGED, RELEASED} = DRAG_STATES;
+
 const initialState = {
-    dragState: DRAG_STATES.INACTIVE, //Either INACTIVE, GRABBED, DRAGGED, or RELEASED
+    dragState: INACTIVE,            //Either INACTIVE, GRABBED, DRAGGED, or RELEASED
     isSnapping: false,               //If this draggable is currently snapping to a snapTarget
     isPositionSnapped: false,        //If it's position specificially is currently controlled by a snapTarget
     isSnappingBack: false,           //If it is currently snapping back to its initial position (after a drop)
@@ -77,8 +79,8 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 this.DOMElement.removeEventListener('touchstart', this.boundStartPointerTracker);
                 this.pointerTracker.destroy();
 
-                if (this.state.dragState !== DRAG_STATES.INACTIVE) {
-                    if (this.state.dragState !== DRAG_STATES.RELEASED) {
+                if (this.state.dragState !== INACTIVE) {
+                    if (this.state.dragState !== RELEASED) {
                         this.context.onDragStateUpdate('ending');
                     }
 
@@ -88,11 +90,12 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             }
 
             componentWillUpdate(nextProps, {dragState: nextDragState}) {
-                if (this.state.dragState !== DRAG_STATES.DRAGGED && nextDragState === DRAG_STATES.DRAGGED) {
+                const {dragState} = this.state;
+                if (dragState !== DRAGGED && nextDragState === DRAGGED) {
                     this.DOMElement.setAttribute(getDragModeAttribute(config.mode), true);
                 }
 
-                if (this.state.dragState !== DRAG_STATES.INACTIVE && nextDragState === DRAG_STATES.INACTIVE) {
+                if (dragState !== INACTIVE && nextDragState === INACTIVE) {
                     DRAG_MODES.forEach(dragMode => this.DOMElement.removeAttribute(getDragModeAttribute(dragMode)));
                 }
             }
@@ -106,7 +109,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             }
 
             startTracker(e) {
-                if (this.state.dragState === DRAG_STATES.INACTIVE) {
+                if (this.state.dragState === INACTIVE) {
                     this.pointerTracker.track(e);
                 }
             }
@@ -141,7 +144,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             }
 
             setInactive() {
-                this.setState({dragState: DRAG_STATES.INACTIVE, isSnappingBack: false, customSnapProps: {}, velocity: getOrigo()});  
+                this.setState({dragState: INACTIVE, isSnappingBack: false, customSnapProps: {}, velocity: getOrigo()});  
                 //this.setState(initialState);    
             }
 
@@ -150,7 +153,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 const {snapTargetId, matrix} = this.state;
 
                 if (snapTargetId) {
-                    const dragStateDescriptor = this.getDragStateDescriptor(DRAG_STATES.INACTIVE, matrix);
+                    const dragStateDescriptor = this.getDragStateDescriptor(INACTIVE, matrix);
                     this.context.relayDropEvent(snapTargetId, 'complete', dragStateDescriptor);
                 }
 
@@ -159,13 +162,13 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             }
 
             dragEndHandler({position, velocity}) {
-                if (this.state.dragState === DRAG_STATES.GRABBED) {
+                if (this.state.dragState === GRABBED) {
                     this.setInactive(); 
                     this.context.onDragStateUpdate('cancel');
                     return;
                 }
 
-                const dragState = DRAG_STATES.RELEASED;
+                const dragState = RELEASED;
                 const {baseMatrix, matrix: priorMatrix} = this.state;
                 const snapping = this.getSnapping(dragState, position, velocity);
                 let matrix = snapping.matrix;
@@ -189,11 +192,11 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             }
 
             dragMoveHandler({position, velocity}) {
-                if (this.state.dragState === DRAG_STATES.GRABBED) {
+                if (this.state.dragState === GRABBED) {
                     this.context.onDragStateUpdate('start');
                 }
 
-                const dragState = DRAG_STATES.DRAGGED;
+                const dragState = DRAGGED;
                 const snapping = this.getSnapping(dragState, position, velocity);
 
                 this.setState(extend({dragState,velocity}, snapping));
@@ -204,7 +207,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             }
 
             getInitialDragState(globalTouchOffset) {
-                const dragState = DRAG_STATES.GRABBED;
+                const dragState = GRABBED;
                 const baseMatrix = getTransformationMatrix(this.DOMElement);
                 const touchOffset = subtractPoints(globalTouchOffset, applyToPoint(baseMatrix, getOrigo()));
 
@@ -239,7 +242,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             }
 
             resumeDrag(position, velocity) {
-                const dragState = DRAG_STATES.DRAGGED;
+                const dragState = DRAGGED;
                 const {matrix: priorMatrix} = this.state;
 
                 const newState = extend(this.state, {
@@ -273,7 +276,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                     return;
                 }
 
-                if (this.state.dragState !== DRAG_STATES.INACTIVE) {
+                if (this.state.dragState !== INACTIVE) {
                     this.resumeDrag(position, velocity);
                 } else {
                     this.startDrag(position, velocity);
@@ -293,7 +296,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                     matrix
                 } = this.state;
                 const snapProps = {isSnapping, isSnappingBack, customSnapProps};
-                const applyState = (dragState === DRAG_STATES.GRABBED && flipGrabbedFlag) ? DRAG_STATES.INACTIVE : dragState;
+                const applyState = (dragState === GRABBED && flipGrabbedFlag) ? INACTIVE : dragState;
 
                 //Matrix is in window coordinates, but draggables will be rendered in the context, so must be transformed
                 const contextTransform = matrix ? qrDecompose(this.context.windowToContext(matrix)) : undefined;
@@ -305,8 +308,8 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                         isPositionSnapped={isPositionSnapped}
                         isSnappingBack={isSnappingBack}
                         onRestAfterRelease={this.restAfterReleaseHandler.bind(this)}
-                        isActive={dragState !== DRAG_STATES.INACTIVE}
-                        isReleased={dragState === DRAG_STATES.RELEASED}
+                        isActive={dragState !== INACTIVE}
+                        isReleased={dragState === RELEASED}
                         springConfig={{
                             stiffness: config.stiffness,
                             damping: config.damping
@@ -329,11 +332,11 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                                     isDragClone={false}
                                     key="static-version"
                                 />,
-                                dragState !== DRAG_STATES.INACTIVE ? createPortal(
+                                dragState !== INACTIVE ? createPortal(
                                     <SpringRendererApplier
                                         transform={transform}
                                         onRegrab={(e) => this.pointerTracker.track(e)}
-                                        isVisible={[DRAG_STATES.DRAGGED, DRAG_STATES.RELEASED].includes(dragState)}
+                                        isVisible={[DRAGGED, RELEASED].includes(dragState)}
                                         key="dragged-version"
                                     >
                                         <StyleEnforcer DOMElementHelper={this.DOMElementHelper}>
