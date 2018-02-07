@@ -130,16 +130,6 @@ function transformMultiple (...matrices) {
 	return matrices.reduce((acc, cur) => transform(acc, cur), identity());
 }
 
-function matrixToDescriptor(matrix, {width, height}) {
-	//TODO: DON'T CONVER TO width and height. KEEP scaleX and scaleY
-	const {scaleX, scaleY, ...rest} = qrDecompose(matrix);
-	return {
-		width: width * scaleX,
-		height: height * scaleY,
-		...rest
-	};
-}
-
 function transformPosition(matrix, position) {
 	return applyToPoint(inverse(matrix), position);
 }
@@ -210,7 +200,6 @@ export {
 	translationOnly,
 	deltaMatrix,
 	overrideTranslation,
-	matrixToDescriptor,
 	transformVelocity,
 	transformPosition,
 	transformRotation,

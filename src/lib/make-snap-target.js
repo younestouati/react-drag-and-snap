@@ -9,7 +9,6 @@ import {
     extractTranslation,
     deltaMatrix,
     transformMultiple,
-    matrixToDescriptor,
     transformRotation,
     transformScale,
     transformSkew,
@@ -127,7 +126,7 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndLo
 
             getActualSize() {
                 const size = this.getSize();
-                const {scaleX, scaleY}= qrDecompose(this.getMatrix());
+                const {scaleX, scaleY} = qrDecompose(this.getMatrix());
 
                 return {
                     width: size.width * scaleX,
@@ -216,25 +215,23 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             }
 
             allowsEasyEscape(dragStateDescriptor) {
-                const draggable = this.globalToLocal(dragStateDescriptor);
+                const localDragStateDescriptor = this.globalToLocal(dragStateDescriptor);
                 const {easyEscape} = this.props;
-                return isFunction(easyEscape) ? easyEscape(draggable) : easyEscape;
+                return isFunction(easyEscape) ? easyEscape(localDragStateDescriptor) : easyEscape;
             }
 
             onDropEvent(type, dragStateDescriptor, globalSnapMatrix) {
-                const localDescriptor = this.globalToLocal(dragStateDescriptor);
-                const {size} = dragStateDescriptor;
-
+                const localDragStateDescriptor = this.globalToLocal(dragStateDescriptor);
+               
                 switch (type) {
                     case 'start':
-                        const globalSnapTransform = matrixToDescriptor(globalSnapMatrix, size);
-                        this.props.onDropStart(localDescriptor, globalSnapTransform); //TODO: FIGURE OUT IF THIS SHOULD INFACT BE GLOABEL? PROBABLY NOT!!!
+                        this.props.onDropStart(localDragStateDescriptor, qrDecompose(globalSnapMatrix)); //TODO: FIGURE OUT IF THIS SHOULD INFACT BE GLOABEL? PROBABLY NOT!!!
                         break;
                     case 'complete':
-                        this.props.onDropComplete(localDescriptor);
+                        this.props.onDropComplete(localDragStateDescriptor);
                         break;
                     case 'cancel':
-                        this.props.onDropCancel(localDescriptor);
+                        this.props.onDropCancel(localDragStateDescriptor);
                         break;
                     default:
                         break;
@@ -272,19 +269,19 @@ function setConfig(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             }
 
             updateItem(idOfTargetSnappedTo, dragStateDescriptor) {
-                const draggable = this.globalToLocal(dragStateDescriptor);
-                draggable.isSnappingToThisTarget = false;
-                draggable.isSnappingToOtherTarget = false;
+                const localDragStateDescriptor = this.globalToLocal(dragStateDescriptor);
+                localDragStateDescriptor.isSnappingToThisTarget = false;
+                localDragStateDescriptor.isSnappingToOtherTarget = false;
 
                 if (!isNullOrUndefined(idOfTargetSnappedTo)) {
                     if (this.id === idOfTargetSnappedTo) {
-                        draggable.isSnappingToThisTarget = true;
+                        localDragStateDescriptor.isSnappingToThisTarget = true;
                     } else {
-                        draggable.isSnappingToOtherTarget = true;
+                        localDragStateDescriptor.isSnappingToOtherTarget = true;
                     }
                 }
 
-                this.draggedItems = this.draggedItems.filter(p => p.id !== dragStateDescriptor.id).concat(draggable);
+                this.draggedItems = this.draggedItems.filter(p => p.id !== dragStateDescriptor.id).concat(localDragStateDescriptor);
                 this.updateDragProps();
             }
 

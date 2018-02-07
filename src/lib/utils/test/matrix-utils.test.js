@@ -11,7 +11,6 @@ import {
 	translationOnly,
 	deltaMatrix,
 	overrideTranslation,
-	matrixToDescriptor,
 	transformDescriptor,
 	transformVelocity,
 	transformPosition
@@ -106,18 +105,6 @@ test('skewXMatrix return a matrix representing the given skew in the X dimension
     expect(sm.d).toBeCloseTo(1);
     expect(sm.e).toBeCloseTo(0);
     expect(sm.f).toBeCloseTo(0);
-});
-
-test('matrixToDescriptor returns a descriptor describing the given matrix', () => {
-    const d = matrixToDescriptor(m, {width: 4, height: 5});
-
-    expect(d.x).toBeCloseTo(10);
-    expect(d.y).toBeCloseTo(20);
-    expect(d.width).toBeCloseTo(4 * 2);
-    expect(d.height).toBeCloseTo(5 * 3);
-    expect(d.skewX).toBeCloseTo(15);
-    expect(d.skewY).toBeCloseTo(0);
-    expect(d.rotate).toBeCloseTo(30);
 });
 
 test('transformPosition transforms the given point by the given matrix', () => {
