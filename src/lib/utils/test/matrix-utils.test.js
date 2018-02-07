@@ -15,7 +15,7 @@ import {
 	transformDescriptor,
 	transformVelocity,
 	transformPosition
-} from '../matrix';
+} from '../matrix-utils';
 
 
 /*

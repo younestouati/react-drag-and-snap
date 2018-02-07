@@ -16,9 +16,9 @@ import {
 	transformVelocity,
 	transformPosition,
     qrDecompose
-} from './drag-snap-logic/matrix';
+} from './utils/matrix-utils';
 import {normalizeTransform, createSnapMatrix} from './drag-snap-logic/create-snapping-matrix';
-import {makeClassBasedComponent} from './helper-hocs/make-class-based-component';
+import {makeClassBasedComponent} from './helpers/higher-order-components/make-class-based-component';
 import {snapTargetConfigBuilder} from './drag-snap-logic/snap-target-config-builder';
 import {DRAG_STATES} from './drag-snap-logic/drag-states'; 
 import {snapTargetCollectors} from './defaults/default-snap-target-collectors';

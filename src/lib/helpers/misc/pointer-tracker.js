@@ -1,7 +1,7 @@
 import {extractPointFromEvent, extractFirstIdentifier} from './mouse-touch-event';
-import {subtractPoints, averagePoints, scalePoint, getOrigo} from '../utils/point-utils';
+import {subtractPoints, averagePoints, scalePoint, getOrigo} from '../../utils/point-utils';
 import {EventThrottler} from './event-throttler';
-import {shallowClone} from '../utils/object-utils';
+import {shallowClone} from '../../utils/object-utils';
 
 const AVERAGING_WINDOW = 3;
 

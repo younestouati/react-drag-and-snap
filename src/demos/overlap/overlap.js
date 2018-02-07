@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {inverse/*, applyToPoint, applyToPoints*/} from 'transformation-matrix';
-import {getTransformationMatrix, qrDecompose} from '../../lib/drag-snap-logic/matrix';
+import {getTransformationMatrix, qrDecompose} from '../../lib/utils/matrix-utils';
 
 class Overlap extends Component {
 	constructor(props) {

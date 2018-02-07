@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import {getDisplayName} from '../utils/react-utils';
+import {getDisplayName} from '../../utils/react-utils';
 
 /**
  * asStateSubscriber and asStatePublisher are two 'sibling' higher order components, that makes it possible to have to

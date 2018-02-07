@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {inverse, transform} from 'transformation-matrix';
-import {getTransformationMatrix} from './drag-snap-logic/matrix';
+import {getTransformationMatrix} from './utils/matrix-utils';
 import {lowestPriority} from './defaults/default-snap-priority';
-import {StyleInjector} from './helpers/style-injector';
-import {WindowSizeMonitor} from './helpers/window-size-monitor';
+import {StyleInjector} from './helpers/misc/style-injector';
+import {WindowSizeMonitor} from './helpers/misc/window-size-monitor';
 import {dragModeStyles} from './drag-snap-logic/drag-modes';
 
 class DragSnapContext extends Component {

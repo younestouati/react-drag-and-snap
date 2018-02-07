@@ -1,6 +1,6 @@
 import invariant from 'invariant';
 import {scale, translate, rotateDEG} from 'transformation-matrix';
-import {transformMultiple, skewXMatrix, qrDecompose, translationOnly, extractSkew} from './matrix';
+import {transformMultiple, skewXMatrix, qrDecompose, translationOnly, extractSkew} from '../utils/matrix-utils';
 import {isNullOrUndefined, isNumber} from '../utils/type-utils';
 
 const isPercentage = (value) => typeof value === 'string' && value.slice(-1) === '%';
@@ -98,7 +98,7 @@ const createSnapMatrix = function (snapTargetMatrix, snapTransform, draggableAct
 	const scaledSkewMatrix = transformMultiple(skewXMatrix(skewX + snapTransform.skewX), snapTransformScalingMatrix);
 	const skewMatrix = skewXMatrix(extractSkew(scaledSkewMatrix).x); //Extract the skew part of the matrix, and create a skew only matrix
 
-	//Create a translation matrix taking the descriptor's scaling (in x and y directions) into account.
+	//Create a translation matrix taking the transform's scaling (in x and y directions) into account.
     const localTranslationMatrix = translate(snapTransform.x, snapTransform.y);
     //Extract the translation part and create a translation only matrix
 	const translationMatrix = translationOnly(

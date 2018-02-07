@@ -1,5 +1,5 @@
 import {transform, translate, identity, fromObject, rotateDEG, scale, applyToPoint, inverse} from 'transformation-matrix';
-import {extend} from '../utils/object-utils';
+import {extend} from './object-utils';
 
 const floating = '(\\-?[\\d\\.e]+)';
 const commaSpace = '\\,?\\s*';

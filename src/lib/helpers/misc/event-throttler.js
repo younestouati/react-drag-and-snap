@@ -1,4 +1,4 @@
-import {shallowClone} from '../utils/object-utils';
+import {shallowClone} from '../../utils/object-utils';
 
 class EventThrottler {
 	constructor(handler) {

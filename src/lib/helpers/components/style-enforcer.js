@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {createGuid} from '../utils/guid-utils';
-import {StyleInjector} from '../helpers/style-injector';
-import {extend} from '../utils/object-utils';
+import {createGuid} from '../../utils/guid-utils';
+import {StyleInjector} from '../misc/style-injector';
+import {extend} from '../../utils/object-utils';
 
 /**
  * TODO: UPDATE THIS DOCUMENTATION!
