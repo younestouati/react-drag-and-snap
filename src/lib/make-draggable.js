@@ -225,7 +225,6 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 this.context.onDragStateUpdate('grab');
                 this.DOMElementHelper.updateElement(this.DOMElement);
                 const initialState = this.getInitialDragState(position);
-
                 const snapping = this.getSnapping(initialState.dragState, position, velocity, initialState);
 
                 this.setState(extend(initialState, snapping, {velocity}));
