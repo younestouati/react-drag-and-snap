@@ -275,10 +275,10 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                     return;
                 }
 
-                if (this.state.dragState !== INACTIVE) {
-                    this.resumeDrag(position, velocity);
-                } else {
+                if (this.state.dragState === INACTIVE) {
                     this.startDrag(position, velocity);
+                } else {
+                    this.resumeDrag(position, velocity);
                 }
             }
 
