@@ -12,8 +12,8 @@ import {
     transformRotation,
     transformScale,
     transformSkew,
-	transformVelocity,
-	transformPosition,
+    transformVelocity,
+    transformPosition,
     qrDecompose
 } from './utils/matrix-utils';
 import {createSnapMatrix} from './drag-snap-logic/create-snapping-matrix';
