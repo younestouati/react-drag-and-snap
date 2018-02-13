@@ -132,7 +132,7 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             }
 
             //Converts the descriptor, velocity and cursor point from the global (window) coordinate system, to the local coordinate system of the snap taget.
-            globalToLocal({id, dragState, dragData, matrix, actualSize, velocity, cursorPosition, snapTargetId}) {                                
+            makeSnapTargetSpecific({id, dragState, dragData, matrix, actualSize, velocity, cursorPosition, snapTargetId}) {                                
                 const {x, y, rotate, skewX, skewY} = qrDecompose(matrix);
                 const localPosition = transformPosition(this.getMatrix(), {x, y});
                 const localRotation = transformRotation(this.getMatrix(), rotate);
@@ -168,24 +168,24 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
                 return extend(this.getSize(), {props: this.getProps()})
             }
 
-            getParams(dragStateDescriptor) {
+            getParams(draggableDescriptor) {
                 return [
-                    this.globalToLocal(dragStateDescriptor),
+                    this.makeSnapTargetSpecific(draggableDescriptor),
                     this.getSelfDescriptor(),
                     {draggedItems: this.draggedItems}
                 ]; //TODO: SHOULD WE SOMEHOW INJECT THE draggableToTarget and targetToDraggable matrices here?
             }
 
-            isSnapCriteriaMet(dragState, dragStateDescriptor) {
+            isSnapCriteriaMet(dragState, draggableDescriptor) {
                 const criteria = toArray(dragState === DRAG_STATES.RELEASED ? config.releaseSnapCriteria : config.dragSnapCriteria);
-                const params = this.getParams(dragStateDescriptor);
+                const params = this.getParams(draggableDescriptor);
                 return criteria.every(criterium => criterium(...params));
             }
 
-            getSnapPriority(dragState, dragStateDescriptor) {
+            getSnapPriority(dragState, draggableDescriptor) {
                 const {releaseSnapPriority, dragSnapPriority, snapPriority: commonPriority} = this.props;
                 const snapPriority = (dragState === DRAG_STATES.RELEASED ? releaseSnapPriority : dragSnapPriority) || commonPriority;
-                const params = this.getParams(dragStateDescriptor);
+                const params = this.getParams(draggableDescriptor);
                 const priority = isFunction(snapPriority) ? snapPriority(...params) : snapPriority;
 
                 invariant(isNumber(priority), `snapPriority must be a number or a function that returns a number.`);
@@ -194,16 +194,16 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
                 return priority;
             }
 
-            getSnapping(dragState, dragStateDescriptor) {
+            getSnapping(dragState, draggableDescriptor) {
                 const _snapTransform = dragState === DRAG_STATES.RELEASED ? config.releaseSnapTransform : config.dragSnapTransform;
-                const params = this.getParams(dragStateDescriptor);
+                const params = this.getParams(draggableDescriptor);
                 const snapTransform = isFunction(_snapTransform) ? _snapTransform(...params) : _snapTransform;
 
-                const normalizedSnapTransform = normalizeTransform(snapTransform, dragStateDescriptor.actualSize, this.getActualSize());
-                const snapMatrix = createSnapMatrix(this.getMatrix(), normalizedSnapTransform, dragStateDescriptor.actualSize, this.getActualSize());
+                const normalizedSnapTransform = normalizeTransform(snapTransform, draggableDescriptor.actualSize, this.getActualSize());
+                const snapMatrix = createSnapMatrix(this.getMatrix(), normalizedSnapTransform, draggableDescriptor.actualSize, this.getActualSize());
 
-                //TODO: CAN THIS COMPARISON BE DONE IN A MORE ELEGANT WAY. MAYBE COMPARING EXTRACTED X AND Y FROM snappingMatrix and dragStateDescriptor.matrix instead?
-                const {x, y} = transformPosition(this.getMatrix(), extractTranslation(dragStateDescriptor.matrix));
+                //TODO: CAN THIS COMPARISON BE DONE IN A MORE ELEGANT WAY. MAYBE COMPARING EXTRACTED X AND Y FROM snappingMatrix and draggableDescriptor.matrix instead?
+                const {x, y} = transformPosition(this.getMatrix(), extractTranslation(draggableDescriptor.matrix));
                 const isPositionSnapped = x !== normalizedSnapTransform.x || y !== normalizedSnapTransform.y;
 
                 return {
@@ -214,24 +214,24 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
                 };
             }
 
-            allowsEasyEscape(dragStateDescriptor) {
+            allowsEasyEscape(draggableDescriptor) {
                 const {easyEscape} = this.props;
-                const params = this.getParams(dragStateDescriptor);
+                const params = this.getParams(draggableDescriptor);
                 return isFunction(easyEscape) ? easyEscape(...params) : easyEscape;
             }
 
-            onDropEvent(type, dragStateDescriptor, globalSnapMatrix) {
-                const localDragStateDescriptor = this.globalToLocal(dragStateDescriptor);
+            onDropEvent(type, draggableDescriptor, globalSnapMatrix) {
+                const snapTargetSpecificDraggableDescriptor = this.makeSnapTargetSpecific(draggableDescriptor);
                
                 switch (type) {
                     case 'start':
-                        this.props.onDropStart(localDragStateDescriptor, this.getSelfDescriptor(), qrDecompose(globalSnapMatrix)); //TODO: FIGURE OUT IF THIS SHOULD INFACT BE GLOABEL? PROBABLY NOT!!!
+                        this.props.onDropStart(snapTargetSpecificDraggableDescriptor, this.getSelfDescriptor(), qrDecompose(globalSnapMatrix)); //TODO: FIGURE OUT IF THIS SHOULD INFACT BE GLOABEL? PROBABLY NOT!!!
                         break;
                     case 'complete':
-                        this.props.onDropComplete(localDragStateDescriptor, this.getSelfDescriptor());
+                        this.props.onDropComplete(snapTargetSpecificDraggableDescriptor, this.getSelfDescriptor());
                         break;
                     case 'cancel':
-                        this.props.onDropCancel(localDragStateDescriptor, this.getSelfDescriptor());
+                        this.props.onDropCancel(snapTargetSpecificDraggableDescriptor, this.getSelfDescriptor());
                         break;
                     default:
                         break;
@@ -268,9 +268,9 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
                 }
             }
 
-            updateItem(dragStateDescriptor) {
-                const localDragStateDescriptor = this.globalToLocal(dragStateDescriptor);
-                this.draggedItems = this.draggedItems.filter(p => p.id !== dragStateDescriptor.id).concat(localDragStateDescriptor);
+            updateItem(draggableDescriptor) {
+                const localDragStateDescriptor = this.makeSnapTargetSpecific(draggableDescriptor);
+                this.draggedItems = this.draggedItems.filter(p => p.id !== draggableDescriptor.id).concat(localDragStateDescriptor);
                 this.updateDragProps();
             }
 

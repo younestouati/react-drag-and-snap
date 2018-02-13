@@ -13,7 +13,7 @@ import {SpringRenderer, SpringRendererApplier} from './renderer/spring-renderer'
 import {StyleEnforcer} from './helpers/components/style-enforcer';
 import {makeClassBasedComponent} from './helpers/higher-order-components/make-class-based-component';
 import {asStatePublisher, asStateSubscriber} from './helpers/higher-order-components/state-sharing';
-import {DRAG_MODES, getDragModeAttribute} from './drag-snap-logic/drag-modes';
+import {getDragModeAttribute} from './drag-snap-logic/drag-modes';
 import {normalizeDraggableConfig} from './drag-snap-logic/normalize-draggable-config';
 import {DRAG_STATES} from './drag-snap-logic/drag-states';
 import {draggableCollectors} from './defaults/default-draggable-collectors';
@@ -123,11 +123,11 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 return this.context.snap(
                     state.hasEscaped,
                     dragState,
-                    this.getDragStateDescriptor(dragState, draggedMatrix, cursorPosition, velocity, state.snapTargetId)
+                    this.getDraggableDescriptor(dragState, draggedMatrix, cursorPosition, velocity, state.snapTargetId)
                 );
             }
 
-            getDragStateDescriptor(dragState, matrix, cursorPosition, velocity, snapTargetId) {
+            getDraggableDescriptor(dragState, matrix, cursorPosition, velocity, snapTargetId) {
                 const {scaleX, scaleY} = qrDecompose(matrix);
 
                 return {
@@ -155,8 +155,8 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 const {snapTargetId, matrix} = this.state;
 
                 if (snapTargetId) {
-                    const dragStateDescriptor = this.getDragStateDescriptor(INACTIVE, matrix);
-                    this.context.relayDropEvent(snapTargetId, 'complete', dragStateDescriptor);
+                    const draggableDescriptor = this.getDraggableDescriptor(INACTIVE, matrix);
+                    this.context.relayDropEvent(snapTargetId, 'complete', draggableDescriptor);
                 }
 
                 this.context.relayDraggableRemovalToTargets(this.id);
@@ -177,8 +177,8 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 let isSnappingBack = false;
 
                 if (snapping.isSnapping) {
-                    const dragStateDescriptor = this.getDragStateDescriptor(dragState, priorMatrix, position, velocity, snapping.snapTargetId);
-                    this.context.relayDropEvent(snapping.snapTargetId, 'start', dragStateDescriptor, snapping.matrix);
+                    const draggableDescriptor = this.getDraggableDescriptor(dragState, priorMatrix, position, velocity, snapping.snapTargetId);
+                    this.context.relayDropEvent(snapping.snapTargetId, 'start', draggableDescriptor, snapping.matrix);
                 } else if (this.props.snapBack) {
                     matrix = baseMatrix;
                     isSnappingBack = true;
@@ -187,7 +187,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 this.setState(extend(snapping, {matrix, velocity, isSnappingBack, dragState}));
 
                 this.context.relayDraggableUpdateToTargets(
-                    this.getDragStateDescriptor(dragState, matrix, position, velocity, snapping.snapTargetId)
+                    this.getDraggableDescriptor(dragState, matrix, position, velocity, snapping.snapTargetId)
                 );
 
                 this.context.onDragStateUpdate('ending');
@@ -204,7 +204,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 this.setState(extend({dragState,velocity}, snapping));
 
                 this.context.relayDraggableUpdateToTargets(
-                    this.getDragStateDescriptor(dragState, snapping.matrix, position, velocity, snapping.snapTargetId)
+                    this.getDraggableDescriptor(dragState, snapping.matrix, position, velocity, snapping.snapTargetId)
                 );
             }
 
@@ -232,7 +232,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 this.setState(extend(initialState, snapping, {velocity}));
 
                 this.context.relayDraggableUpdateToTargets(
-                    this.getDragStateDescriptor(
+                    this.getDraggableDescriptor(
                         initialState.dragState,
                         snapping.matrix,
                         position,
@@ -258,7 +258,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 
                 this.context.onDragStateUpdate('resume');
                 this.context.relayDraggableUpdateToTargets(
-                    this.getDragStateDescriptor(
+                    this.getDraggableDescriptor(
                         dragState, 
                         snapping.matrix, 
                         position,
@@ -268,7 +268,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 );
 
                 if (snapping.snapTargetId) {
-                    this.context.relayDropEvent(snapping.snapTargetId, 'cancel', this.getDragStateDescriptor(dragState, snapping.matrix));
+                    this.context.relayDropEvent(snapping.snapTargetId, 'cancel', this.getDraggableDescriptor(dragState, snapping.matrix));
                 }   
             }
 

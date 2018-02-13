@@ -1,25 +1,25 @@
 import {extend} from '../utils/object-utils';
 const noProps = () => {};
 
-const extractStaticProps = (dragStateDescriptor) => ({
-    id: dragStateDescriptor.id,
-    dragData: dragStateDescriptor.dragData
+const extractStaticProps = (draggableDescriptor) => ({
+    id: draggableDescriptor.id,
+    dragData: draggableDescriptor.dragData
 });
 
-const extractLowFrequencyProps = (dragStateDescriptor) => ({
-    dragState: dragStateDescriptor.dragState,
-    isSnappingToThisTarget: dragStateDescriptor.isSnappingToThisTarget,
-    isSnappingToOtherTarget: dragStateDescriptor.isSnappingToOtherTarget   
+const extractLowFrequencyProps = (draggableDescriptor) => ({
+    dragState: draggableDescriptor.dragState,
+    isSnappingToThisTarget: draggableDescriptor.isSnappingToThisTarget,
+    isSnappingToOtherTarget: draggableDescriptor.isSnappingToOtherTarget   
 });
 
-const staticProps = (dragStateDescriptors) => dragStateDescriptors.map(extractStaticProps);
+const staticProps = (draggableDescriptors) => draggableDescriptors.map(extractStaticProps);
 
-const staticAndLowFrequencyProps = (dragStateDescriptors) => dragStateDescriptors.map((dragStateDescriptor) => extend(
-    extractStaticProps(dragStateDescriptor),
-    extractLowFrequencyProps(dragStateDescriptor)
+const staticAndLowFrequencyProps = (draggableDescriptors) => draggableDescriptors.map((draggableDescriptor) => extend(
+    extractStaticProps(draggableDescriptor),
+    extractLowFrequencyProps(draggableDescriptor)
 ));
 
-const allProps = (dragStateDescriptors) => dragStateDescriptors;
+const allProps = (draggableDescriptors) => draggableDescriptors;
 
 const snapTargetCollectors = {
     noProps,

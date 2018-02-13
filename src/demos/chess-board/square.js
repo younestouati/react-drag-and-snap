@@ -48,10 +48,10 @@ const snapConfig = {
 	]
 };
 
-const customCollector = (dragStateDescriptors, targetDescriptor) => {
+const customCollector = (draggableDescriptor, targetDescriptor) => {
 	return {
-		isCenterOverTarget: dragStateDescriptors.some(dragStateDescriptor => Criteria.isCenterOverTarget(dragStateDescriptor, targetDescriptor)),
-		isLegalMove: dragStateDescriptors.some(dragStateDescriptor => isMoveLegal(dragStateDescriptor, targetDescriptor))
+		isCenterOverTarget: draggableDescriptor.some(draggableDescriptor => Criteria.isCenterOverTarget(draggableDescriptor, targetDescriptor)),
+		isLegalMove: draggableDescriptor.some(draggableDescriptor => isMoveLegal(draggableDescriptor, targetDescriptor))
 	};
 }
 

@@ -77,7 +77,7 @@ class DragSnapContext extends Component {
         this.snapTargets.forEach((target) => target.removeItem(id));
     }
 
-    snap(hasEscaped, dragState, dragStateDescriptor) {
+    snap(hasEscaped, dragState, draggableDescriptor) {
         let isInSnappingArea = false; //When true it doesn't necessarily mean it will snap (if target allows easyEscape)
         let snapping = null;
         let maxPriority = lowestPriority;
@@ -85,22 +85,22 @@ class DragSnapContext extends Component {
         this.snapTargets.forEach((target) => {
             target.continuousUpdateIfEnabled();
 
-            if (target.isSnapCriteriaMet(dragState, dragStateDescriptor)) {
+            if (target.isSnapCriteriaMet(dragState, draggableDescriptor)) {
                 isInSnappingArea = true;
 
-                if (hasEscaped || !target.allowsEasyEscape(dragStateDescriptor)) {
-                    const priority = target.getSnapPriority(dragState, dragStateDescriptor);
+                if (hasEscaped || !target.allowsEasyEscape(draggableDescriptor)) {
+                    const priority = target.getSnapPriority(dragState, draggableDescriptor);
 
                     if (priority <= maxPriority) {  //Smaller number means higher priority
                         maxPriority = priority;
-                        snapping = target.getSnapping(dragState, dragStateDescriptor);
+                        snapping = target.getSnapping(dragState, draggableDescriptor);
                     }
                 }
             }
         });
 
         return {
-            matrix: snapping ? snapping.matrix : dragStateDescriptor.matrix,
+            matrix: snapping ? snapping.matrix : draggableDescriptor.matrix,
             customSnapProps: snapping ? snapping.customSnapProps : {},
             isPositionSnapped: snapping ? snapping.isPositionSnapped : false,
             isSnapping: !!snapping,
