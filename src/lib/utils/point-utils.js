@@ -9,8 +9,8 @@ const subtractPoints = (p1, p2) => ({
 });
 
 const averagePoints = (points) => ({
-	x: points.reduce(function (acc, curr) {return curr.x + acc}, 0) / points.length,
-	y: points.reduce(function (acc, curr) {return curr.y + acc}, 0) / points.length
+	x: points.reduce((acc, curr)  => curr.x + acc, 0) / points.length,
+	y: points.reduce((acc, curr) => curr.y + acc, 0) / points.length
 });
 
 const scalePoint = (point, scale) => ({
