@@ -161,10 +161,7 @@ SpringRenderer.propTypes = {
     snapTargetId: PropTypes.string,
     isPositionSnapped: PropTypes.bool.isRequired,
     isSnappingBack: PropTypes.bool.isRequired,
-	springConfig: PropTypes.shape({
-		stiffness: PropTypes.number.isRequired,
-		damping: PropTypes.number.isRequired
-	}).isRequired,
+	springConfig: CustomPropTypes.springConfig.isRequired,
 	sticky: PropTypes.bool.isRequired
 };
 
