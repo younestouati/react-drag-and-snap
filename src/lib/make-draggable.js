@@ -115,8 +115,8 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             }
 
             getSnapping(dragState, cursorPosition, velocity, state = this.state) {
-                const elementCenter = subtractPoints(cursorPosition, state.touchOffset);
-                const draggedMatrix = overrideTranslation(state.baseMatrix, elementCenter);
+                const elementDragPosition = subtractPoints(cursorPosition, state.touchOffset);
+                const draggedMatrix = overrideTranslation(state.baseMatrix, elementDragPosition);
 
                 return this.context.snap(
                     state.hasEscaped,
