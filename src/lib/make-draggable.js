@@ -37,6 +37,7 @@ const initialState = {
 
 function configure(customConfig = {}, collect = draggableCollectors.allProps) {
     const config = normalizeDraggableConfig(customConfig);
+    const dragModeAttribute = getDragModeAttribute(config.mode);
 
     return function makeDraggable(WrappedComponent, helpers = {DOMElementHelper, PointerTracker}) {
         class Draggable extends Component {
@@ -91,12 +92,13 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
 
             componentWillUpdate(nextProps, {dragState: nextDragState}) {
                 const {dragState} = this.state;
+
                 if (dragState !== DRAGGED && nextDragState === DRAGGED) {
-                    this.DOMElement.setAttribute(getDragModeAttribute(config.mode), true);
+                    this.DOMElement.setAttribute(dragModeAttribute, true);
                 }
 
                 if (dragState !== INACTIVE && nextDragState === INACTIVE) {
-                    DRAG_MODES.forEach(dragMode => this.DOMElement.removeAttribute(getDragModeAttribute(dragMode)));
+                    this.DOMElement.removeAttribute(dragModeAttribute);
                 }
             }
 
