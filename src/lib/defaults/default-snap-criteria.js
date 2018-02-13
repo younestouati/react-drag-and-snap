@@ -50,9 +50,9 @@ const isNoOtherDraggableSnapping = ({id}, _, {draggedItems}) => {
 /*
  * Usually a target doesn't need to worry about whether or not the draggable is snapping to another target.
  * It is only possible to for draggables to snap to one target at a time, and if multiple targets want the same 
- * draggable to snap simultanously, the conflict is resolved based on the target's snap priorities. This snap
- * criteria allows a target to be 'polite', so that it doesn't take over a draggable that is already 
- * (that is, was in previous 'frame') snapping to another target with a lower snap priority.
+ * draggable to snap simultaneously, the conflict is resolved based on the targets' snap priorities. The following snap
+ * criteria function allows a target to be 'polite', so that it doesn't take over a draggable that is already 
+ * (was in previous 'frame') snapping to another target with a lower snap priority.
  */
 const draggableIsNotSnappingToOtherTarget = ({isSnappingToOtherTarget}) => {
 	return !isSnappingToOtherTarget;

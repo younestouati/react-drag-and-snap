@@ -225,7 +225,6 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 this.context.onDragStateUpdate('grab');
                 this.DOMElementHelper.updateElement(this.DOMElement);
                 const initialState = this.getInitialDragState(position);
-
                 const snapping = this.getSnapping(initialState.dragState, position, velocity, initialState);
 
                 this.setState(extend(initialState, snapping, {velocity}));
@@ -276,10 +275,10 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                     return;
                 }
 
-                if (this.state.dragState !== INACTIVE) {
-                    this.resumeDrag(position, velocity);
-                } else {
+                if (this.state.dragState === INACTIVE) {
                     this.startDrag(position, velocity);
+                } else {
+                    this.resumeDrag(position, velocity);
                 }
             }
 
