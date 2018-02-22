@@ -2,7 +2,11 @@ class DOMElementHelper {
 	constructor(el) {
 		this.basePosition = null;
 		this.size = null;
-		this.computedStyles = this.getEmptyComputedStyles();
+		this.computedStyles = {
+			base: new Map(),
+			before: new Map(),
+			after: new Map()
+		};
 		this.padding = null;
 		this.el = el;
 
@@ -11,16 +15,7 @@ class DOMElementHelper {
 		}
 	}
 
-	getEmptyComputedStyles() {
-		return {
-			base: [],
-			before: [],
-			after: []
-		};
-	}
-
 	updateComputedStyles() {
-		this.computedStyles = this.getEmptyComputedStyles();
 		const computedStyles = {
 			base: window.getComputedStyle(this.el),
 			before: window.getComputedStyle(this.el, ':before'),
@@ -28,14 +23,15 @@ class DOMElementHelper {
 		};
 
 		['base', 'before', 'after'].forEach((elementType) => {
+			const m = new Map();
+
 			for (let i=0;i<computedStyles[elementType].length;i++) {
 				const key = computedStyles[elementType][i];
 				const value = computedStyles[elementType][computedStyles[elementType][i]];
-
-				if (key !== 'display' && key !== 'visibility') {
-					this.computedStyles[elementType].push({key,value});
-				}
+				m.set(key, value);
 			}
+
+			this.computedStyles[elementType] = m;
 		}); 	
 	}
 
@@ -49,10 +45,10 @@ class DOMElementHelper {
 
 		this.updateComputedStyles();
 
-		const paddingLeft = window.parseFloat(this.computedStyles.base.find(({key}) => key === 'padding-left').value);
-		const paddingRight = window.parseFloat(this.computedStyles.base.find(({key}) => key === 'padding-right').value);
-		const paddingTop = window.parseFloat(this.computedStyles.base.find(({key}) => key === 'padding-top').value);
-		const paddingBottom = window.parseFloat(this.computedStyles.base.find(({key}) => key === 'padding-bottom').value);
+		const paddingLeft = window.parseFloat(this.computedStyles.base.get('padding-left'));
+		const paddingRight = window.parseFloat(this.computedStyles.base.get('padding-right'));
+		const paddingTop = window.parseFloat(this.computedStyles.base.get('padding-top'));
+		const paddingBottom = window.parseFloat(this.computedStyles.base.get('padding-bottom'));
 
 		this.padding = {
 			paddingLeft,

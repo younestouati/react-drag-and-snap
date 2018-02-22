@@ -5,6 +5,7 @@ import {FloatingHeadsDemo} from './demos/floating-heads/index';
 import {StateDemo} from './demos/state-demo/index';
 import {ChessBoard} from './demos/chess-board/index';
 import {DropTest} from './demos/drop-test/index';
+import {NestedDraggablesDemo} from './demos/nested-draggables/index';
 import {RendererDemo} from './demos/renderer-demo/index';
 import {EyeDemo} from './demos/eyes/index';
 import {MovingTargetDemo} from './demos/moving-target/index';
@@ -15,6 +16,10 @@ import {Overlap} from './demos/overlap/overlap';
 import {CSSTransitionDemo} from './demos/css-transition/index';
 
 const demoComponents = {
+    nestedDraggablesDemo: {
+        component: <NestedDraggablesDemo/>,
+        displayName: 'Nested Draggables'
+    },
     rendererDemo: {
         component: <RendererDemo/>,
         displayName: 'Renderer Demo'
@@ -73,7 +78,7 @@ class Demos extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentDemo: 'floatingHeads'
+            currentDemo: 'nestedDraggablesDemo'
         };
     }
 

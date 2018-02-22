@@ -71,6 +71,7 @@ class PointerTracker {
 	}
 
 	startHandler(e) {
+		e.stopPropagation();
 		const point = extractPointFromEvent(e, this.pointerIdentifier);
 
 		this.startCallback({position: point, velocity: {x: 0, y: 0}});
