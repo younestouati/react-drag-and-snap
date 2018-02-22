@@ -5,6 +5,7 @@ import {FloatingHeadsDemo} from './demos/floating-heads/index';
 import {StateDemo} from './demos/state-demo/index';
 import {ChessBoard} from './demos/chess-board/index';
 import {DropTest} from './demos/drop-test/index';
+import {EasyEscapeDemo} from './demos/easy-escape-demo/index';
 import {NestedDraggablesDemo} from './demos/nested-draggables/index';
 import {RendererDemo} from './demos/renderer-demo/index';
 import {EyeDemo} from './demos/eyes/index';
@@ -16,6 +17,10 @@ import {Overlap} from './demos/overlap/overlap';
 import {CSSTransitionDemo} from './demos/css-transition/index';
 
 const demoComponents = {
+    easyEscapeDemo: {
+        component: <EasyEscapeDemo/>,
+        displayName: 'Easy Escape'
+    },
     nestedDraggablesDemo: {
         component: <NestedDraggablesDemo/>,
         displayName: 'Nested Draggables'
@@ -78,7 +83,7 @@ class Demos extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentDemo: 'nestedDraggablesDemo'
+            currentDemo: 'easyEscapeDemo'
         };
     }
 

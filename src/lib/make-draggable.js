@@ -21,18 +21,19 @@ import {draggableCollectors} from './defaults/default-draggable-collectors';
 const {INACTIVE, GRABBED, DRAGGED, RELEASED} = DRAG_STATES;
 
 const initialState = {
-    dragState: INACTIVE,            //Either INACTIVE, GRABBED, DRAGGED, or RELEASED
-    isSnapping: false,               //If this draggable is currently snapping to a snapTarget
-    isPositionSnapped: false,        //If it's position specificially is currently controlled by a snapTarget
-    isSnappingBack: false,           //If it is currently snapping back to its initial position (after a drop)
-    snapTargetId: null,              //The id of the snapTarget it is currently snapping to. Null when not snapping
-    customSnapProps: {},             //The customSnapProps as defined by the snapTarget currently snapped to
-    flipGrabbedFlag: false,          //Used to postpone dragState sent to wrapped component one frame, when dragged
-    velocity: null,                  //The velocity (pixels/ms) by which the draggable is currently being dragged
-    baseMatrix: null,                //The draggable's position in window coordinate system prior to dragging
-    matrix: null,                    //The draggable's current position in window coordinate system
-    hasEscaped: false,               //If the draggable has escaped its first snapTarget in a new drag
-    touchOffset: null                //Local coordinates of where the draggable has been grabbed
+    dragState: INACTIVE,     //Either INACTIVE, GRABBED, DRAGGED, or RELEASED
+    isSnapping: false,       //If this draggable is currently snapping to a snapTarget
+    isPositionSnapped: null, //If it's position specificially is currently controlled by a snapTarget. Initially unknown
+    isSnappingBack: false,   //If it is currently snapping back to its initial position (after a drop)
+    snapTargetId: null,      //The id of the snapTarget it is currently snapping to. Null when not snapping
+    customSnapProps: {},     //The customSnapProps as defined by the snapTarget currently snapped to
+    flipGrabbedFlag: false,  //Used to postpone dragState sent to wrapped component one frame, when dragged
+    velocity: null,          //The velocity (pixels/ms) by which the draggable is currently being dragged
+    baseMatrix: null,        //The draggable's position in window coordinate system prior to dragging
+    matrix: null,            //The draggable's current position in window coordinate system
+    hasEscaped: false,       //If the draggable has escaped its first snapTarget in a new drag
+    firstSnapTargetId: null, //Id of the first snapTarget to which draggable snapped in current drag session
+    touchOffset: null        //Local coordinates of where the draggable has been grabbed
 };
 
 function configure(customConfig = {}, collect = draggableCollectors.allProps) {
@@ -121,6 +122,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 const draggedMatrix = overrideTranslation(state.baseMatrix, elementDragPosition);
 
                 return this.context.snap(
+                    state.firstSnapTargetId,
                     state.hasEscaped,
                     dragState,
                     this.getDraggableDescriptor(dragState, draggedMatrix, cursorPosition, velocity, state.snapTargetId)
@@ -218,8 +220,10 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                     baseMatrix,
                     touchOffset,
                     hasEscaped: false,
+                    firstSnapTargetId: null,
                     flipGrabbedFlag: true,
-                    isSnappingBack: false
+                    isSnappingBack: false,
+                    isPositionSnapped: null //Don't know if this is true or false at this point. Initialize to null
                 };
             }
 

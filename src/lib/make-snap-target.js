@@ -295,7 +295,7 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             onDropStart: () => {},
             onDropComplete: () => {},
             onDropCancel: () => {},
-            easyEscape: false,
+            easyEscape: true,
             continuousUpdate: false,
             snapPriority: distanceBasedWithOffset(100)
         };

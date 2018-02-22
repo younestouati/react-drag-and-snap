@@ -77,9 +77,11 @@ class DragSnapContext extends Component {
         this.snapTargets.forEach((target) => target.removeItem(id));
     }
 
-    snap(hasEscaped, dragState, draggableDescriptor) {
+    snap(firstSnapTargetId, hasEscaped, dragState, draggableDescriptor) {
         let isInSnappingArea = false; //When true it doesn't necessarily mean it will snap (if target allows easyEscape)
         let snapping = null;
+        let allowsEasyEscape = false;
+        let hasEscapedNow;
         let maxPriority = lowestPriority;
 
         this.snapTargets.forEach((target) => {
@@ -87,25 +89,34 @@ class DragSnapContext extends Component {
 
             if (target.isSnapCriteriaMet(dragState, draggableDescriptor)) {
                 isInSnappingArea = true;
+                const priority = target.getSnapPriority(dragState, draggableDescriptor);
 
-                if (hasEscaped || !target.allowsEasyEscape(draggableDescriptor)) {
-                    const priority = target.getSnapPriority(dragState, draggableDescriptor);
-
-                    if (priority <= maxPriority) {  //Smaller number means higher priority
-                        maxPriority = priority;
-                        snapping = target.getSnapping(dragState, draggableDescriptor);
-                    }
+                if (priority <= maxPriority) {  //Smaller number means higher priority
+                    maxPriority = priority;
+                    snapping = target.getSnapping(dragState, draggableDescriptor);
+                    allowsEasyEscape = target.allowsEasyEscape(draggableDescriptor);
                 }
             }
         });
+
+        hasEscapedNow = hasEscaped || !isInSnappingArea;
+
+        //If easyEscape is enabled for the snapTarget, and it is still in its realm, disabled the snapping
+        if (snapping) {
+            const isStillFirstSnapTarget = (!firstSnapTargetId || firstSnapTargetId === snapping.snapTargetId);
+            if (snapping && !hasEscapedNow && allowsEasyEscape && isStillFirstSnapTarget) {
+                snapping = null;
+            }
+        }
 
         return {
             matrix: snapping ? snapping.matrix : draggableDescriptor.matrix,
             customSnapProps: snapping ? snapping.customSnapProps : {},
             isPositionSnapped: snapping ? snapping.isPositionSnapped : false,
             isSnapping: !!snapping,
-            hasEscaped: hasEscaped || !isInSnappingArea,
+            hasEscaped: hasEscapedNow,
             snapTargetId: snapping ? snapping.snapTargetId : null,
+            firstSnapTargetId: firstSnapTargetId || (snapping ? snapping.snapTargetId : null)
         };
     }
 

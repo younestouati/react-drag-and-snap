@@ -83,9 +83,9 @@ class SpringRenderer extends Component {
         const propMonitor = new PropMonitor(this.props, nextProps);
         propMonitor.ifShallowChange('transform', () => this.atRest = !nextProps.isActive);
         propMonitor.ifBecomingTrue('isReleased', () => this.atRest ? nextProps.onRestAfterRelease() : null);
-        
+
         propMonitor.ifDefinedValueChange('snapTargetId', this.activateSpring.bind(this));
-        propMonitor.ifBooleanChange('isPositionSnapped', this.activateSpring.bind(this));
+        propMonitor.ifDefinedValueChange('isPositionSnapped', this.activateSpring.bind(this));
         propMonitor.ifBecomingTrue('isSnappingBack', this.activateSpring.bind(this));
 
         //Flip isActive flag for one frame, given react motion a chance to update to right start position before animation
@@ -159,7 +159,7 @@ SpringRenderer.propTypes = {
     isActive: PropTypes.bool.isRequired,
     isReleased: PropTypes.bool.isRequired,
     snapTargetId: PropTypes.string,
-    isPositionSnapped: PropTypes.bool.isRequired,
+    isPositionSnapped: PropTypes.bool,
     isSnappingBack: PropTypes.bool.isRequired,
 	springConfig: CustomPropTypes.springConfig.isRequired,
 	sticky: PropTypes.bool.isRequired
