@@ -63,22 +63,6 @@ class DOMElementHelper {
 		};
 	};
 
-	startMonitoring(callback) {
-        const config = {
-            attributes: true,
-            attributeFilter: ['style', 'class'],
-            childList: false,
-            characterData: false
-        };
-
-        this.observer = new MutationObserver(callback);
-        this.observer.observe(this.el, config);
-    }
-
-    stopMonitoring() {
-        this.observer.disconnect();
-    }
-
 	getSize() {
 		return this.size;
 	}

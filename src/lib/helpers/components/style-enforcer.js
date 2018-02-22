@@ -154,9 +154,6 @@ class StyleEnforcer extends Component {
 
 		['base', 'before', 'after'].forEach((elementType) => {
 			const m = new Map(computedStyles[elementType]);
-			m.delete('display'); //TODO: EXPLAIN THIS AS WELL. FIGURE OUT WHEN IT IS RELEVANT!!!!!!
-			m.delete('visibility');
-	
 			//See documentation at the top of this file for info about the -webkit-text-fill-color property
 			if (m.get('color') === m.get('-webkit-text-fill-color')) {
 				m.delete('-webkit-text-fill-color');
@@ -174,19 +171,9 @@ class StyleEnforcer extends Component {
 		const computedStyles = this.cleanUpComputedStyles(this.props.DOMElementHelper.getComputedStyles());
 
 		this.injectStyles(extend(size, padding, {computedStyles}));
-
-		this.props.DOMElementHelper.startMonitoring(() => {
-			this.removeStyles(); //Remove old styles
-			this.injectStyles(extend(
-				size,
-				padding,
-				{computedStyles: this.cleanUpComputedStyles(this.props.DOMElementHelper.getComputedStyles(true))}
-			)); 
-		});
 	}
 
 	componentWillUnmount() {
-		this.props.DOMElementHelper.stopMonitoring();
 		this.removeStyles();
 	}
 
