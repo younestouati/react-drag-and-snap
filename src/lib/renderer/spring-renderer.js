@@ -15,6 +15,7 @@ class SpringRendererApplier extends Component {
 				onTouchStart={onRegrab}
 				onMouseDown={onRegrab}
 				style={{
+                    lineHeight: 0,
 					display: 'inline-block',
 					transformOrigin: '50% 50%',
 					transform: '' +
