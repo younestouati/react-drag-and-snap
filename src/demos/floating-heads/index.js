@@ -9,18 +9,50 @@ import {getOrigo} from './utils/point-utils';
 import {randomlyOneOf, randomInRange} from './utils/random-utils';
 import {EdgeSnapTarget} from './edge-snap-target';
 import {ScaleEntry} from '../shared/scale-entry';
+import {EDGES} from './utils/edge-utils';
 import './styles.css';
+
+const AVATAR_DIAMETER = 64;
+const MARGIN = 24;
 
 class FloatingHeadsDemo extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			users: [{id: 0, x: -50, y: -25, z: 0}],
+			users: [],
 			trappedUser: null,
 			trappedUserPosition: getOrigo(),
 			isDragging: false
 		};
+
+		this.updateSizeMeasurement = this.updateSizeMeasurement.bind(this);
+	}
+
+	componentDidMount() {
+		this.updateSizeMeasurement();
+		window.addEventListener('resize', this.updateSizeMeasurement);
+
+		this.setState({users: [{id: 0, x: 0, y: this.size.height/2 - MARGIN, z: 0, rotation: 90}]});
+	}
+
+	componentWillMount() {
+		window.removeEventListener('resize', this.updateSizeMeasurement);
+	}
+
+	updateSizeMeasurement() {
+		this.size = {
+			width: this.container.clientWidth,
+			height: this.container.clientHeight
+		};	
+	}
+
+	getRotation({x, y}) {
+		let rotation = EDGES.right.rotation;
+		rotation = (x === 0) ?  EDGES.left.rotation : rotation;
+		rotation = (y === this.size.height - 2 * MARGIN) ? EDGES.bottom.rotation : rotation;
+		rotation = (y === 0) ? EDGES.top.rotation: rotation;
+		return rotation;	
 	}
 
 	getNextUserId() {
@@ -32,28 +64,31 @@ class FloatingHeadsDemo extends Component {
 	}
 
 	addUser() {
-		const startPosition =  {
-			x: randomlyOneOf(-50, 50),
-			y: randomInRange(-50, 50)
+		const startPosition = {
+			x: randomlyOneOf(0, this.size.width - 2 * MARGIN),
+			y: randomInRange(0, this.size.height - 2 * MARGIN),
 		};
 
 		this.setState({
 			users: [
 				...this.state.users,
-				extend(this.getNextUserId(), this.getNextZIndex(), startPosition)
+				extend(this.getNextUserId(), this.getNextZIndex(), startPosition, {rotation: this.getRotation(startPosition)})
 			]
 		})
 	}
 
 	updateUser({dragData, transform}, {width, height}) {
 		const {users} = this.state;
+		//Convert center based coordinates to coordinate system with origo in upper left corner
 		const position = {
-			x: (transform.x)/width * 100,
-			y: (transform.y)/height * 100
+			x: transform.x + this.size.width/2 - MARGIN,
+			y: transform.y + this.size.height/2 - MARGIN
 		};
 
 		this.setState({
-			users: users.map((user) => (user.id === dragData.id) ? extend(user, position, this.getNextZIndex()) : user)
+			users: users.map((user) => (user.id === dragData.id) 
+				? extend(user, position, this.getNextZIndex(), {rotation: this.getRotation(position)}) 
+				: user)
 		});
 	}
 
@@ -73,7 +108,7 @@ class FloatingHeadsDemo extends Component {
 		const {isDragging, trappedUser, trappedUserPosition, users} = this.state;
 
 		return (
-			<div className="app-container">
+			<div className="app-container" ref={(container) => this.container = container}>
 				<div className={`gradient ${isDragging ? 'show-gradient' : ''}`}/>
 				<div className="margin-container">
 					<DragSnapContext
@@ -92,9 +127,8 @@ class FloatingHeadsDemo extends Component {
 						<ScaleEntry className="avatars" entries={users} idProp="id">
 							{
 								(user, scale) => (
-									<AvatarContainer {...user} scale={scale} key={user.id}>
+									<AvatarContainer {...user} diameter={AVATAR_DIAMETER} scale={scale} key={user.id}>
 										<DraggableAvatar
-											onClick={() => alert('Hej')}
 											dragData={user}
 											id={user.id}
 										/>

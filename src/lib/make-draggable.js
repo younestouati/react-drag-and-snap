@@ -215,6 +215,10 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 const baseMatrix = getTransformationMatrix(this.DOMElement);
                 const touchOffset = subtractPoints(globalTouchOffset, applyToPoint(baseMatrix, getOrigo()));
 
+                //TODO: HANDLE OFFSET WHEN GRABBING FLOATING HEAD
+                //TODO: HANDLE ERROR WHEN CLICKING ON FLOATING HEAD INITIALLY (BEFORE FIRST DRAG)
+                //TODO: REINVESTIGATE EASY ESCAPE DEMO. DOES IT WORK AS INTENDED??
+
                 return {
                     dragState,
                     baseMatrix,
@@ -339,6 +343,8 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                                 />,
                                 dragState !== INACTIVE ? createPortal(
                                     <SpringRendererApplier
+                                        draggableSize={this.DOMElementHelper.getSize()}
+                                        contextSize={this.context.getSize()}
                                         transform={transform}
                                         onRegrab={(e) => this.pointerTracker.track(e)}
                                         isVisible={[DRAGGED, RELEASED].includes(dragState)}
@@ -386,6 +392,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             windowToContext: PropTypes.func.isRequired,
             contextToWindow: PropTypes.func.isRequired,
             onDragStateUpdate: PropTypes.func.isRequired,
+            getSize: PropTypes.func.isRequired,
             getDragContainerDOMElement: PropTypes.func.isRequired,
             relayDropEvent: PropTypes.func.isRequired,
             relayDraggableUpdateToTargets: PropTypes.func.isRequired,

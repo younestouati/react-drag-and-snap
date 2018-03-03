@@ -29,6 +29,7 @@ class DragSnapContext extends Component {
             registerAsSnapTarget: this.registerAsSnapTarget.bind(this),
             unregisterAsSnapTarget: this.unregisterAsSnapTarget.bind(this),
             getDragContainerDOMElement: this.getDragContainerDOMElement.bind(this),
+            getSize: this.getSize.bind(this),
             relayDraggableUpdateToTargets: this.relayDraggableUpdateToTargets.bind(this),
             relayDraggableRemovalToTargets: this.relayDraggableRemovalToTargets.bind(this)
         };
@@ -37,11 +38,20 @@ class DragSnapContext extends Component {
     componentDidMount() {
         this.styleNode = this.styleInjector.inject(dragModeStyles);
         this.inverseContainerMatrix = inverse(getTransformationMatrix(this.container));
+        this.updateSizeMeasurement();
 
         this.resizeEndSubscription = this.windowSizeMonitor.subscribeToResizeEnd(() => {
             this.inverseContainerMatrix = inverse(getTransformationMatrix(this.container));
             this.snapTargets.forEach((snapTarget) => snapTarget.update());
+            this.updateSizeMeasurement();
         });
+    }
+
+    updateSizeMeasurement() {
+        this.size = {
+            width: this.container.clientWidth,
+            height: this.container.clientHeight
+        };
     }
 
     componentWillUnmount() {
@@ -52,6 +62,10 @@ class DragSnapContext extends Component {
 
     getDragContainerDOMElement() {
         return this.container;
+    }
+
+    getSize() {
+        return this.size;
     }
 
     registerAsSnapTarget(id, snapTargetComponent) {
@@ -101,7 +115,7 @@ class DragSnapContext extends Component {
 
         hasEscapedNow = hasEscaped || !isInSnappingArea;
 
-        //If easyEscape is enabled for the snapTarget, and it is still in its realm, disabled the snapping
+        //If easyEscape is enabled for the snapTarget, and it is still in its realm, disable the snapping
         if (snapping) {
             const isStillFirstSnapTarget = (!firstSnapTargetId || firstSnapTargetId === snapping.snapTargetId);
             if (snapping && !hasEscapedNow && allowsEasyEscape && isStillFirstSnapTarget) {
@@ -184,6 +198,7 @@ DragSnapContext.childContextTypes = {
     relayDraggableUpdateToTargets: PropTypes.func,
     relayDraggableRemovalToTargets: PropTypes.func,
     getDragContainerDOMElement: PropTypes.func,
+    getSize: PropTypes.func,
     registerAsSnapTarget: PropTypes.func,
     unregisterAsSnapTarget: PropTypes.func
 };

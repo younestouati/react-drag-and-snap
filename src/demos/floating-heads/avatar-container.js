@@ -1,23 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {EDGES} from './utils/edge-utils';
 
-function getRotation(x,y) {
-	let rotation = EDGES.right.rotation;
-	rotation = (x === -50) ?  EDGES.left.rotation : rotation;
-	rotation = (y === 50) ? EDGES.bottom.rotation : rotation;
-	rotation = (y === -50) ? EDGES.top.rotation: rotation;
-	return rotation;
-}
-
-const AvatarContainer = ({x, y, z, scale, children}) => (
+const AvatarContainer = ({x, y, z, scale, children, rotation, diameter}) => (
 	<div
 		className="avatar-container"
 		style={{
-			left: `${x + 50}%`,
-			top: `${y + 50}%`,
+			lineHeight: 0,
+			left: `${x - diameter/2}px`,
+			top: `${y - diameter/2}px`,
 			zIndex: z,
-			transform: `translate(-50%,-50%) rotate(${getRotation(x,y)}deg) scale(${scale})`
+			transform: `rotate(${rotation}deg) scale(${scale})`
 		}}
 	>
 		{children}
@@ -29,7 +21,8 @@ AvatarContainer.propTypes = {
 	y: PropTypes.number.isRequired,
 	z: PropTypes.number.isRequired,
 	scale: PropTypes.number.isRequired,
-	children: PropTypes.element.isRequired
+	children: PropTypes.element.isRequired,
+	diameter: PropTypes.number.isRequired
 };
 
 export {AvatarContainer};

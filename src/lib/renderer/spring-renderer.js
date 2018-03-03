@@ -7,8 +7,17 @@ import {PropMonitor} from './prop-monitor';
 
 class SpringRendererApplier extends Component {
 	render() {
-		const {onRegrab, isVisible, children, transform} = this.props;
+		const {onRegrab, isVisible, children, transform, contextSize, draggableSize} = this.props;
 		const {x, y, rotate, scaleX, scaleY, skewX} = transform;
+
+        /* 
+         * Offset x and y by half the context size, since x and y are in a coordinate system that has its origo
+         * in the middle of the dragSnapContext - not the upper left corner. It would be tempting just to set
+         * left: 50%, and top: 50% to achieve this, thus eliminating the need of know the contextSize. However,
+         * 'splitting' the positioning across left/top and transform sometimes leads to rounding errors in Chrome
+         */
+        const _x = contextSize.width/2 + x - draggableSize.width/2;
+        const _y = contextSize.height/2 + y - draggableSize.height/2;
 
 		return (
 			<div
@@ -19,7 +28,7 @@ class SpringRendererApplier extends Component {
 					display: 'inline-block',
 					transformOrigin: '50% 50%',
 					transform: '' +
-						'translate3d(calc(' + x + 'px - 50%),calc(' + y + 'px - 50%), 0) ' +
+						'translate3d(calc(' + _x + 'px), calc(' + _y + 'px), 0) ' +
 						'rotate(' + rotate + 'deg) ' +
 						'scaleX(' + scaleX + ') ' +
 						'scaleY(' + scaleY + ') ' +
@@ -30,8 +39,8 @@ class SpringRendererApplier extends Component {
 					visibility: isVisible ? 'visible' : 'hidden',
 					userSelect: 'none',
 					position: 'absolute',
-					left: '50%',
-					top: '50%'
+					left: 0,
+					top: 0
 				}}
 			>
 				{children}
@@ -41,6 +50,8 @@ class SpringRendererApplier extends Component {
 }
 
 SpringRendererApplier.propTypes = {
+    contextSize: CustomPropTypes.size.isRequired,
+    draggableSize: CustomPropTypes.size.isRequired,
 	transform: CustomPropTypes.transform.isRequired,
 	isVisible: PropTypes.bool.isRequired,
 	onRegrab: PropTypes.func.isRequired,
