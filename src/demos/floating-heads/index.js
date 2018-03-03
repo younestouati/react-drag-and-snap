@@ -26,18 +26,18 @@ class FloatingHeadsDemo extends Component {
 			isDragging: false
 		};
 
-		this.updateSizeMeasurement = this.updateSizeMeasurement.bind(this);
+		this.boundUpdateSizeMeasurement = this.updateSizeMeasurement.bind(this);
 	}
 
 	componentDidMount() {
 		this.updateSizeMeasurement();
-		window.addEventListener('resize', this.updateSizeMeasurement);
+		window.addEventListener('resize', this.boundUpdateSizeMeasurement);
 
 		this.setState({users: [{id: 0, x: 0, y: this.size.height/2 - MARGIN, z: 0, rotation: 90}]});
 	}
 
-	componentWillMount() {
-		window.removeEventListener('resize', this.updateSizeMeasurement);
+	componentWillUnmount() {
+		window.removeEventListener('resize', this.boundUpdateSizeMeasurement);
 	}
 
 	updateSizeMeasurement() {
