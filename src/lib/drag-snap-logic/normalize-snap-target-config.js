@@ -5,7 +5,7 @@ import {extend} from '../utils/object-utils';
 import {isFunction, isObject, isArray} from '../utils/type-utils';
 
 const defaultConfig = {
-	snapCriteria: Criteria.isCenterWithinRadius('100%'),
+	snapCriteria: Criteria.isCenterWithinRadius('150%'),
 	snapTransform: SnapTransformers.snapAllButScale
 };
 
