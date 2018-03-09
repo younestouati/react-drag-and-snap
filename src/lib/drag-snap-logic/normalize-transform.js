@@ -41,7 +41,7 @@ const TRANSFORM_PROPS = ['x', 'y', 'rotate', 'scaleX', 'scaleY', 'skewX'];
 * - scale can be used to set scaleX and scaleY to the same value in one go
 */
 function normalizeTransform(inputTransform, draggableActualSize, snapTargetActualSize) {
-	const normalizedTransform = {};;
+    const normalizedTransform = {};
     normalizedTransform.x =  getFirstDefinedValue(inputTransform.x, inputTransform.translateX, 0);
     normalizedTransform.y = getFirstDefinedValue(inputTransform.y, inputTransform.translateY, 0);
     normalizedTransform.rotate = getFirstDefinedValue(inputTransform.rotate, 0);
