@@ -97,6 +97,7 @@ class DragSnapContext extends Component {
         let allowsEasyEscape = false;
         let hasEscapedNow;
         let maxPriority = lowestPriority;
+        let _firstSnapTargetId = firstSnapTargetId;
 
         this.snapTargets.forEach((target) => {
             target.continuousUpdateIfEnabled();
@@ -115,11 +116,15 @@ class DragSnapContext extends Component {
 
         hasEscapedNow = hasEscaped || !isInSnappingArea;
 
-        //If easyEscape is enabled for the snapTarget, and it is still in its realm, disable the snapping
         if (snapping) {
             const isStillFirstSnapTarget = (!firstSnapTargetId || firstSnapTargetId === snapping.snapTargetId);
+            _firstSnapTargetId = _firstSnapTargetId || (snapping ? snapping.snapTargetId : null)
+            
+            //If easyEscape is enabled for the snapTarget, and it is still in its realm, disable the snapping
             if (snapping && !hasEscapedNow && allowsEasyEscape && isStillFirstSnapTarget) {
                 snapping = null;
+            } else {
+                hasEscapedNow = true;
             }
         }
 
@@ -130,7 +135,7 @@ class DragSnapContext extends Component {
             isSnapping: !!snapping,
             hasEscaped: hasEscapedNow,
             snapTargetId: snapping ? snapping.snapTargetId : null,
-            firstSnapTargetId: firstSnapTargetId || (snapping ? snapping.snapTargetId : null)
+            firstSnapTargetId: _firstSnapTargetId
         };
     }
 
