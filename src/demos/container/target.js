@@ -13,7 +13,7 @@ class Target extends Component {
 			<div
 				style={{
 					display: 'inline-block',
-					outline: '5px dashed green',
+					border: '5px dashed green',
 					position: 'relative',
 					width: '250px',
 					height: '100px',

@@ -51,7 +51,16 @@ const createTransformPropType = (isRequired) => {
 const createSizePropType = (isRequired) => {
 	const shape = PropTypes.shape({
 		width: PropTypes.number.isRequired,
-		height: PropTypes.number.isRequried,
+		height: PropTypes.number.isRequried
+	});
+
+	return isRequired ? shape.isRequired : shape;
+};
+
+const createPointPropType = (isRequired) => {
+	const shape = PropTypes.shape({
+		x: PropTypes.number.isRequired,
+		y: PropTypes.number.isRequried
 	});
 
 	return isRequired ? shape.isRequired : shape;
@@ -69,5 +78,8 @@ transform.isRequired = createTransformPropType(true);
 const size = createSizePropType(false);
 size.isRequired = createSizePropType(true);
 
-const CustomPropTypes = {springConfig, dragMode, transform, size};
+const point = createPointPropType(false);
+point.isRequired = createPointPropType(true);
+
+const CustomPropTypes = {springConfig, dragMode, transform, size, point};
 export {CustomPropTypes};

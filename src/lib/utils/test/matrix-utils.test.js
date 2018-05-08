@@ -1,12 +1,11 @@
 import {
-	getAccumulatedMatrix,
+	getAccumulatedCSSTransform,
 	getTransformationMatrix,
 	qrDecompose,
 	extractRotation,
 	extractScale,
 	extractSkew,
 	extractTranslation,
-	skewXMatrix,
 	transformMultiple,
 	translationOnly,
 	deltaMatrix,
@@ -96,17 +95,6 @@ test('extractSkew returns an object representing the skew of the given matrix', 
     expect(s.y).toBeCloseTo(0);
 });
 
-test('skewXMatrix return a matrix representing the given skew in the X dimension', () => {
-    const sm = skewXMatrix(60);
-
-    expect(sm.a).toBeCloseTo(1);
-    expect(sm.b).toBeCloseTo(0);
-    expect(sm.c).toBeCloseTo(1.73205);
-    expect(sm.d).toBeCloseTo(1);
-    expect(sm.e).toBeCloseTo(0);
-    expect(sm.f).toBeCloseTo(0);
-});
-
 test('transformPosition transforms the given point by the given matrix', () => {
     const p = transformPosition(m, {x: 1, y: 2});
 
@@ -157,8 +145,8 @@ describe('Extracting matrices from DOM elements', () => {
         getBoundingClientRect: jest.fn(() => ({left: 5, top: 10, width: 15, height: 20}))
     };
 
-    test('getAccumulatedMatrix returns the accumulated matrix for the given DOMElement', () => {
-        const m1 = getAccumulatedMatrix(DOMElement3);
+    test('getAccumulatedCSSTransform returns the accumulated matrix for the given DOMElement', () => {
+        const m1 = getAccumulatedCSSTransform(DOMElement3);
 
         expect(m1.a).toBeCloseTo(949);
         expect(m1.b).toBeCloseTo(1410);

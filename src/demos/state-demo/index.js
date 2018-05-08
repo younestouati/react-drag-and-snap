@@ -10,7 +10,7 @@ class StateDemo extends Component {
 			<div className="state-demo">
 				<DragSnapContext>
 					<h1>State demo</h1>
-					Explanation of the demo
+					<p>Explanation of the demo</p>
 					<div className="row">
 						<div>
 							<h2>Will work</h2>

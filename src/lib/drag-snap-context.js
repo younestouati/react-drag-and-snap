@@ -185,7 +185,7 @@ class DragSnapContext extends Component {
     render() {
         return (
             <div
-                style={{position: 'relative', width: '100%', height: '100%'}}
+                style={{position: 'relative', width: '100%', height: '100%', display: 'inline-block'}}
                 ref={container => (this.container = container)}
             >
                 {this.props.children}

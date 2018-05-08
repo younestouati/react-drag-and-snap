@@ -6,7 +6,9 @@
 .nested-draggables-demo .nested-ball {
     border-radius: 100%;
     background: red;
-    border: 1px solid gray;
+    border: 15px solid gray;
+    border-bottom-width: 0px;
+    border-right-width: 0px;
 }
 
 .nested-draggables-demo .nested-ball:before {

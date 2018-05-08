@@ -1,5 +1,5 @@
 import {scale, translate, rotateDEG} from 'transformation-matrix';
-import {transformMultiple, skewXMatrix, qrDecompose, translationOnly, extractSkew} from '../utils/matrix-utils';
+import {transformMultiple, skew, qrDecompose, translationOnly} from '../utils/matrix-utils';
 
 /*
 * Given the snapTargetMatrix (the matrix that describes the snapTarget's position in the window coordinate system) and a snapTransform that
@@ -10,13 +10,14 @@ import {transformMultiple, skewXMatrix, qrDecompose, translationOnly, extractSke
 * properties are extracted from the snapTargetMartrix, and addition is done indenpendently for each property. These are then converted back to
 * matrix form, and multiplied together to produce the final snapMatrix
 */
-const createSnapMatrix = function (snapTargetMatrix, snapTransform, draggableActualSize, snapTargetActualSize) {
-    //Extract properties from snapTarget's matrix so we can add then (independently) with the equivalent values from the snapTransform.
-    //After this addition has been done, we will convert back to matrix form
-    const {skewX, rotate} = qrDecompose(snapTargetMatrix);
+const createSnapMatrix = function (snapTargetMatrix, snapTransform, snapTargetDOMElementHelper, draggableDOMElementHelper) {
+	//Extract properties from snapTarget's matrix so we can add then (independently) with the equivalent values from the snapTransform.
+	//After this addition has been done, we will convert back to matrix form
+    const {skewX, rotate, scaleX, scaleY} = qrDecompose(snapTargetMatrix);
 
-	const currentScaleX = (draggableActualSize.width) / (snapTargetActualSize.width);
-	const currentScaleY = (draggableActualSize.height) / (snapTargetActualSize.height);
+	const snapTargetScaledSize = snapTargetDOMElementHelper.getScaledSize(scaleX, scaleY);
+	const currentScaleX = (draggableDOMElementHelper.getSize().width) / (snapTargetScaledSize.width);
+	const currentScaleY = (draggableDOMElementHelper.getSize().height) / (snapTargetScaledSize.height);
 
 	const scalingMatrix = scale(
 		(snapTransform.scaleX / currentScaleX),
@@ -28,12 +29,9 @@ const createSnapMatrix = function (snapTargetMatrix, snapTransform, draggableAct
 	//The snapTransform's scaling will impact that translation and skew (but leave rotation unaffected)
 	const snapTransformScalingMatrix = scale(snapTransform.scaleX, snapTransform.scaleY);
 
-	//Create skew matrix taking the snapTransforms's scaling (in x and y directions) into account
-	const scaledSkewMatrix = transformMultiple(skewXMatrix(skewX + snapTransform.skewX), snapTransformScalingMatrix);
-	const skewMatrix = skewXMatrix(extractSkew(scaledSkewMatrix).x); //Extract the skew part of the matrix, and create a skew only matrix
-
-	//Create a translation matrix taking the transform's scaling (in x and y directions) into account.
-    const localTranslationMatrix = translate(snapTransform.x, snapTransform.y);
+	const skewMatrix = skew(skewX + snapTransform.skewX, snapTransform.skewY);
+	//Create a translation matrix taking the snap transform's scaling (in x and y directions) into account.
+    const localTranslationMatrix = translate((snapTransform.x)/scaleX, (snapTransform.y)/scaleY);
     //Extract the translation part and create a translation only matrix
 	const translationMatrix = translationOnly(
         transformMultiple(snapTargetMatrix, localTranslationMatrix, snapTransformScalingMatrix)

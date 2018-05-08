@@ -3,7 +3,7 @@
  * While dragging, a clone of the original component will be rendered in a 'drag layer', within the DragSnapContext. 
  * Rendering in a separate part of the DOM helps overcome z-index and overflow:hidden issues that could otherwise
  * prevent a proper dragging experience. Due to the nature of CSS, rendering in a different part of the DOM, does 
- * however present some challenges. with respect to ensuring that the visual appearance of the component is correct. 
+ * however present some challenges regarding ensuring that the visual appearance of the component is correct. 
  * Specifically, the following needs to be addressed:
  *
  * Inheritance
@@ -97,7 +97,7 @@ class StyleEnforcer extends Component {
 	}
 
 	injectStyles(props) {
-		const {width, height, paddingLeft, paddingRight, paddingTop, paddingBottom, computedStyles} = props;
+		const {width, height, padding, borderWidth, computedStyles} = props;
 		
 		const baseStyles = [];
 		const beforeStyles = [];
@@ -119,14 +119,13 @@ class StyleEnforcer extends Component {
 			}
 		`, true);
 
-		//TODO: CONSIDER TRANSFORMS APPLIED DIRECTLY TO THE ELEMENT!
-
 		//[style] is a way of overwriting even inline styles (https://css-tricks.com/override-inline-styles-with-css/)
+		//Also setting transform to none. Transform is already account for (for element itself) as well
+		//as ancestor in the matrix applied while dragging
 		this.highPriorityStyles = this.styleInjector.inject(`
 			#${this.state.id} > *,
 			#${this.state.id} > *[style] {
 				display: inline-block !important;
-				box-sizing: content-box !important;
 				float: none !important;
 				position: static !important;
 				min-width: none !important;
@@ -135,11 +134,20 @@ class StyleEnforcer extends Component {
 				max-height: none !important;
 				width: ${width}px !important;
 				height: ${height}px !important;
-				padding-left: ${paddingLeft}px !important;
-				padding-right: ${paddingRight}px !important;
-				padding-top: ${paddingTop}px !important;
-				padding-bottom: ${paddingBottom}px !important;
-				pointer-events: none;
+				padding-left: ${padding.left}px !important;
+				padding-right: ${padding.right}px !important;
+				padding-top: ${padding.top}px !important;
+				padding-bottom: ${padding.bottom}px !important;
+				border-left-width: ${borderWidth.left}px !important;
+				border-right-width: ${borderWidth.right}px !important;
+				border-top-width: ${borderWidth.top}px !important;
+				border-bottom-width: ${borderWidth.bottom}px !important;
+				pointer-events: none !important;
+				transform: none !important;
+				margin-left: 0 !important;
+				margin-right: 0 !important;
+				margin-top: 0 !important;
+				margin-bottom: 0 !important;
 			}`
 		);
 	}
@@ -154,6 +162,9 @@ class StyleEnforcer extends Component {
 
 		['base', 'before', 'after'].forEach((elementType) => {
 			const m = new Map(computedStyles[elementType]);
+			//m.delete('display'); //TODO: EXPLAIN THIS AS WELL. FIGURE OUT WHEN IT IS RELEVANT!!!!!!
+			m.delete('visibility'); //PROBABLY BECAUSE CLONE IS VISIBILTY:HIDDEN ON GRABBED (BEFORE DRAGGED)!
+
 			//See documentation at the top of this file for info about the -webkit-text-fill-color property
 			if (m.get('color') === m.get('-webkit-text-fill-color')) {
 				m.delete('-webkit-text-fill-color');
@@ -168,9 +179,10 @@ class StyleEnforcer extends Component {
 	componentWillMount() {
 		const size = this.props.DOMElementHelper.getSize();
 		const padding = this.props.DOMElementHelper.getPadding();
+		const borderWidth = this.props.DOMElementHelper.getBorderWidth();
 		const computedStyles = this.cleanUpComputedStyles(this.props.DOMElementHelper.getComputedStyles());
 
-		this.injectStyles(extend(size, padding, {computedStyles}));
+		this.injectStyles(extend(size, {padding, borderWidth}, {computedStyles}));
 	}
 
 	componentWillUnmount() {

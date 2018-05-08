@@ -1,0 +1,33 @@
+.transformer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    line-height: 0;
+}
+
+.margin-wrapper {
+    background:#F9CDA0;
+    display:inline-block;
+}
+
+.element {
+    position: relative;
+    display: inline-block;
+    background: content-box linear-gradient(0deg,#8EB5C2, #8EB5C2), linear-gradient(0deg,#C5CF8B, #C5CF8B);
+}
+
+.element:before {
+    content: attr(data-name);
+    line-height: normal;
+}
+
+.element-center {
+    transform: translate(-50%,-50%);
+    position: absolute;
+    color:darkblue;
+    font-size: 4px;
+}
+
+.draggable {
+    opacity: 0.6;
+}

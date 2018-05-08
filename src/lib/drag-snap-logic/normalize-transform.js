@@ -18,7 +18,7 @@ function getFirstDefinedValue(...values) {
     return firstDefinedValue;
 }
 
-const TRANSFORM_PROPS = ['x', 'y', 'rotate', 'scaleX', 'scaleY', 'skewX'];
+const TRANSFORM_PROPS = ['x', 'y', 'rotate', 'scaleX', 'scaleY', 'skewX', 'skewY'];
 
 /*
 * Accepts a (partial or complete) transform, and returns an equivalent, completed transform in a normalized format. 
@@ -32,6 +32,7 @@ const TRANSFORM_PROPS = ['x', 'y', 'rotate', 'scaleX', 'scaleY', 'skewX'];
 * - scaleY: number        (default: ratio betweens draggable's height and snapTarget's height)
 * - rotate: number        (default: 0)
 * - skewX: number         (default: 0)
+* - skewY: number         (default: 0)
 * - customSnapProps: any  (default: {})
 *
 * Valid input:
@@ -40,22 +41,23 @@ const TRANSFORM_PROPS = ['x', 'y', 'rotate', 'scaleX', 'scaleY', 'skewX'];
 * - x and y (and translateX and translateY) can be percentages encoded as string, e.g. '50%'. The percentage is based on the width/height of the snapTarget
 * - scale can be used to set scaleX and scaleY to the same value in one go
 */
-function normalizeTransform(inputTransform, draggableActualSize, snapTargetActualSize) {
+function normalizeTransform(inputTransform, draggableScaledSize, snapTargetScaledSize) {
     const normalizedTransform = {};
     normalizedTransform.x =  getFirstDefinedValue(inputTransform.x, inputTransform.translateX, 0);
     normalizedTransform.y = getFirstDefinedValue(inputTransform.y, inputTransform.translateY, 0);
     normalizedTransform.rotate = getFirstDefinedValue(inputTransform.rotate, 0);
-    normalizedTransform.scaleX = getFirstDefinedValue(inputTransform.scaleX, inputTransform.scale, (draggableActualSize.width/snapTargetActualSize.width));
-    normalizedTransform.scaleY = getFirstDefinedValue(inputTransform.scaleY, inputTransform.scale, (draggableActualSize.height/snapTargetActualSize.height));
+    normalizedTransform.scaleX = getFirstDefinedValue(inputTransform.scaleX, inputTransform.scale, (draggableScaledSize.width/snapTargetScaledSize.width));
+    normalizedTransform.scaleY = getFirstDefinedValue(inputTransform.scaleY, inputTransform.scale, (draggableScaledSize.height/snapTargetScaledSize.height));
     normalizedTransform.skewX = getFirstDefinedValue(inputTransform.skewX, 0);
+    normalizedTransform.skewY = getFirstDefinedValue(inputTransform.skewY, 0);
     normalizedTransform.customSnapProps = getFirstDefinedValue(inputTransform.customSnapProps, {});
 
     normalizedTransform.x = isPercentage(normalizedTransform.x) 
-        ? parseFloat(normalizedTransform.x) / 100 * snapTargetActualSize.width 
+        ? parseFloat(normalizedTransform.x) / 100 * snapTargetScaledSize.width 
         : normalizedTransform.x;
 
     normalizedTransform.y = isPercentage(normalizedTransform.y) 
-        ? parseFloat(normalizedTransform.y) / 100 * snapTargetActualSize.height
+        ? parseFloat(normalizedTransform.y) / 100 * snapTargetScaledSize.height
         : normalizedTransform.y;
 
     TRANSFORM_PROPS.forEach((p) => {

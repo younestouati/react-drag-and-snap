@@ -26,7 +26,8 @@ const config3 = {
     releaseSnapCriteria: Criteria.never
 };
 
-const additions = {rotate: 25, skewX: 65, x: 10, y: 10, width: 100, height: 160, scaleX: .4, scaleY: 1.6};
+//const additions = {rotate: 25, skewX: 65, skewY: 0, x: 10, y: 10, width: 100, height: 160, scaleX: .4, scaleY: 1.6};
+const additions = {rotate: 0, skewX: 0, skewY: 20, x: 10, y: 10, scaleX: 1, scaleY: 1};
 const config4 = {
     dragSnapCriteria: Criteria.isCenterWithinRadius(200),
     dragSnapTransform: additions,
@@ -91,13 +92,13 @@ class Container extends Component {
 							<SnapTargetType4 ref={(el) => this.target4 = el}>
 								<div
 									style={{
-										transform: `translate(calc(${additions.x}px - 50%), calc(${additions.y}px - 50%)) rotate(${additions.rotate}deg) skewX(${additions.skewX}deg)`,
+										transform: `translate(calc(${additions.x}px - 50%), calc(${additions.y}px - 50%)) rotate(${additions.rotate}deg) skewX(${additions.skewX}deg) skewY(${additions.skewY}deg) scaleX(${additions.scaleX}) scaleY(${additions.scaleY})`,
 										display: 'inline-block',
 										position: 'absolute',
 										top: '50%',
 										left: '50%',
-										width: `${additions.width}px`,
-										height: `${additions.height}px`,
+										width: `250px`,
+										height: `100px`,
 										outline: '2px dotted gray'
 									}}
 									ref={el => this.inner = el}

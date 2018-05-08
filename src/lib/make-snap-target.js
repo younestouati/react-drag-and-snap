@@ -16,6 +16,7 @@ import {
     transformPosition,
     qrDecompose
 } from './utils/matrix-utils';
+import {DOMElementHelper} from './helpers/misc/dom-element-helper';
 import {createSnapMatrix} from './drag-snap-logic/create-snapping-matrix';
 import {normalizeTransform} from './drag-snap-logic/normalize-transform';
 import {makeClassBasedComponent} from './helpers/higher-order-components/make-class-based-component';
@@ -39,15 +40,16 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             constructor(props) {
                 super(props);
 
-                this.state = {
-                    collectedDragProps: this.collectDragProps().collectedDragProps
-                };
-
                 this.draggedItems = [];
                 this.baseExternalTransformation = null;
                 this.internalTransformation = null;
                 this.matrix = null;
                 this.size = null;
+                this.DOMElementHelper = new DOMElementHelper();
+
+                this.state = {
+                    collectedDragProps: this.collectDragProps().collectedDragProps
+                };
 
                 //Convert to class based component, if functional. Functional components can't have refs since. We need refs
                 this.ClassBasedWrappedComponent = makeClassBasedComponent(WrappedComponent);
@@ -61,6 +63,8 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             }
 
             componentDidMount() {
+                this.DOMElementHelper.updateElement(findDOMNode(this.el));
+
                 if (this.context.registerAsSnapTarget) {
                     this.context.registerAsSnapTarget(this.id, this);
                 } else {
@@ -78,7 +82,7 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
 
             update() {
                 this.matrix = null; //Invalidate the matrix, so it will be recalculated next time it is needed
-                this.size = null;
+                this.DOMElementHelper.refresh();
             }
 
             continuousUpdateIfEnabled() {
@@ -89,7 +93,7 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
 
             getMatrix() {
                 if (!this.matrix) {
-                    this.matrix = getTransformationMatrix(findDOMNode(this.el));
+                    this.matrix = getTransformationMatrix(this.DOMElementHelper.getElement());
                     this.baseExternalTransformation = this.props.externalTransformation;
                 }
 
@@ -105,23 +109,11 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             }
 
             getSize() {
-                if (!this.size) {
-                    const DOMElement = findDOMNode(this.el);
-
-                    if (!DOMElement) { //If size is queried before first render, just report 0 size
-                        return {width: 0, height: 0};
-                    } else {
-                        this.size = {
-                            width: DOMElement.clientWidth,
-                            height: DOMElement.clientHeight
-                        };
-                    }
-                }
-
-                return this.size;
+                //If size is queried before first render, just report 0 size
+                return this.DOMElementHelper.getSizeOrDefault({width: 0, height: 0});
             }
 
-            getActualSize() {
+            getScaledSize() {
                 const size = this.getSize();
                 const {scaleX, scaleY} = qrDecompose(this.getMatrix());
 
@@ -132,11 +124,11 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             }
 
             //Converts the descriptor, velocity and cursor point from the global (window) coordinate system, to the local coordinate system of the snap taget.
-            makeSnapTargetSpecific({id, dragState, dragData, matrix, actualSize, velocity, cursorPosition, snapTargetId}) {                                
+            makeSnapTargetSpecific({id, dragState, dragData, matrix, scaledSize, velocity, cursorPosition, snapTargetId}) {                                
                 const {x, y, rotate, skewX, skewY} = qrDecompose(matrix);
                 const localPosition = transformPosition(this.getMatrix(), {x, y});
                 const localRotation = transformRotation(this.getMatrix(), rotate);
-                const localScale = transformScale(this.getActualSize(), actualSize);
+                const localScale = transformScale(this.getScaledSize(), scaledSize);
                 const localSkew = transformSkew(this.getMatrix(), {x: skewX, y: skewY});
                 const isSnappingToThisTarget = (this.id === snapTargetId);
                 const isSnappingToOtherTarget = !isNullOrUndefined(snapTargetId) && !isSnappingToThisTarget;
@@ -199,10 +191,19 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
                 const params = this.getParams(draggableDescriptor);
                 const snapTransform = isFunction(_snapTransform) ? _snapTransform(...params) : _snapTransform;
 
-                const normalizedSnapTransform = normalizeTransform(snapTransform, draggableDescriptor.actualSize, this.getActualSize());
-                const snapMatrix = createSnapMatrix(this.getMatrix(), normalizedSnapTransform, draggableDescriptor.actualSize, this.getActualSize());
+                const normalizedSnapTransform = normalizeTransform(
+                    snapTransform,
+                    draggableDescriptor.scaledSize,
+                    this.getScaledSize()
+                );
 
-                //TODO: CAN THIS COMPARISON BE DONE IN A MORE ELEGANT WAY. MAYBE COMPARING EXTRACTED X AND Y FROM snappingMatrix and draggableDescriptor.matrix instead?
+                const snapMatrix = createSnapMatrix(
+                    this.getMatrix(), 
+                    normalizedSnapTransform,
+                    this.DOMElementHelper,
+                    draggableDescriptor.DOMElementHelper
+                );
+
                 const {x, y} = transformPosition(this.getMatrix(), extractTranslation(draggableDescriptor.matrix));
                 const isPositionSnapped = x !== normalizedSnapTransform.x || y !== normalizedSnapTransform.y;
 
@@ -295,7 +296,7 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             onDropStart: () => {},
             onDropComplete: () => {},
             onDropCancel: () => {},
-            easyEscape: true,
+            easyEscape: false,
             continuousUpdate: false,
             snapPriority: distanceBasedWithOffset(100)
         };

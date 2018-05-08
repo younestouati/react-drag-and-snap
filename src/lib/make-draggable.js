@@ -45,7 +45,6 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             constructor(props) {
                 super(props);
                 this.state = initialState;
-                this.helpers = helpers;
                 this.id = createGuid();
                 this.DOMElementHelper = new helpers.DOMElementHelper();
                 this.pointerTracker = new helpers.PointerTracker(
@@ -131,11 +130,12 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
 
             getDraggableDescriptor(dragState, matrix, cursorPosition, velocity, snapTargetId) {
                 const {scaleX, scaleY} = qrDecompose(matrix);
-
+                
                 return {
                     id: this.id,
                     dragData: this.props.dragData,
-                    actualSize: {
+                    DOMElementHelper: this.DOMElementHelper,
+                    scaledSize: {
                         width: this.DOMElementHelper.getSize().width * scaleX,
                         height: this.DOMElementHelper.getSize().height * scaleY
                     },
@@ -213,11 +213,8 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             getInitialDragState(globalTouchOffset) {
                 const dragState = GRABBED;
                 const baseMatrix = getTransformationMatrix(this.DOMElement);
+                //TODO: CONSIDER IF ORIGO MIGHT CHANGE DEPENDING ON BOX-SIZING VS CONTENT-SIZING
                 const touchOffset = subtractPoints(globalTouchOffset, applyToPoint(baseMatrix, getOrigo()));
-
-                //TODO: HANDLE OFFSET WHEN GRABBING FLOATING HEAD
-                //TODO: HANDLE ERROR WHEN CLICKING ON FLOATING HEAD INITIALLY (BEFORE FIRST DRAG)
-                //TODO: REINVESTIGATE EASY ESCAPE DEMO. DOES IT WORK AS INTENDED??
 
                 return {
                     dragState,
@@ -227,7 +224,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                     firstSnapTargetId: null,
                     flipGrabbedFlag: true,
                     isSnappingBack: false,
-                    isPositionSnapped: null //Don't know if this is true or false at this point. Initialize to null
+                    isPositionSnapped: null //Unclear if this is true or false at this point. Initialize to null
                 };
             }
 
@@ -309,7 +306,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
 
                 //Matrix is in window coordinates, but draggables will be rendered in the context, so must be transformed
                 const contextTransform = matrix ? qrDecompose(this.context.windowToContext(matrix)) : undefined;
-
+                
                 return (
                     <SpringRenderer
                         transform={contextTransform}
@@ -343,7 +340,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                                 />,
                                 dragState !== INACTIVE ? createPortal(
                                     <SpringRendererApplier
-                                        draggableSize={this.DOMElementHelper.getSize()}
+                                        draggableCenterInBorderBoxCoordinates={this.DOMElementHelper.getCenterInBorderBoxCoordinates()}
                                         contextSize={this.context.getSize()}
                                         transform={transform}
                                         onRegrab={(e) => this.pointerTracker.track(e)}

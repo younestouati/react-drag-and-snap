@@ -1,0 +1,22 @@
+.test-component {
+    display: inline-block;
+    vertical-align: top;
+    width: 400px;
+    height: 500px;
+    border: 1px solid darkred;
+    position: relative;
+}
+
+.prop-table {
+    width: 100%;
+    background: darkred;
+    color: white;
+}
+
+.prop-table th {
+    font-weight: bold;
+}
+
+.prop-table td {
+    text-align: center;
+}

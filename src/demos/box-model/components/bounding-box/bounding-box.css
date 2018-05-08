@@ -1,0 +1,23 @@
+.bounding-box {
+    outline: 1px dashed gray;
+    position: absolute;
+}
+
+.bounding-box:before {
+    content: '✕';
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    position: absolute;
+    color: gray;
+    font-size: 10px;
+}
+
+.estimated-content-center {
+    display: inline-block;
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    outline: 1px solid white;
+    transform: translate(-50%,-50%);
+}

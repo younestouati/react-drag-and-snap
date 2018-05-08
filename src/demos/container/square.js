@@ -9,7 +9,7 @@ class Square extends Component {
 		return (
 			<div style={{
 				display: 'inline-block',
-				outline: '3px dashed #333',
+				border: '3px dashed #333',
 				width: '250px',
 				height: '100px'
 			}}>

@@ -1,40 +1,32 @@
-import {transform, translate, identity, fromObject, rotateDEG, scale, applyToPoint, inverse} from 'transformation-matrix';
+import {
+	transform,
+	translate,
+	identity,
+	fromObject,
+	rotateDEG,
+	scale,
+	applyToPoint,
+	inverse,
+	rotate
+} from 'transformation-matrix';
+import {DOMElementHelper} from '../helpers/misc/dom-element-helper';
 import {isNullOrUndefined} from './type-utils';
 import {extend} from './object-utils';
 
-const floating = '(\\-?[\\d\\.e]+)';
-const commaSpace = '\\,?\\s*';
-
-const reg = {
-	matrix: new RegExp(
-		'^matrix\\(' +
-		floating + commaSpace +
-		floating + commaSpace +
-		floating + commaSpace +
-		floating + commaSpace +
-		floating + commaSpace +
-		floating + '\\)$')
-};
-
 function matrixFromString(string){
-	let matrix = reg.matrix.exec(string);
-	if (matrix) {
-		matrix.shift();
+	let entries = string.replace(/^.*\((.*)\)$/g, "$1").split(/, +/);
 
-		for (let i = matrix.length-1; i >= 0 ; i--) {
-			matrix[i] = parseFloat(matrix[i]);
-		}
-	}
-
-	matrix = matrix || [ 1, 0, 0, 1, 0, 0 ];
+	const parsedEntries = (entries.length === 6)
+		? entries.map(parseFloat)
+		: [1, 0, 0, 1, 0, 0];
 
 	return {
-		a: matrix[0],
-		b: matrix[1],
-		c: matrix[2],
-		d: matrix[3],
-		e: matrix[4],
-		f: matrix[5]
+		a: parsedEntries[0],
+		b: parsedEntries[1],
+		c: parsedEntries[2],
+		d: parsedEntries[3],
+		e: parsedEntries[4],
+		f: parsedEntries[5]
 	};
 }
 
@@ -77,6 +69,17 @@ function skewXMatrix(x) {
 	});
 }
 
+function skew(x, y) {
+	return fromObject({
+		a: 1,
+		b: Math.tan(y / 180 * Math.PI),
+		c: Math.tan(x / 180 * Math.PI),
+		d: 1,
+		e: 0,
+		f: 0
+	});	
+}
+
 function translationOnly(matrix) {
 	return extend(matrix, {a: 1, b: 0, c: 0, d: 1});
 }
@@ -101,12 +104,71 @@ function qrDecompose(matrix) {
 	};
 }
 
+function getCenterOfBorderBox(domElementHelper) {
+    const {left, top, width, height} = domElementHelper.getBoundingClientRect();
+    
+    return {
+        x: left + width/2,
+        y: top + height/2
+    };
+}
+
+/*
+ * The snapping functionality is based on the outermost HTML elements of the draggable and the 
+ * snapTarget. That is, if the snapTransform dictates that the draggable should snap to the 
+ * snapTarget by - say - exactly covering it, it will make the outermost element of the draggable 
+ * adapt in position, size, rotation, and skew, to exactly match that of the outer most element of 
+ * the snapTarget when snapping.
+ * 
+ * React-drag-and-snap will use the element’s content-boxes or border-boxes in these snapping calculations 
+ * depending on the values of the box-sizing CSS properties of the given elements.
+ *
+ * To do the snapping react-drag-and-snap needs to determine the transformation matrices of the draggable 
+ * and snap target. That is the matrices that describe the element’s poses in the global window coordinate system. 
+ * The scaling, rotation and skew parts are determined by reading and accumulating the CSS transforms for the 
+ * element and its entire ancestor tree. However, the position - defined as the position of the center of the 
+ * element - is hard to determine analytically, as it is the result of CSS transformations, left/top/bottom/right 
+ * props if position is relative/absolute/fixed, and the element's natural position in the document flow given 
+ * the current viewport size. Consequently, the position is determined by ‘measuring’, i.e. using 
+ * getBoundingClientRect().
+ *
+ * GetBoundingClientRect returns the position and size of the boundingBox, which is the smallest axis-aligned 
+ * rectangle that fully contains the entire element, including padding and border (that is the border box - not 
+ * the content box)! The center of this rectangle will always coincide with the center of the content box 
+ * (regardless of any affine transformation that might have be applied to the the element or any ancestor) 
+ * provided that:
+ *   1) The sum of padding left and border left width equals the sum of padding right and border right width
+ *   2) The sum of padding top and border top width equals the sum of padding bottom and border bottom width
+ *
+ * When the criteria above aren’t met, the non-uniform padding/border needs to be accounted for, in order to find 
+ * the center of the content box. That is the reason for the complexity of this method.
+ */
+function getCenterOfContentBox(domElementHelper, CSSTransform) {
+    const {left, top, width, height} = domElementHelper.getBoundingClientRect();
+    const padding = domElementHelper.getPadding();
+    const borderWidth = domElementHelper.getBorderWidth();
+    const {rotate: rotation, scaleX, scaleY, skewX} = qrDecompose(CSSTransform);
+
+    const x = left + width/2 - (padding.right - padding.left)/2 - (borderWidth.right - borderWidth.left)/2;
+    const y = top + height/2 - (padding.bottom - padding.top)/2 - (borderWidth.bottom - borderWidth.top)/2;
+
+    const matrix = transformMultiple(
+        translate(left + width/2, top + height/2),
+        rotate(rotation * Math.PI/180),
+        scale(scaleX, scaleY),
+        skewXMatrix(skewX),
+        translate(-(left + width/2), -(top + height/2)),
+    );
+
+    return applyToPoint(matrix, {x, y});
+}
+
 function getCSSTransformsMatrix(DOMElement) {
 	const elementTransform = window.getComputedStyle(DOMElement).transform;
 	return elementTransform && elementTransform !== 'none' ? matrixFromString(elementTransform) : identity();
 }
 
-function getAccumulatedMatrix(DOMElement) {
+function getAccumulatedCSSTransform(DOMElement) {
 	let accumulatedMatrix = identity();
 
 	do {
@@ -118,13 +180,14 @@ function getAccumulatedMatrix(DOMElement) {
 }
 
 function getTransformationMatrix(DOMElement) {
-	const bcr = DOMElement.getBoundingClientRect();
-	const translation = {
-		x: (bcr.left + window.scrollX + bcr.width/2),
-		y: (bcr.top + window.scrollY + bcr.height/2)
-	};
+	const domElementHelper = new DOMElementHelper(DOMElement);
+	const accumulatedCSSTransform = getAccumulatedCSSTransform(DOMElement);
 
-	return overrideTranslation(getAccumulatedMatrix(DOMElement), translation);
+	const elementCenter = domElementHelper.getIsBorderBox()
+		? getCenterOfBorderBox(domElementHelper)
+		: getCenterOfContentBox(domElementHelper, accumulatedCSSTransform);
+	
+	return overrideTranslation(getAccumulatedCSSTransform(DOMElement), elementCenter);
 }
 
 function transformMultiple (...matrices) {
@@ -190,14 +253,16 @@ function deltaMatrix (oldTransform = {}, newTransform = {}) {
 }
 
 export {
-	getAccumulatedMatrix,
+	getAccumulatedCSSTransform,
 	getTransformationMatrix,
+	getCenterOfContentBox,
+	getCenterOfBorderBox,
 	qrDecompose,
 	extractRotation,
 	extractScale,
 	extractSkew,
 	extractTranslation,
-	skewXMatrix,
+	skew,
 	transformMultiple,
 	translationOnly,
 	deltaMatrix,

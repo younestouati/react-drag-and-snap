@@ -9,7 +9,7 @@ class EasyEscapeDemo extends Component {
         super(props);
 
         this.state = {
-            ballIndex: 0
+            ballIndex: 2
         };
     }
 
@@ -25,7 +25,6 @@ class EasyEscapeDemo extends Component {
                             onDropComplete={
                                 () => this.setState({ballIndex: 0})
                             }
-                            easyEscape={false}
                         />
                     </div>
                     <div className="target-wrapper">
@@ -34,6 +33,7 @@ class EasyEscapeDemo extends Component {
                             onDropComplete={
                                 () => this.setState({ballIndex: 1})
                             }
+                            easyEscape={true}
                         />
                     </div>
                     <div className="target-wrapper">
@@ -42,6 +42,7 @@ class EasyEscapeDemo extends Component {
                             onDropComplete={
                                 () => this.setState({ballIndex: 2})
                             }
+                            easyEscape={true}
                         />
                     </div>
                 </DragSnapContext>
