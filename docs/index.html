@@ -1,0 +1,24 @@
+<!--
+    The purpose of this file is to serve the demos for people to play around with when evaluating the library.
+    Placed in the docs as github pages can serve from this folder by default.
+-->
+<html>
+    <head>
+        <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+        <script src='../dist/bundle.umd.js'></script>
+    </head>
+    <body>
+        <div id="root"></div>
+        Tests
+        <script>
+            document.write(Math.random());
+        </script>
+        <script>
+            ReactDOM.render(
+                React.createElement(MyComponent, null),
+                document.getElementById('root')
+            );
+        </script>
+    </body>
+</html>

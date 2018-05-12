@@ -1,0 +1,1 @@
+This is where we put the components that make use of the library. They will be mounted by the root index.html, for development purposes, as well as the docs/index.html file for documentation purposes.

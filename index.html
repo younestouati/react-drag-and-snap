@@ -1,0 +1,32 @@
+<!--
+    The purpose of this file is to serve as a 'host' file for the library, to be used during development.
+    Run `npm run dev` to start the dev server and open `http://localhost:10001/` in your browser to run
+    this page. Will run in watch mode and auto reload on code changes.
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+        <script src='/dev-bundle/bundle.umd.js'></script>
+        <style>
+        html, body, #root {
+            height: 100%;
+            touch-action: none;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script>
+            ReactDOM.render(
+                React.createElement(ReactDragAndSnapDemos, null),
+                document.getElementById('root')
+            );
+        </script>
+    </body>
+</html>
