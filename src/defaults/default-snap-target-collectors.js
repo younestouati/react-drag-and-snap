@@ -21,11 +21,11 @@ const staticAndLowFrequencyProps = (draggableDescriptors) => draggableDescriptor
 
 const allProps = (draggableDescriptors) => draggableDescriptors;
 
-const snapTargetCollectors = {
+const SnapTargetCollectors = {
     noProps,
     staticProps,
     staticAndLowFrequencyProps,
     allProps
 };
 
-export {snapTargetCollectors};
+export default SnapTargetCollectors;

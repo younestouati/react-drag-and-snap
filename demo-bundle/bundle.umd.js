@@ -9,6 +9,9 @@ var global$1 = (typeof global !== "undefined" ? global :
             typeof self !== "undefined" ? self :
             typeof window !== "undefined" ? window : {});
 
+// shim for using process in browser
+// based off https://github.com/defunctzombie/node-process/blob/master/browser.js
+
 function defaultSetTimout() {
     throw new Error('setTimeout has not been defined');
 }
@@ -332,6 +335,14 @@ var objectAssign = shouldUseNative() ? Object.assign : function (target, source)
 	return to;
 };
 
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 'use strict';
 
 /**
@@ -377,6 +388,14 @@ function invariant(condition, format, a, b, c, d, e, f) {
 }
 
 var invariant_1 = invariant;
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
 
 'use strict';
 
@@ -425,19 +444,36 @@ emptyFunction.thatReturnsArgument = function (arg) {
 
 var emptyFunction_1 = emptyFunction;
 
+/** @license React v16.3.2
+ * react.production.min.js
+ *
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 'use strict';var r="function"===typeof Symbol&&Symbol["for"]; var t=r?Symbol["for"]("react.element"):60103; var u=r?Symbol["for"]("react.portal"):60106; var v=r?Symbol["for"]("react.fragment"):60107; var w=r?Symbol["for"]("react.strict_mode"):60108; var x=r?Symbol["for"]("react.provider"):60109; var y=r?Symbol["for"]("react.context"):60110; var z=r?Symbol["for"]("react.async_mode"):60111; var A=r?Symbol["for"]("react.forward_ref"):
-60112; var B="function"===typeof Symbol&&Symbol.iterator;function C(a){for(var b=arguments.length-1,e="http://reactjs.org/docs/error-decoder.html?invariant="+a,c=0;c<b;c++)e+="&args[]="+encodeURIComponent(arguments[c+1]);invariant_1(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",e);}var D={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}};
+60112; var B="function"===typeof Symbol&&Symbol.iterator;function C(a){for(var b=arguments.length-1,e="http://reactjs.org/docs/error-decoder.html?invariant\x3d"+a,c=0;c<b;c++)e+="\x26args[]\x3d"+encodeURIComponent(arguments[c+1]);invariant_1(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",e);}var D={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}};
 function E(a,b,e){this.props=a;this.context=b;this.refs=emptyObject_1;this.updater=e||D;}E.prototype.isReactComponent={};E.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?C("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState");};E.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate");};function F(){}F.prototype=E.prototype;function G(a,b,e){this.props=a;this.context=b;this.refs=emptyObject_1;this.updater=e||D;}var H=G.prototype=new F;
 H.constructor=G;objectAssign(H,E.prototype);H.isPureReactComponent=!0;var I={current:null}; var J=Object.prototype.hasOwnProperty; var K={key:!0,ref:!0,__self:!0,__source:!0};
 function L(a,b,e){var c=void 0,d={},g=null,h=null;if(null!=b)for(c in void 0!==b.ref&&(h=b.ref), void 0!==b.key&&(g=""+b.key), b)J.call(b,c)&&!K.hasOwnProperty(c)&&(d[c]=b[c]);var f=arguments.length-2;if(1===f)d.children=e;else if(1<f){for(var k=Array(f),l=0;l<f;l++)k[l]=arguments[l+2];d.children=k;}if(a&&a.defaultProps)for(c in f=a.defaultProps, f)void 0===d[c]&&(d[c]=f[c]);return{$$typeof:t,type:a,key:g,ref:h,props:d,_owner:I.current}}
-function M(a){return"object"===typeof a&&null!==a&&a.$$typeof===t}function escape(a){var b={"=":"=0",":":"=2"};return"$"+(""+a).replace(/[=:]/g,function(a){return b[a]})}var N=/\/+/g; var O=[];function P(a,b,e,c){if(O.length){var d=O.pop();d.result=a;d.keyPrefix=b;d.func=e;d.context=c;d.count=0;return d}return{result:a,keyPrefix:b,func:e,context:c,count:0}}function Q(a){a.result=null;a.keyPrefix=null;a.func=null;a.context=null;a.count=0;10>O.length&&O.push(a);}
+function M(a){return"object"===typeof a&&null!==a&&a.$$typeof===t}function escape(a){var b={"\x3d":"\x3d0",":":"\x3d2"};return"$"+(""+a).replace(/[=:]/g,function(a){return b[a]})}var N=/\/+/g; var O=[];function P(a,b,e,c){if(O.length){var d=O.pop();d.result=a;d.keyPrefix=b;d.func=e;d.context=c;d.count=0;return d}return{result:a,keyPrefix:b,func:e,context:c,count:0}}function Q(a){a.result=null;a.keyPrefix=null;a.func=null;a.context=null;a.count=0;10>O.length&&O.push(a);}
 function R(a,b,e,c){var d=typeof a;if("undefined"===d||"boolean"===d)a=null;var g=!1;if(null===a)g=!0;else switch(d){case "string":case "number":g=!0;break;case "object":switch(a.$$typeof){case t:case u:g=!0;}}if(g)return e(c,a,""===b?"."+S(a,0):b), 1;g=0;b=""===b?".":b+":";if(Array.isArray(a))for(var h=0;h<a.length;h++){d=a[h];var f=b+S(d,h);g+=R(d,f,e,c);}else if(null===a||"undefined"===typeof a?f=null:(f=B&&a[B]||a["@@iterator"],f="function"===typeof f?f:null), "function"===typeof f)for(a=f.call(a), h=0;!(d=a.next()).done;)d=d.value, f=b+S(d,h++), g+=R(d,f,e,c);else"object"===d&&(e=""+a, C("31","[object Object]"===e?"object with keys {"+Object.keys(a).join(", ")+"}":e,""));return g}function S(a,b){return"object"===typeof a&&null!==a&&null!=a.key?escape(a.key):b.toString(36)}function T(a,b){a.func.call(a.context,b,a.count++);}
-function U(a,b,e){var c=a.result,d=a.keyPrefix;a=a.func.call(a.context,b,a.count++);Array.isArray(a)?V(a,c,e,emptyFunction_1.thatReturnsArgument):null!=a&&(M(a)&&(b=d+(!a.key||b&&b.key===a.key?"":(""+a.key).replace(N,"$&/")+"/")+e,a={$$typeof:t,type:a.type,key:b,ref:a.ref,props:a.props,_owner:a._owner}), c.push(a));}function V(a,b,e,c,d){var g="";null!=e&&(g=(""+e).replace(N,"$&/")+"/");b=P(b,g,c,d);null==a||R(a,"",U,b);Q(b);}
+function U(a,b,e){var c=a.result,d=a.keyPrefix;a=a.func.call(a.context,b,a.count++);Array.isArray(a)?V(a,c,e,emptyFunction_1.thatReturnsArgument):null!=a&&(M(a)&&(b=d+(!a.key||b&&b.key===a.key?"":(""+a.key).replace(N,"$\x26/")+"/")+e,a={$$typeof:t,type:a.type,key:b,ref:a.ref,props:a.props,_owner:a._owner}), c.push(a));}function V(a,b,e,c,d){var g="";null!=e&&(g=(""+e).replace(N,"$\x26/")+"/");b=P(b,g,c,d);null==a||R(a,"",U,b);Q(b);}
 var W={Children:{map:function(a,b,e){if(null==a)return a;var c=[];V(a,c,null,b,e);return c},forEach:function(a,b,e){if(null==a)return a;b=P(null,null,b,e);null==a||R(a,"",T,b);Q(b);},count:function(a){return null==a?0:R(a,"",emptyFunction_1.thatReturnsNull,null)},toArray:function(a){var b=[];V(a,b,null,emptyFunction_1.thatReturnsArgument);return b},only:function(a){M(a)?void 0:C("143");return a}},createRef:function(){return{current:null}},Component:E,PureComponent:G,createContext:function(a,b){void 0===b&&(b=null);a={$$typeof:y,
 _calculateChangedBits:b,_defaultValue:a,_currentValue:a,_changedBits:0,Provider:null,Consumer:null};a.Provider={$$typeof:x,_context:a};return a.Consumer=a},forwardRef:function(a){return{$$typeof:A,render:a}},Fragment:v,StrictMode:w,unstable_AsyncMode:z,createElement:L,cloneElement:function(a,b,e){null===a||void 0===a?C("267",a):void 0;var c=void 0,d=objectAssign({},a.props),g=a.key,h=a.ref,f=a._owner;if(null!=b){void 0!==b.ref&&(h=b.ref, f=I.current);void 0!==b.key&&(g=""+b.key);var k=void 0;a.type&&a.type.defaultProps&&
 (k=a.type.defaultProps);for(c in b)J.call(b,c)&&!K.hasOwnProperty(c)&&(d[c]=void 0===b[c]&&void 0!==k?k[c]:b[c]);}c=arguments.length-2;if(1===c)d.children=e;else if(1<c){k=Array(c);for(var l=0;l<c;l++)k[l]=arguments[l+2];d.children=k;}return{$$typeof:t,type:a.type,key:g,ref:h,props:d,_owner:f}},createFactory:function(a){var b=L.bind(null,a);b.type=a;return b},isValidElement:M,version:"16.3.2",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurrentOwner:I,assign:objectAssign}};
 var X=Object.freeze({default:W});
 var Y=X&&W||X;var react_production_min=Y["default"]?Y["default"]:Y;
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
 
 'use strict';
 
@@ -506,6 +542,13 @@ var warning_1 = warning;
 var ReactPropTypesSecret$1 = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 
 var ReactPropTypesSecret_1 = ReactPropTypesSecret$1;
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 'use strict';
 
@@ -2208,8 +2251,20 @@ function containsNode(outerNode, innerNode) {
 
 var containsNode_1 = containsNode;
 
+/** @license React v16.3.2
+ * react-dom.production.min.js
+ *
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/*
+ Modernizr 3.0.0pre (Custom Build) | MIT
+*/
 'use strict';
-function D$1(a){for(var b=arguments.length-1,c="http://reactjs.org/docs/error-decoder.html?invariant="+a,d=0;d<b;d++)c+="&args[]="+encodeURIComponent(arguments[d+1]);invariant_1(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",c);}react?void 0:D$1("227");
+function D$1(a){for(var b=arguments.length-1,c="http://reactjs.org/docs/error-decoder.html?invariant\x3d"+a,d=0;d<b;d++)c+="\x26args[]\x3d"+encodeURIComponent(arguments[d+1]);invariant_1(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",c);}react?void 0:D$1("227");
 function ma(a,b,c,d,e,f,h,g,k){this._hasCaughtError=!1;this._caughtError=null;var v=Array.prototype.slice.call(arguments,3);try{b.apply(c,v);}catch(l){this._caughtError=l, this._hasCaughtError=!0;}}
 var E$1={_caughtError:null,_hasCaughtError:!1,_rethrowError:null,_hasRethrowError:!1,invokeGuardedCallback:function(a,b,c,d,e,f,h,g,k){ma.apply(E$1,arguments);},invokeGuardedCallbackAndCatchFirstError:function(a,b,c,d,e,f,h,g,k){E$1.invokeGuardedCallback.apply(this,arguments);if(E$1.hasCaughtError()){var v=E$1.clearCaughtError();E$1._hasRethrowError||(E._hasRethrowError=!0, E._rethrowError=v);}},rethrowCaughtError:function(){return na.apply(E$1,arguments)},hasCaughtError:function(){return E$1._hasCaughtError},clearCaughtError:function(){if(E$1._hasCaughtError){var a=
 E$1._caughtError;E$1._caughtError=null;E$1._hasCaughtError=!1;return a}D$1("198");}};function na(){if(E$1._hasRethrowError){var a=E$1._rethrowError;E$1._rethrowError=null;E$1._hasRethrowError=!1;throw a;}}var oa=null; var pa={};
@@ -2449,7 +2504,7 @@ function If(a,b){var c=b.value;a._wrapperState={initialValue:null!=c?c:b.default
 function Lf(a,b){var c=b.value;null!=c&&(c=""+c, c!==a.value&&(a.value=c), null==b.defaultValue&&(a.defaultValue=c));null!=b.defaultValue&&(a.defaultValue=b.defaultValue);}function Mf(a){var b=a.textContent;b===a._wrapperState.initialValue&&(a.value=b);}var Nf={html:"http://www.w3.org/1999/xhtml",mathml:"http://www.w3.org/1998/Math/MathML",svg:"http://www.w3.org/2000/svg"};
 function Of(a){switch(a){case "svg":return"http://www.w3.org/2000/svg";case "math":return"http://www.w3.org/1998/Math/MathML";default:return"http://www.w3.org/1999/xhtml"}}function Pf(a,b){return null==a||"http://www.w3.org/1999/xhtml"===a?Of(b):"http://www.w3.org/2000/svg"===a&&"foreignObject"===b?"http://www.w3.org/1999/xhtml":a}
 var Qf=void 0;
-var Rf=function(a){return"undefined"!==typeof MSApp&&MSApp.execUnsafeLocalFunction?function(b,c,d,e){MSApp.execUnsafeLocalFunction(function(){return a(b,c,d,e)});}:a}(function(a,b){if(a.namespaceURI!==Nf.svg||"innerHTML"in a)a.innerHTML=b;else{Qf=Qf||document.createElement("div");Qf.innerHTML="<svg>"+b+"</svg>";for(b=Qf.firstChild;a.firstChild;)a.removeChild(a.firstChild);for(;b.firstChild;)a.appendChild(b.firstChild);}});
+var Rf=function(a){return"undefined"!==typeof MSApp&&MSApp.execUnsafeLocalFunction?function(b,c,d,e){MSApp.execUnsafeLocalFunction(function(){return a(b,c,d,e)});}:a}(function(a,b){if(a.namespaceURI!==Nf.svg||"innerHTML"in a)a.innerHTML=b;else{Qf=Qf||document.createElement("div");Qf.innerHTML="\x3csvg\x3e"+b+"\x3c/svg\x3e";for(b=Qf.firstChild;a.firstChild;)a.removeChild(a.firstChild);for(;b.firstChild;)a.appendChild(b.firstChild);}});
 function Sf(a,b){if(b){var c=a.firstChild;if(c&&c===a.lastChild&&3===c.nodeType){c.nodeValue=b;return}}a.textContent=b;}
 var Tf={animationIterationCount:!0,borderImageOutset:!0,borderImageSlice:!0,borderImageWidth:!0,boxFlex:!0,boxFlexGroup:!0,boxOrdinalGroup:!0,columnCount:!0,columns:!0,flex:!0,flexGrow:!0,flexPositive:!0,flexShrink:!0,flexNegative:!0,flexOrder:!0,gridRow:!0,gridRowEnd:!0,gridRowSpan:!0,gridRowStart:!0,gridColumn:!0,gridColumnEnd:!0,gridColumnSpan:!0,gridColumnStart:!0,fontWeight:!0,lineClamp:!0,lineHeight:!0,opacity:!0,order:!0,orphans:!0,tabSize:!0,widows:!0,zIndex:!0,zoom:!0,fillOpacity:!0,floodOpacity:!0,
 stopOpacity:!0,strokeDasharray:!0,strokeDashoffset:!0,strokeMiterlimit:!0,strokeOpacity:!0,strokeWidth:!0};
@@ -2458,7 +2513,7 @@ function Vf(a,b){a=a.style;for(var c in b)if(b.hasOwnProperty(c)){var d=0===c.in
 function Xf(a,b,c){b&&(Wf[a]&&(null!=b.children||null!=b.dangerouslySetInnerHTML?D("137",a,c()):void 0), null!=b.dangerouslySetInnerHTML&&(null!=b.children?D("60"):void 0,"object"===typeof b.dangerouslySetInnerHTML&&"__html"in b.dangerouslySetInnerHTML?void 0:D("61")), null!=b.style&&"object"!==typeof b.style?D("62",c()):void 0);}
 function Yf(a,b){if(-1===a.indexOf("-"))return"string"===typeof b.is;switch(a){case "annotation-xml":case "color-profile":case "font-face":case "font-face-src":case "font-face-uri":case "font-face-format":case "font-face-name":case "missing-glyph":return!1;default:return!0}}var Zf=emptyFunction_1.thatReturns("");
 function $f(a,b){a=9===a.nodeType||11===a.nodeType?a:a.ownerDocument;var c=ke(a);b=va[b];for(var d=0;d<b.length;d++){var e=b[d];c.hasOwnProperty(e)&&c[e]||("topScroll"===e?Zd("topScroll","scroll",a):"topFocus"===e||"topBlur"===e?(Zd("topFocus","focus",a),Zd("topBlur","blur",a),c.topBlur=!0,c.topFocus=!0):"topCancel"===e?(ic("cancel",!0)&&Zd("topCancel","cancel",a),c.topCancel=!0):"topClose"===e?(ic("close",!0)&&Zd("topClose","close",a),c.topClose=!0):fe.hasOwnProperty(e)&&W(e,fe[e],a), c[e]=!0);}}
-function ag(a,b,c,d){c=9===c.nodeType?c:c.ownerDocument;d===Nf.html&&(d=Of(a));d===Nf.html?"script"===a?(a=c.createElement("div"), a.innerHTML="<script></script>", a=a.removeChild(a.firstChild)):a="string"===typeof b.is?c.createElement(a,{is:b.is}):c.createElement(a):a=c.createElementNS(d,a);return a}function bg(a,b){return(9===b.nodeType?b:b.ownerDocument).createTextNode(a)}
+function ag(a,b,c,d){c=9===c.nodeType?c:c.ownerDocument;d===Nf.html&&(d=Of(a));d===Nf.html?"script"===a?(a=c.createElement("div"), a.innerHTML="\x3cscript\x3e\x3c/script\x3e", a=a.removeChild(a.firstChild)):a="string"===typeof b.is?c.createElement(a,{is:b.is}):c.createElement(a):a=c.createElementNS(d,a);return a}function bg(a,b){return(9===b.nodeType?b:b.ownerDocument).createTextNode(a)}
 function cg(a,b,c,d){var e=Yf(b,c);switch(b){case "iframe":case "object":W$1("topLoad","load",a);var f=c;break;case "video":case "audio":for(f in ge)ge.hasOwnProperty(f)&&W$1(f,ge[f],a);f=c;break;case "source":W$1("topError","error",a);f=c;break;case "img":case "image":case "link":W$1("topError","error",a);W$1("topLoad","load",a);f=c;break;case "form":W$1("topReset","reset",a);W$1("topSubmit","submit",a);f=c;break;case "details":W$1("topToggle","toggle",a);f=c;break;case "input":Wc(a,c);f=Vc(a,c);W$1("topInvalid",
 "invalid",a);$f(d,"onChange");break;case "option":f=Gf(a,c);break;case "select":If(a,c);f=objectAssign({},c,{value:void 0});W$1("topInvalid","invalid",a);$f(d,"onChange");break;case "textarea":Kf(a,c);f=Jf(a,c);W$1("topInvalid","invalid",a);$f(d,"onChange");break;default:f=c;}Xf(b,f,Zf);var h=f,g;for(g in h)if(h.hasOwnProperty(g)){var k=h[g];"style"===g?Vf(a,k,Zf):"dangerouslySetInnerHTML"===g?(k=k?k.__html:void 0, null!=k&&Rf(a,k)):"children"===g?"string"===typeof k?("textarea"!==b||""!==k)&&Sf(a,k):"number"===typeof k&&
 Sf(a,""+k):"suppressContentEditableWarning"!==g&&"suppressHydrationWarning"!==g&&"autoFocus"!==g&&(ua.hasOwnProperty(g)?null!=k&&$f(d,g):null!=k&&Uc(a,g,k,e));}switch(b){case "input":lc(a);ad(a,c);break;case "textarea":lc(a);Mf(a,c);break;case "option":null!=c.value&&a.setAttribute("value",c.value);break;case "select":a.multiple=!!c.multiple;b=c.value;null!=b?Hf(a,!!c.multiple,b,!1):null!=c.defaultValue&&Hf(a,!!c.multiple,c.defaultValue,!0);break;default:"function"===typeof f.onClick&&(a.onclick=emptyFunction_1);}}
@@ -2470,7 +2525,7 @@ function fg(a,b,c,d,e){switch(b){case "iframe":case "object":W$1("topLoad","load
 c);W$1("topInvalid","invalid",a);$f(e,"onChange");break;case "textarea":Kf(a,c), W("topInvalid","invalid",a), $f(e,"onChange");}Xf(b,c,Zf);d=null;for(var h in c)c.hasOwnProperty(h)&&(f=c[h], "children"===h?"string"===typeof f?a.textContent!==f&&(d=["children",f]):"number"===typeof f&&a.textContent!==""+f&&(d=["children",""+f]):ua.hasOwnProperty(h)&&null!=f&&$f(e,h));switch(b){case "input":lc(a);ad(a,c);break;case "textarea":lc(a);Mf(a,c);break;case "select":case "option":break;default:"function"===typeof c.onClick&&
 (a.onclick=emptyFunction_1);}return d}function ng(a,b){return a.nodeValue!==b}
 var og=Object.freeze({createElement:ag,createTextNode:bg,setInitialProperties:cg,diffProperties:dg,updateProperties:eg,diffHydratedProperties:fg,diffHydratedText:ng,warnForUnmatchedText:function(){},warnForDeletedHydratableElement:function(){},warnForDeletedHydratableText:function(){},warnForInsertedHydratedElement:function(){},warnForInsertedHydratedText:function(){},restoreControlledState:function(a,b,c){switch(b){case "input":Zc(a,c);b=c.name;if("radio"===c.type&&null!=b){for(c=a;c.parentNode;)c=
-c.parentNode;c=c.querySelectorAll("input[name="+JSON.stringify(""+b)+'][type="radio"]');for(b=0;b<c.length;b++){var d=c[b];if(d!==a&&d.form===a.form){var e=Xa(d);e?void 0:D$1("90");mc(d);Zc(d,e);}}}break;case "textarea":Lf(a,c);break;case "select":b=c.value, null!=b&&Hf(a,!!c.multiple,b,!1);}}});Tb.injectFiberControlledHostComponent(og);var pg=null; var qg=null;
+c.parentNode;c=c.querySelectorAll("input[name\x3d"+JSON.stringify(""+b)+'][type\x3d"radio"]');for(b=0;b<c.length;b++){var d=c[b];if(d!==a&&d.form===a.form){var e=Xa(d);e?void 0:D$1("90");mc(d);Zc(d,e);}}}break;case "textarea":Lf(a,c);break;case "select":b=c.value, null!=b&&Hf(a,!!c.multiple,b,!1);}}});Tb.injectFiberControlledHostComponent(og);var pg=null; var qg=null;
 function rg(a){this._expirationTime=X$1.computeUniqueAsyncExpiration();this._root=a;this._callbacks=this._next=null;this._hasChildren=this._didComplete=!1;this._children=null;this._defer=!0;}rg.prototype.render=function(a){this._defer?void 0:D$1("250");this._hasChildren=!0;this._children=a;var b=this._root._internalRoot,c=this._expirationTime,d=new sg;X$1.updateContainerAtExpirationTime(a,b,null,c,d._onCommit);return d};
 rg.prototype.then=function(a){if(this._didComplete)a();else{var b=this._callbacks;null===b&&(b=this._callbacks=[]);b.push(a);}};
 rg.prototype.commit=function(){var a=this._root._internalRoot,b=a.firstBatch;this._defer&&null!==b?void 0:D$1("251");if(this._hasChildren){var c=this._expirationTime;if(b!==this){this._hasChildren&&(c=this._expirationTime=b._expirationTime, this.render(this._children));for(var d=null,e=b;e!==this;)d=e, e=e._next;null===d?D$1("251"):void 0;d._next=e._next;this._next=b;a.firstBatch=this;}this._defer=!1;X$1.flushRoot(a,c);b=this._next;this._next=null;b=a.firstBatch=b;null!==b&&b._hasChildren&&b.render(b._children);}else this._next=
@@ -2525,6 +2580,15 @@ function hyphenate(string) {
 }
 
 var hyphenate_1 = hyphenate;
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @typechecks
+ */
 
 'use strict';
 
@@ -2583,6 +2647,15 @@ function camelize(string) {
 }
 
 var camelize_1 = camelize;
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @typechecks
+ */
 
 'use strict';
 
@@ -9931,7 +10004,7 @@ function coerceRef(returnFiber, current, element) {
       if (returnFiber.mode & StrictMode) {
         var componentName = getComponentName(returnFiber) || 'Component';
         if (!didWarnAboutStringRefInStrictMode[componentName]) {
-          warning(false, 'A string ref, "%s",\xA0has been found within a strict mode tree. ' + 'String refs are a source of potential bugs and should be avoided. ' + 'We recommend using createRef() instead.' + '\n%s' + '\n\nLearn more about using refs safely here:' + '\nhttps://fb.me/react-strict-mode-string-ref', mixedRef, getStackAddendumByWorkInProgressFiber(returnFiber));
+          warning(false, 'A string ref, "%s", has been found within a strict mode tree. ' + 'String refs are a source of potential bugs and should be avoided. ' + 'We recommend using createRef() instead.' + '\n%s' + '\n\nLearn more about using refs safely here:' + '\nhttps://fb.me/react-strict-mode-string-ref', mixedRef, getStackAddendumByWorkInProgressFiber(returnFiber));
           didWarnAboutStringRefInStrictMode[componentName] = true;
         }
       }
@@ -10323,7 +10396,7 @@ function ChildReconciler(shouldTrackSideEffects) {
             knownKeys.add(key);
             break;
           }
-          warning(false, 'Encountered two children with the same key, `%s`. ' + 'Keys should be unique so that components maintain their identity ' + 'across updates. Non-unique keys may cause children to be ' + 'duplicated and/or omitted \u2014 the behavior is unsupported and ' + 'could change in a future version.%s', key, getCurrentFiberStackAddendum$2());
+          warning(false, 'Encountered two children with the same key, `%s`. ' + 'Keys should be unique so that components maintain their identity ' + 'across updates. Non-unique keys may cause children to be ' + 'duplicated and/or omitted — the behavior is unsupported and ' + 'could change in a future version.%s', key, getCurrentFiberStackAddendum$2());
           break;
         default:
           break;
@@ -19685,6 +19758,13 @@ var Target = function (_React$Component) {
 	return Target;
 }(react.Component);
 
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 'use strict';
 
 
@@ -20221,6 +20301,13 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
   return ReactPropTypes;
 };
 
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 'use strict';
 
 
@@ -20345,6 +20432,11 @@ function fromObject(object) {
  * @ignore
  * @type {RegExp}
  */
+/**
+ * Parse a string matrix formatted as matrix(a,b,c,d,e,f)
+ * @param string String with a matrix
+ * @returns {{a: number, b: number, c: number, e: number, d: number, f: number}} Affine matrix
+ */
 
 /**
  * Identity matrix
@@ -20384,6 +20476,12 @@ function inverse(matrix) {
     f: (b * e - a * f) / denom
   };
 }
+
+/**
+ * Check if the object contain an affine matrix
+ * @param object
+ * @return {boolean}
+ */
 
 function isUndefined(val) {
   return typeof val === 'undefined';
@@ -20488,6 +20586,12 @@ function rotateDEG(angle) {
   return rotate(angle * PI / 180, cx, cy);
 }
 
+/**
+ * Calculate a scaling matrix
+ * @param sx Scaling on axis x
+ * @param [sy = sx] Scaling on axis y (default sx)
+ * @returns {{a: number, b: number, c: number, e: number, d: number, f: number}} Affine matrix
+ */
 function scale(sx) {
   var sy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
 
@@ -21493,7 +21597,7 @@ var performanceNow$3 = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-//# sourceMappingURL=performance-now.js.map
+
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window;
@@ -23566,6 +23670,19 @@ function makeClassBasedComponent(WrappedComponent) {
 	}
 }
 
+/**
+ * asStateSubscriber and asStatePublisher are two 'sibling' higher order components, that makes it possible to have to
+ * components share state. One will publish its state each time it updates, and the other one suppresses its own internal
+ * state, in favor of subscribing to an external state which it will adopt.
+ *
+ * The components assume a common ancestor component will provide the methods subscribeToState, unsubscribeToState, and
+ * publishState used to publish and subscribe to the state.
+ *
+ * Note that only the components own state will be synced - not the state of any subcomponents!
+ */
+
+//Higher order component that 'disables' the components own state in favor of subscribing an externally enforced state
+//injected by means of a context-provided subscription method.
 function asStateSubscriber(WrappedComponent) {
 	var StateSubscriber = function (_WrappedComponent) {
 		inherits(StateSubscriber, _WrappedComponent);
@@ -23651,6 +23768,13 @@ function asStatePublisher(WrappedComponent) {
 
 	return StatePublisher;
 }
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 'use strict';
 
@@ -24164,6 +24288,15 @@ function configure() {
     };
 }
 
+/*
+* Given the snapTargetMatrix (the matrix that describes the snapTarget's position in the window coordinate system) and a snapTransform that
+* describes a draggable's target position in the coordinate system of the snapTarget, this method returns a snapMatrix that describes the
+* draggable's target position in the window coordinate system.
+*
+* The user defined snapTransform's properties are to be added to the equivalent properties from the the snapTargetMatrix. Consequently, these
+* properties are extracted from the snapTargetMartrix, and addition is done indenpendently for each property. These are then converted back to
+* matrix form, and multiplied together to produce the final snapMatrix
+*/
 var createSnapMatrix = function createSnapMatrix(snapTargetMatrix, snapTransform, snapTargetDOMElementHelper, draggableDOMElementHelper) {
 			//Extract properties from snapTarget's matrix so we can add then (independently) with the equivalent values from the snapTransform.
 			//After this addition has been done, we will convert back to matrix form
@@ -24351,7 +24484,7 @@ var isDragDataProp = function isDragDataProp(prop, value) {
 	};
 };
 
-var Criteria = {
+var SnapCriteria = {
 	always: always,
 	never: never,
 	isCenterOverTarget: isCenterOverTarget,
@@ -24516,7 +24649,7 @@ var SnapTransformers = {
 };
 
 var defaultConfig$1 = {
-	snapCriteria: Criteria.isCenterWithinRadius('150%'),
+	snapCriteria: SnapCriteria.isCenterWithinRadius('150%'),
 	snapTransform: SnapTransformers.snapAllButScale
 };
 
@@ -24570,7 +24703,7 @@ var allProps$1 = function allProps(draggableDescriptors) {
     return draggableDescriptors;
 };
 
-var snapTargetCollectors = {
+var SnapTargetCollectors = {
     noProps: noProps$1,
     staticProps: staticProps,
     staticAndLowFrequencyProps: staticAndLowFrequencyProps$1,
@@ -24578,6 +24711,8 @@ var snapTargetCollectors = {
 };
 
 var lowestPriority = Number.MAX_VALUE;
+var highestPriority = 1;
+var defaultPriority = 10;
 var distanceBased = function distanceBased(_ref) {
     var distance = _ref.distance;
     return Math.max(1, distance);
@@ -24588,6 +24723,14 @@ var distanceBasedWithOffset = function distanceBasedWithOffset(offset) {
     };
 };
 
+var SnapPriorities = {
+    lowestPriority: lowestPriority,
+    highestPriority: highestPriority,
+    defaultPriority: defaultPriority,
+    distanceBased: distanceBased,
+    distanceBasedWithOffset: distanceBasedWithOffset
+};
+
 var byId = function byId(_ref, _ref2) {
   var a = _ref.id;
   var b = _ref2.id;
@@ -24596,7 +24739,7 @@ var byId = function byId(_ref, _ref2) {
 
 function configure$1() {
     var customConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    var collect = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : snapTargetCollectors.staticAndLowFrequencyProps;
+    var collect = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : SnapTargetCollectors.staticAndLowFrequencyProps;
 
     var config = normalizeSnapTargetConfig(customConfig);
 
@@ -24912,7 +25055,7 @@ function configure$1() {
             onDropCancel: function onDropCancel() {},
             easyEscape: false,
             continuousUpdate: false,
-            snapPriority: distanceBasedWithOffset(100)
+            snapPriority: SnapPriorities.distanceBasedWithOffset(100)
         };
 
         SnapTarget.contextTypes = {
@@ -25121,7 +25264,7 @@ var DragSnapContext = function (_React$Component) {
             var snapping = null;
             var allowsEasyEscape = false;
             var hasEscapedNow = void 0;
-            var maxPriority = lowestPriority;
+            var maxPriority = SnapPriorities.lowestPriority;
             var _firstSnapTargetId = firstSnapTargetId;
 
             this.snapTargets.forEach(function (target) {
@@ -25252,36 +25395,132 @@ DragSnapContext.defaultProps = {
     onChange: function onChange() {}
 };
 
+var transformProps = ['x', 'y', 'scaleX', 'scaleY', 'scale', 'skewX', 'skewY', 'rotate'];
+var defaultTransform = {
+	x: 0,
+	y: 0,
+	scale: 1,
+	skewX: 0,
+	skewY: 0,
+	rotate: 0
+};
+
+var InternalSnapTargetTransform = function (_React$Component) {
+	inherits(InternalSnapTargetTransform, _React$Component);
+
+	function InternalSnapTargetTransform(props) {
+		classCallCheck(this, InternalSnapTargetTransform);
+
+		var _this = possibleConstructorReturn(this, (InternalSnapTargetTransform.__proto__ || Object.getPrototypeOf(InternalSnapTargetTransform)).call(this, props));
+
+		_this.transform = defaultTransform;
+		return _this;
+	}
+
+	createClass(InternalSnapTargetTransform, [{
+		key: 'componentWillReceiveProps',
+		value: function componentWillReceiveProps(newProps) {
+			var _this2 = this;
+
+			if (transformProps.some(function (prop) {
+				return _this2.transform[prop] !== newProps[prop];
+			})) {
+				this.context.setInternalTransformation(shallowClone(newProps));
+				this.transform = shallowClone(newProps);
+			}
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var _props = this.props,
+			    children = _props.children,
+			    x = _props.x,
+			    y = _props.y,
+			    scale = _props.scale,
+			    scaleX = _props.scaleX,
+			    scaleY = _props.scaleY,
+			    rotate = _props.rotate,
+			    skewX = _props.skewX,
+			    skewY = _props.skewY;
+
+
+			var _scaleX = typeof scaleX !== 'undefined' ? 'scaleX(' + scaleX + ')' : '';
+			var _scaleY = typeof scaleY !== 'undefined' ? 'scaleY(' + scaleY + ')' : '';
+
+			//Wrapped in extra (non moving) div to ensure that getBoundingClientRect isn't impacted by the transform
+			return react.createElement(
+				'div',
+				null,
+				react.createElement(
+					'div',
+					{
+						style: {
+							transformOrigin: '50% 50%',
+							transform: '\n\t\t\t\t\t\t\ttranslate3d(' + x + 'px, ' + y + 'px, 0)\n\t\t\t\t\t\t\tscale(' + scale + ')\n\t\t\t\t\t\t\t' + _scaleX + '\n\t\t\t\t\t\t\t' + _scaleY + '\n\t\t\t\t\t\t\trotate(' + rotate + 'deg)\n\t\t\t\t\t\t\tskewX(' + skewX + 'deg)\n\t\t\t\t\t\t\tskewY(' + skewY + 'deg)\n\t\t\t\t\t\t'
+						}
+					},
+					children
+				)
+			);
+		}
+	}]);
+	return InternalSnapTargetTransform;
+}(react.Component);
+
+InternalSnapTargetTransform.contextTypes = {
+	setInternalTransformation: propTypes.func.isRequired
+};
+
+InternalSnapTargetTransform.propTypes = {
+	x: propTypes.number,
+	y: propTypes.number,
+	scale: propTypes.number,
+	scaleX: propTypes.number,
+	scaleY: propTypes.number,
+	rotate: propTypes.number,
+	skewX: propTypes.number,
+	skewY: propTypes.number
+};
+
+InternalSnapTargetTransform.defaultProps = defaultTransform;
+
+//These match the presets from react-motion
+//TODO: ADD A FEW MORE. MAYBE A MUST MORE WOBBLE, AND A *VERY* STIFF
+
+// This proxy imports and reexports the react-drag-and-snap-libraries exports. All demos load the exports through
+// this proxy. Makes it easier to switch between having the demos use a production version of the library of the
+// a version based on the source files in this repo (during development).
+
 var DraggableSquare = configure()(Square);
 
 var config1 = {
-	dragSnapCriteria: Criteria.isCenterWithinRadius(200),
+	dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
 	dragSnapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.snapProportionally(200, 10), { borderRadius: 100 }),
-	releaseSnapCriteria: Criteria.never
+	releaseSnapCriteria: SnapCriteria.never
 };
 
 var config2 = {
-	releaseSnapCriteria: Criteria.never
+	releaseSnapCriteria: SnapCriteria.never
 };
 
 var config3 = {
-	dragSnapCriteria: Criteria.isCenterWithinRadius(200),
+	dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
 	dragSnapTransform: SnapTransformers.snapProportionally(200, 10),
-	releaseSnapCriteria: Criteria.never
+	releaseSnapCriteria: SnapCriteria.never
 };
 
 //const additions = {rotate: 25, skewX: 65, skewY: 0, x: 10, y: 10, width: 100, height: 160, scaleX: .4, scaleY: 1.6};
 var additions = { rotate: 0, skewX: 0, skewY: 20, x: 10, y: 10, scaleX: 1, scaleY: 1 };
 var config4 = {
-	dragSnapCriteria: Criteria.isCenterWithinRadius(200),
+	dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
 	dragSnapTransform: additions,
-	releaseSnapCriteria: Criteria.never
+	releaseSnapCriteria: SnapCriteria.never
 };
 
-var SnapTargetType1 = configure$1(config1, snapTargetCollectors.allProps)(Target);
-var SnapTargetType2 = configure$1(config2, snapTargetCollectors.allProps)(Target);
-var SnapTargetType3 = configure$1(config3, snapTargetCollectors.allProps)(Target);
-var SnapTargetType4 = configure$1(config4, snapTargetCollectors.allProps)(Target);
+var SnapTargetType1 = configure$1(config1, SnapTargetCollectors.allProps)(Target);
+var SnapTargetType2 = configure$1(config2, SnapTargetCollectors.allProps)(Target);
+var SnapTargetType3 = configure$1(config3, SnapTargetCollectors.allProps)(Target);
+var SnapTargetType4 = configure$1(config4, SnapTargetCollectors.allProps)(Target);
 
 var Container = function (_React$Component) {
 	inherits(Container, _React$Component);
@@ -25392,6 +25631,75 @@ var Container = function (_React$Component) {
 	}]);
 	return Container;
 }(react.Component);
+
+/*
+import React, { Component } from 'react';
+import Square from './square';
+import Target from './target';
+import makeDraggable from './lib/make-draggable';
+import makeSnapTarget from './lib/make-snap-target';
+import DragSnapContext from './lib/drag-snap-context';
+import Criteria from './lib/defaults/default-snap-criteria';
+import {snapProportionally} from './lib/defaults/default-snap-transfomers';
+
+const DraggableSquare = makeDraggable()(Square);
+
+const config = {
+	snapCriteria: [
+		Criteria.isCenterWithinRadius(200),
+		Criteria.isDragDataProp('type', 'square')
+	],
+	snapTransform: snapProportionally(200, 10)
+};
+
+const SnapTarget = makeSnapTarget(config)(Target);
+
+class Container extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			counter: 0
+		};
+
+		setInterval(() => {
+			this.setState({counter: this.state.counter + 1})
+		}, 1000);
+	}
+
+	render() {
+		return (
+			<DragSnapContext>
+				<div style={{left: '200px', top: '100px', position: 'absolute', transform: 'scaleY(1.8) scaleX(0.6) rotate(15deg) ', transformOrigin: '50% 50%'}}>
+					<div style={{position: 'absolute', transform: 'scaleY(1.3) translateX(50px) rotate(2deg)', width: '400px', height: '350px', transformOrigin: '0% 50%'}}>
+						<div style={{display: 'inline-block', left: '110px', top: '50px', position: 'absolute', transform: 'skewX(0deg)  scaleX(0.8) translateX(-50px) rotate(0deg)', width: '400px', height: '300px'}}>
+							<DraggableSquare
+								counter={this.state.counter}
+								dragData={{type: 'square'}}
+								snapBack={true}
+							/>
+						</div>
+					</div>
+				</div>
+				<div
+					style={{
+						position: 'absolute',
+						left: '600px',
+						top: '200px',
+						transform: 'translate(50px, 150px) rotate(35deg) scale(1.5) skewY(30deg)'
+					}}
+				>
+					<SnapTarget
+						onDrop={(dragData) => console.log('This was dropped on me: ', dragData)}
+					/>
+				</div>
+			</DragSnapContext>
+		);
+	}
+}
+
+export default Container;
+*/
 
 var Avatar = function Avatar(_ref) {
 	var dragState = _ref.dragState,
@@ -25560,95 +25868,6 @@ var extend$1 = function extend() {
 
   return Object.assign.apply(Object, [{}].concat(objects));
 };
-
-var transformProps = ['x', 'y', 'scaleX', 'scaleY', 'scale', 'skewX', 'skewY', 'rotate'];
-var defaultTransform = {
-	x: 0,
-	y: 0,
-	scale: 1,
-	skewX: 0,
-	skewY: 0,
-	rotate: 0
-};
-
-var InternalSnapTargetTransform = function (_React$Component) {
-	inherits(InternalSnapTargetTransform, _React$Component);
-
-	function InternalSnapTargetTransform(props) {
-		classCallCheck(this, InternalSnapTargetTransform);
-
-		var _this = possibleConstructorReturn(this, (InternalSnapTargetTransform.__proto__ || Object.getPrototypeOf(InternalSnapTargetTransform)).call(this, props));
-
-		_this.transform = defaultTransform;
-		return _this;
-	}
-
-	createClass(InternalSnapTargetTransform, [{
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(newProps) {
-			var _this2 = this;
-
-			if (transformProps.some(function (prop) {
-				return _this2.transform[prop] !== newProps[prop];
-			})) {
-				this.context.setInternalTransformation(shallowClone(newProps));
-				this.transform = shallowClone(newProps);
-			}
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var _props = this.props,
-			    children = _props.children,
-			    x = _props.x,
-			    y = _props.y,
-			    scale = _props.scale,
-			    scaleX = _props.scaleX,
-			    scaleY = _props.scaleY,
-			    rotate = _props.rotate,
-			    skewX = _props.skewX,
-			    skewY = _props.skewY;
-
-
-			var _scaleX = typeof scaleX !== 'undefined' ? 'scaleX(' + scaleX + ')' : '';
-			var _scaleY = typeof scaleY !== 'undefined' ? 'scaleY(' + scaleY + ')' : '';
-
-			//Wrapped in extra (non moving) div to ensure that getBoundingClientRect isn't impacted by the transform
-			return react.createElement(
-				'div',
-				null,
-				react.createElement(
-					'div',
-					{
-						style: {
-							transformOrigin: '50% 50%',
-							transform: '\n\t\t\t\t\t\t\ttranslate3d(' + x + 'px, ' + y + 'px, 0)\n\t\t\t\t\t\t\tscale(' + scale + ')\n\t\t\t\t\t\t\t' + _scaleX + '\n\t\t\t\t\t\t\t' + _scaleY + '\n\t\t\t\t\t\t\trotate(' + rotate + 'deg)\n\t\t\t\t\t\t\tskewX(' + skewX + 'deg)\n\t\t\t\t\t\t\tskewY(' + skewY + 'deg)\n\t\t\t\t\t\t'
-						}
-					},
-					children
-				)
-			);
-		}
-	}]);
-	return InternalSnapTargetTransform;
-}(react.Component);
-
-InternalSnapTargetTransform.contextTypes = {
-	setInternalTransformation: propTypes.func.isRequired
-};
-
-InternalSnapTargetTransform.propTypes = {
-	x: propTypes.number,
-	y: propTypes.number,
-	scale: propTypes.number,
-	scaleX: propTypes.number,
-	scaleY: propTypes.number,
-	rotate: propTypes.number,
-	skewX: propTypes.number,
-	skewY: propTypes.number
-};
-
-InternalSnapTargetTransform.defaultProps = defaultTransform;
 
 var TRANSFORM_PROPS$1 = ['x', 'y', 'scale', 'scaleX', 'scaleY', 'rotate', 'skewX', 'skewY'];
 
@@ -25826,10 +26045,10 @@ Trap.propTypes = {
 };
 
 var snapConfig = {
-	snapCriteria: [Criteria.isCenterWithinRadius('250%'), Criteria.isNoOtherDraggableSnapping]
+	snapCriteria: [SnapCriteria.isCenterWithinRadius('250%'), SnapCriteria.isNoOtherDraggableSnapping]
 };
 
-var collect = snapTargetCollectors.allProps;
+var collect = SnapTargetCollectors.allProps;
 var TrapTarget = configure$1(snapConfig, collect)(Trap);
 
 var max = function max(numbers) {
@@ -25992,7 +26211,7 @@ var Edge = function Edge() {
 };
 
 var snapConfig$1 = {
-	releaseSnapCriteria: Criteria.always,
+	releaseSnapCriteria: SnapCriteria.always,
 	releaseSnapTransform: snapToEdge,
 	dragSnapCriteria: whenCloseToEdge(40),
 	dragSnapTransform: snapRotation$1
@@ -26410,10 +26629,10 @@ var config$2 = {
 	snapTransform: function snapTransform() {
 		return { scale: .30, x: "-35%", y: "-35%" };
 	},
-	releaseSnapCriteria: Criteria.never
+	releaseSnapCriteria: SnapCriteria.never
 };
 
-var SnapTarget = configure$1(config$2, snapTargetCollectors.allProps)(Target$1);
+var SnapTarget = configure$1(config$2, SnapTargetCollectors.allProps)(Target$1);
 
 var SimpleDemo = function (_React$Component) {
 	inherits(SimpleDemo, _React$Component);
@@ -26724,14 +26943,14 @@ Square$2.propTypes = {
 };
 
 var snapConfig$2 = {
-	dragSnapCriteria: Criteria.never,
-	releaseSnapCriteria: [Criteria.isCenterOverTarget, isMoveLegal]
+	dragSnapCriteria: SnapCriteria.never,
+	releaseSnapCriteria: [SnapCriteria.isCenterOverTarget, isMoveLegal]
 };
 
 var customCollector = function customCollector(draggableDescriptor, targetDescriptor) {
 	return {
 		isCenterOverTarget: draggableDescriptor.some(function (draggableDescriptor) {
-			return Criteria.isCenterOverTarget(draggableDescriptor, targetDescriptor);
+			return SnapCriteria.isCenterOverTarget(draggableDescriptor, targetDescriptor);
 		}),
 		isLegalMove: draggableDescriptor.some(function (draggableDescriptor) {
 			return isMoveLegal(draggableDescriptor, targetDescriptor);
@@ -26848,8 +27067,8 @@ var Snapper = function Snapper() {
 
 var snapConfig$3 = {
 	snapTransform: SnapTransformers.noSnapping,
-	dragSnapCriteria: Criteria.never,
-	releaseSnapCriteria: Criteria.always
+	dragSnapCriteria: SnapCriteria.never,
+	releaseSnapCriteria: SnapCriteria.always
 };
 
 var SnapTarget$1 = configure$1(snapConfig$3)(Snapper);
@@ -26950,7 +27169,7 @@ var DraggableBall = configure()(function (_ref) {
 });
 
 var config$4 = {
-    snapCriteria: Criteria.isCenterWithinRadius('300%')
+    snapCriteria: SnapCriteria.isCenterWithinRadius('300%')
 };
 
 var Square$3 = function Square(_ref) {
@@ -27101,11 +27320,11 @@ var Round = function Round() {
 };
 
 var largeReachConfig = {
-    snapCriteria: Criteria.isCenterWithinRadius('300%')
+    snapCriteria: SnapCriteria.isCenterWithinRadius('300%')
 };
 
 var leavesPositionConfig = {
-    snapCriteria: Criteria.isCenterWithinRadius(100),
+    snapCriteria: SnapCriteria.isCenterWithinRadius(100),
     snapTransform: SnapTransformers.snapScaleAndRotation
 };
 
@@ -27204,10 +27423,10 @@ var Eye = function Eye(_ref) {
 };
 
 var config$5 = {
-    snapCriteria: Criteria.never
+    snapCriteria: SnapCriteria.never
 };
 
-var EyeTarget = configure$1(config$5, snapTargetCollectors.allProps)(Eye);
+var EyeTarget = configure$1(config$5, SnapTargetCollectors.allProps)(Eye);
 
 var Ball$2 = function Ball() {
   return react.createElement('div', { className: 'ball' });
@@ -27258,7 +27477,7 @@ var EyeDemo = function (_React$Component) {
 }(react.Component);
 
 var config$6 = {
-	snapCriteria: Criteria.isCenterWithinRadius('400%')
+	snapCriteria: SnapCriteria.isCenterWithinRadius('400%')
 };
 
 var SnapTarget$2 = configure$1(config$6)(function () {
@@ -27424,6 +27643,17 @@ var MovingTargetDemoSimple = function (_React$Component) {
     return MovingTargetDemoSimple;
 }(react.Component);
 
+/*
+const distance = (p1, p2 = {x: 0, y: 0}) => (
+	Math.sqrt((p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y))
+);*/
+/*
+TODO: MAKE SURE THAT IT REMEMBERS IF IT IS/WAS SNAPPING. MAKE SURE THAT
+EVERYTHING IS TRANSFERED AS CUSTOM PROPS. NO NUMBERS IN HERE!! 
+
+ALSO MAKE SURE THAT IT ONLY SNAPS TO/FROM SHAPE OR COLOR. AT LEAST DON'T
+MIX IT UP.
+*/
 var Ball$5 = function Ball(_ref) {
     var customSnapProps = _ref.customSnapProps;
     var radius = customSnapProps.radius,
@@ -27461,17 +27691,17 @@ var Round$1 = function Round() {
 };
 
 var squareConfigDefault = {
-    snapCriteria: Criteria.isCenterWithinRadius(100),
+    snapCriteria: SnapCriteria.isCenterWithinRadius(100),
     snapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.snapAllButScale, { gray: 1 })
 };
 
 var roundConfigDefault = {
-    snapCriteria: Criteria.isCenterWithinRadius(100),
+    snapCriteria: SnapCriteria.isCenterWithinRadius(100),
     snapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.snapAllButScale, { radius: 50 })
 };
 
 var squareConfigProportional = {
-    snapCriteria: Criteria.isCenterWithinRadius(200),
+    snapCriteria: SnapCriteria.isCenterWithinRadius(200),
     snapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.noSnapping, function (_ref) {
         var distance = _ref.distance;
         return { gray: 1 - distance / 200 };
@@ -27479,7 +27709,7 @@ var squareConfigProportional = {
 };
 
 var roundConfigProportional = {
-    snapCriteria: Criteria.isCenterWithinRadius(200),
+    snapCriteria: SnapCriteria.isCenterWithinRadius(200),
     snapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.noSnapping, function (_ref2) {
         var distance = _ref2.distance;
         return { radius: 50 * (1 - distance / 200) };
@@ -27543,6 +27773,9 @@ var CustomPropertyDemo = function (_React$Component) {
     return CustomPropertyDemo;
 }(react.Component);
 
+//const STIFF_CONFIG = {damping: 30, stiffness: 300}; //TODO: CAN THIS BE FIXED?? OR SHOULD IT DEPEND ON THE STIFFNESS/DAMPING OF THE DRAGGABLE??
+//{stiffness: 180, damping: 12} (wobbly gives a pretty nice effect, although more wobbly that fb)
+//{stiffness: 120, damping: 14} (gentle) is also alright...q
 var STIFF_CONFIG = { stiffness: 120, damping: 14 };
 
 /*
@@ -27730,7 +27963,7 @@ function getRestTime() {
 	var t = 10 / SPRING_CONFIG.damping * 1000;
 
 	if (Math.pow(SPRING_CONFIG.damping, 2) > 4 * SPRING_CONFIG.stiffness) {
-		console.log('It is overdamped!!!');
+		console.log('It is overdamped!!! ');
 	}
 
 	return t;
@@ -27935,6 +28168,21 @@ var Overlap = function (_React$Component) {
     return Overlap;
 }(react.Component);
 
+/*
+Strategy is:
+1. Take the targetWidth and targetHeight and transform it by the targets own transformatrix matrix (the four corners)
+2. Then transform all four points by the inverse of the other matrix.
+3. Then compare the output points with the targetWidth and targetHeight of the other element
+
+4. Do the same the other way around
+
+Consider making a draggableToTarget(point) => point  and targetToDraggable(point) => point
+
+Alternative is to provide the raw matrices...
+
+
+*/
+
 var TransitionElement = function TransitionElement(_ref) {
   var dragState = _ref.dragState;
   return react.createElement('div', { className: 'transition-element ' + dragState });
@@ -27977,7 +28225,7 @@ var DraggableBall$7 = configure()(function (_ref) {
         className = _ref$className === undefined ? '' : _ref$className;
     return react.createElement('div', { className: 'self-transform-ball ' + className });
 });
-var SnapTarget$4 = configure$1({ snapCriteria: Criteria.isCenterWithinRadius('100%'), snapTransform: { scale: 1 } })(function (_ref2) {
+var SnapTarget$4 = configure$1({ snapCriteria: SnapCriteria.isCenterWithinRadius('100%'), snapTransform: { scale: 1 } })(function (_ref2) {
     var _ref2$className = _ref2.className,
         className = _ref2$className === undefined ? '' : _ref2$className;
     return react.createElement('div', { className: 'self-transform-target ' + className });
@@ -28154,6 +28402,21 @@ BoxComponent.propTypes = {
     name: propTypes.string,
     renderIn: propTypes.object
 };
+
+/*
+1. Consider making a border around what constitutes the edge of the element
+2. Get the transform for the d and st on mount, and cache it internally
+3. Expose the transform from these using a public method
+4. Have test component extract the transforms and set them back
+5. Have test component create sn-transform and inject it when mode is snap
+6. Make control bar sticky
+7. Style control bar better
+
+Later:
+- Make them animate
+- Make it possible to pause the animation!
+- Make it possible to globally set the base transform for S and ST (also width/height) and snap-tranform?
+*/
 
 var css$28 = ".test-component {\n    display: inline-block;\n    vertical-align: top;\n    width: 400px;\n    height: 500px;\n    border: 1px solid darkred;\n    position: relative;\n}\n\n.prop-table {\n    width: 100%;\n    background: darkred;\n    color: white;\n}\n\n.prop-table th {\n    font-weight: bold;\n}\n\n.prop-table td {\n    text-align: center;\n}";
 styleInject(css$28);
@@ -28506,6 +28769,9 @@ var BoxModelDemo = function (_React$Component) {
   }]);
   return BoxModelDemo;
 }(react.Component);
+
+var css$32 = "html, body, #root {\n    height: 100%;\n    touch-action: none;\n    overflow: hidden;\n    margin: 0;\n    padding: 0;\n    font-family: sans-serif;\n}";
+styleInject(css$32);
 
 var demoComponents = {
     simpleDemo: {

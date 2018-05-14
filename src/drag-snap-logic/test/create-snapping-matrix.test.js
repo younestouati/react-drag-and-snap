@@ -1,4 +1,4 @@
-import {MODES, modeStyles, getModeAttribute} from '../modes';
+import {MODES, modeStyles, getModeAttribute} from '../drag-modes';
 import {createSnapMatrix} from '../create-snapping-matrix';
 import {normalizeTransform} from '../normalize-transform';
 

@@ -79,7 +79,7 @@
  * value. This is however and extreme edge case, and whathever unexpected styling it might cause, will be easy to fix 
  * for the developer by explitictly setting the desired text colors wherever needed.
  */
-import React/*, {Component}*/ from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {createGuid} from '../../utils/guid-utils';
 import {StyleInjector} from '../misc/style-injector';

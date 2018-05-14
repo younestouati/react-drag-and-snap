@@ -8,4 +8,4 @@ const defaultSpringConfigurations = {
 
 //TODO: ADD A FEW MORE. MAYBE A MUST MORE WOBBLE, AND A *VERY* STIFF
 
-export {defaultSpringConfigurations};
+export default defaultSpringConfigurations;

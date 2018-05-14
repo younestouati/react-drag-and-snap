@@ -1,8 +1,8 @@
-import React/*, {Component}*/ from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {inverse, transform} from 'transformation-matrix';
 import {getTransformationMatrix} from './utils/matrix-utils';
-import {lowestPriority} from './defaults/default-snap-priority';
+import SnapPriorities from './defaults/default-snap-priorities';
 import {StyleInjector} from './helpers/misc/style-injector';
 import {WindowSizeMonitor} from './helpers/misc/window-size-monitor';
 import {dragModeStyles} from './drag-snap-logic/drag-modes';
@@ -96,7 +96,7 @@ class DragSnapContext extends React.Component {
         let snapping = null;
         let allowsEasyEscape = false;
         let hasEscapedNow;
-        let maxPriority = lowestPriority;
+        let maxPriority = SnapPriorities.lowestPriority;
         let _firstSnapTargetId = firstSnapTargetId;
 
         this.snapTargets.forEach((target) => {

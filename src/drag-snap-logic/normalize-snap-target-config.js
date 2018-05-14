@@ -1,11 +1,11 @@
 import invariant from 'invariant';
-import Criteria from '../defaults/default-snap-criteria';
+import SnapCriteria from '../defaults/default-snap-criteria';
 import SnapTransformers from '../defaults/default-snap-transformers';
 import {extend} from '../utils/object-utils';
 import {isFunction, isObject, isArray} from '../utils/type-utils';
 
 const defaultConfig = {
-	snapCriteria: Criteria.isCenterWithinRadius('150%'),
+	snapCriteria: SnapCriteria.isCenterWithinRadius('150%'),
 	snapTransform: SnapTransformers.snapAllButScale
 };
 

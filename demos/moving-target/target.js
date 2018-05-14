@@ -1,9 +1,8 @@
 import React from 'react';
-import makeSnapTarget from '../../src/make-snap-target';
-import Criteria from '../../src/defaults/default-snap-criteria';
+import {makeSnapTarget, SnapCriteria} from '../lib-proxy';
 
 const config = {
-	snapCriteria: Criteria.isCenterWithinRadius('400%')
+	snapCriteria: SnapCriteria.isCenterWithinRadius('400%')
 };
 
 const SnapTarget = makeSnapTarget(config)(() => <div className="target"/>);

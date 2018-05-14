@@ -1,13 +1,9 @@
 import React from 'react';
-import DragSnapContext from '../../src/drag-snap-context';
-import makeDraggable from '../../src/make-draggable';
-import makeSnapTarget from '../../src/make-snap-target';
-import Criteria from '../../src/defaults/default-snap-criteria';
-
+import {DragSnapContext, makeDraggable, makeSnapTarget, SnapCriteria} from '../lib-proxy';
 import './styles.css';
 
 const DraggableBall = makeDraggable()(({className = ''}) => <div className={`self-transform-ball ${className}`}/>); 
-const SnapTarget = makeSnapTarget({snapCriteria: Criteria.isCenterWithinRadius('100%'), snapTransform: {scale: 1}})(({className = ''}) => <div className={`self-transform-target ${className}`}/>); 
+const SnapTarget = makeSnapTarget({snapCriteria: SnapCriteria.isCenterWithinRadius('100%'), snapTransform: {scale: 1}})(({className = ''}) => <div className={`self-transform-target ${className}`}/>); 
 
 class SelfTransformDemo extends React.Component {
 	render() {

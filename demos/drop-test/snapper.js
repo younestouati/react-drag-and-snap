@@ -1,14 +1,12 @@
 import React from 'react';
-import makeSnapTarget from '../../src/make-snap-target';
-import SnapTransformers from '../../src/defaults/default-snap-transformers';
-import Criteria from '../../src/defaults/default-snap-criteria';
+import {makeSnapTarget, SnapCriteria, SnapTransformers} from '../lib-proxy';
 
 const Snapper = () => <div className="snapper"/>;
 
 const snapConfig = {
 	snapTransform: SnapTransformers.noSnapping,
-	dragSnapCriteria: Criteria.never,
-	releaseSnapCriteria: Criteria.always
+	dragSnapCriteria: SnapCriteria.never,
+	releaseSnapCriteria: SnapCriteria.always
 };
 
 const SnapTarget = makeSnapTarget(snapConfig)(Snapper);

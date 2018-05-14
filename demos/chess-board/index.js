@@ -1,6 +1,6 @@
-import React/*, {Component}*/ from 'react';
+import React from 'react';
 import {SquareTarget} from './square';
-import DragSnapContext from '../../src/drag-snap-context';
+import {DragSnapContext} from '../lib-proxy';
 import {DraggablePiece} from './piece';
 import './styles.css';
 

@@ -9,7 +9,7 @@ function getRestTime() {
 	const t = 10 / SPRING_CONFIG.damping * 1000;
 
 	if (Math.pow(SPRING_CONFIG.damping, 2) > 4 * SPRING_CONFIG.stiffness) {
-		console.log('It is overdamped!!!');
+		console.log('It is overdamped!!! ');
 	}
 
 	return t;

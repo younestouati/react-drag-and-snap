@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {mount} from 'enzyme';
 import {asStateSubscriber, asStatePublisher} from '../state-sharing';
 
 describe('State sharing', () => {
-    class Dummy extends Component {
+    class Dummy extends React.Component {
         constructor(props) {
             super(props);
 

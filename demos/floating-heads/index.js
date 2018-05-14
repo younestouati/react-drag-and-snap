@@ -2,7 +2,7 @@ import React from 'react';
 import {DraggableAvatar} from './avatar';
 import {AvatarContainer} from './avatar-container';
 import {TrapTarget} from './trap';
-import DragSnapContext from '../../src/drag-snap-context';
+import {DragSnapContext} from '../lib-proxy';
 import {max} from './utils/max';
 import {extend} from './utils/extend';
 import {getOrigo} from './utils/point-utils';

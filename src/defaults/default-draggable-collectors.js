@@ -12,4 +12,4 @@ const draggableCollectors = {
     allProps
 };
 
-export {draggableCollectors};
+export default draggableCollectors;

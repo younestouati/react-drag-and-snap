@@ -1,5 +1,27 @@
 {
   "name": "react-drag-and-snap",
+  "author": "Younes Touati <younestouati@gmail.com>",
+  "description": "React-drag-and-snap is a set of React components and higher order components for building complex and highly interactive drag and drop interfaces. It is particularly well-suited for playful web interfaces and React-based digital board game implementations. It supports mouse as well as (multi-)touch interfaces out of the box, and it is built on top of react-motion ensuring nice, smooth animations.",
+  "keywords": [
+    "react",
+    "react.js",
+    "drag",
+    "drop",
+    "drag and drop",
+    "drag-and-drop",
+    "dnd",
+    "snap",
+    "snapping",
+    "board game"
+  ],
+  "homepage": "https://github.com/younestouati/react-drag-and-snap",
+  "repository" : { 
+    "type" : "git",
+    "url" : "https://github.com/younestouati/react-drag-and-snap"
+  },
+  "bugs": {
+    "url": "https://github.com/younestouati/react-drag-and-snap/issues"
+  },
   "version": "0.1.0",
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
@@ -20,7 +42,6 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "rollup": "^0.50.0",
-    "rollup-plugin-ascii": "0.0.3",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-eslint": "^4.0.0",
@@ -35,11 +56,11 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-dom": "*"
+    "react-dom": "*",
+    "react-motion": "*"
   },
   "dependencies": {
     "invariant": "2.2.4",
-    "react-motion": "0.5.2",
     "transformation-matrix": "1.10.0"
   },
   "jest": {
@@ -56,5 +77,6 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "license": "MIT"
 }

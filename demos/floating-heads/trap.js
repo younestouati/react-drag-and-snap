@@ -4,11 +4,8 @@ import {CustomPropTypes} from '../shared/custom-prop-types';
 import {scalePoint, getOrigo, byDistance, extractPoint, addPoints, arePointsDifferent} from './utils/point-utils';
 import {sort} from './utils/sort';
 import {extend} from './utils/extend';
-import makeSnapTarget from '../../src/make-snap-target';
+import {makeSnapTarget, InternalSnapTargetTransform, SnapCriteria, SnapTargetCollectors} from '../lib-proxy';
 import {Motion, spring, presets} from 'react-motion';
-import InternalSnapTargetTransform from '../../src/internal-snap-target-transform';
-import Criteria from '../../src/defaults/default-snap-criteria';
-import {snapTargetCollectors} from '../../src/defaults/default-snap-target-collectors';
 import {AnimatedTransform} from '../shared/animated-transform';
 import {Avatar} from './avatar';
 
@@ -94,12 +91,12 @@ Trap.propTypes = {
 
 const snapConfig = {
 	snapCriteria: [
-		Criteria.isCenterWithinRadius('250%'),
-		Criteria.isNoOtherDraggableSnapping
+		SnapCriteria.isCenterWithinRadius('250%'),
+		SnapCriteria.isNoOtherDraggableSnapping
 	]
 };
 
-const collect = snapTargetCollectors.allProps;
+const collect = SnapTargetCollectors.allProps;
 const TrapTarget = makeSnapTarget(snapConfig, collect)(Trap);
 
 export {TrapTarget};

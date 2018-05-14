@@ -1,43 +1,38 @@
 import React from 'react';
 import {Square} from './square';
 import {Target} from './target';
-import makeDraggable from '../../src/make-draggable';
-import makeSnapTarget from '../../src/make-snap-target';
-import DragSnapContext from '../../src/drag-snap-context';
-import Criteria from '../../src/defaults/default-snap-criteria';
-import {snapTargetCollectors} from '../../src/defaults/default-snap-target-collectors';
-import SnapTransformers from '../../src/defaults/default-snap-transformers';
+import {DragSnapContext, makeDraggable, makeSnapTarget, SnapCriteria, SnapTargetCollectors, SnapTransformers} from '../lib-proxy';
 
 const DraggableSquare = makeDraggable()(Square);
 
 const config1 = {
-    dragSnapCriteria: Criteria.isCenterWithinRadius(200),
+    dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
     dragSnapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.snapProportionally(200, 10), {borderRadius: 100}),
-	releaseSnapCriteria: Criteria.never,
+	releaseSnapCriteria: SnapCriteria.never,
 };
 
 const config2 = {
-	releaseSnapCriteria: Criteria.never
+	releaseSnapCriteria: SnapCriteria.never
 };
 
 const config3 = {
-    dragSnapCriteria: Criteria.isCenterWithinRadius(200),
+    dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
     dragSnapTransform: SnapTransformers.snapProportionally(200, 10),
-    releaseSnapCriteria: Criteria.never
+    releaseSnapCriteria: SnapCriteria.never
 };
 
 //const additions = {rotate: 25, skewX: 65, skewY: 0, x: 10, y: 10, width: 100, height: 160, scaleX: .4, scaleY: 1.6};
 const additions = {rotate: 0, skewX: 0, skewY: 20, x: 10, y: 10, scaleX: 1, scaleY: 1};
 const config4 = {
-    dragSnapCriteria: Criteria.isCenterWithinRadius(200),
+    dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
     dragSnapTransform: additions,
-    releaseSnapCriteria: Criteria.never
+    releaseSnapCriteria: SnapCriteria.never
 };
 
-const SnapTargetType1 = makeSnapTarget(config1, snapTargetCollectors.allProps)(Target);
-const SnapTargetType2 = makeSnapTarget(config2, snapTargetCollectors.allProps)(Target);
-const SnapTargetType3 = makeSnapTarget(config3, snapTargetCollectors.allProps)(Target);
-const SnapTargetType4 = makeSnapTarget(config4, snapTargetCollectors.allProps)(Target);
+const SnapTargetType1 = makeSnapTarget(config1, SnapTargetCollectors.allProps)(Target);
+const SnapTargetType2 = makeSnapTarget(config2, SnapTargetCollectors.allProps)(Target);
+const SnapTargetType3 = makeSnapTarget(config3, SnapTargetCollectors.allProps)(Target);
+const SnapTargetType4 = makeSnapTarget(config4, SnapTargetCollectors.allProps)(Target);
 
 class Container extends React.Component {
     render() {

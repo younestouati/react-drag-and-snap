@@ -1,7 +1,5 @@
 import React from 'react';
-import makeSnapTarget from '../../src/make-snap-target';
-import Criteria from '../../src/defaults/default-snap-criteria';
-import {snapTargetCollectors} from '../../src/defaults/default-snap-target-collectors';
+import {makeDraggable, makeSnapTarget, SnapCriteria, SnapTargetCollectors} from '../lib-proxy';
 
 const EYE_RADIUS = 32;
 const IRIS_RADIUS = 8;
@@ -39,9 +37,9 @@ const Eye = ({draggedItems}) => {
 };
 
 const config = {
-    snapCriteria: Criteria.never
+    snapCriteria: SnapCriteria.never
 };
 
-const EyeTarget = makeSnapTarget(config, snapTargetCollectors.allProps)(Eye);
+const EyeTarget = makeSnapTarget(config, SnapTargetCollectors.allProps)(Eye);
 
 export {EyeTarget};

@@ -1,4 +1,4 @@
-import {MODES, modeStyles, getModeAttribute} from '../modes';
+import {MODES, modeStyles, getModeAttribute} from '../drag-modes';
 
 test('MODES are default, move and clone', () => {
     expect(MODES.length).toEqual(3);

@@ -1,7 +1,7 @@
 import React from 'react';
 import {DraggableSquare} from './square';
 import {SnapTarget} from './snapper';
-import DragSnapContext from '../../src/drag-snap-context';
+import {DragSnapContext} from '../lib-proxy';
 import './styles.css';
 
 class DropTest extends React.Component {

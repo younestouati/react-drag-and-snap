@@ -1,5 +1,5 @@
 import React from 'react';
-import makeDraggable from '../../src/make-draggable';
+import {makeDraggable} from '../lib-proxy';
 
 class SquareWithTopLevelState extends React.Component {
 	constructor(props) {

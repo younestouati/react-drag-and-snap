@@ -1,7 +1,7 @@
 import React from 'react';
 import {DraggableSquareWithTopLevelState} from './draggable-square-top-level-state';
 import {DraggableSquareWithDeepState} from './draggable-square-deep-state';
-import DragSnapContext from '../../src/drag-snap-context';
+import {DragSnapContext} from '../lib-proxy';
 import './styles.css';
 
 class StateDemo extends React.Component {

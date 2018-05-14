@@ -1,5 +1,5 @@
 import React from 'react';
-import DragSnapContext from '../../src/drag-snap-context';
+import {DragSnapContext} from '../lib-proxy';
 import {DraggableBall} from './ball';
 import {SquareTargetDefault, SquareTargetProportional, RoundTargetDefault, RoundTargetProportional} from './targets';
 

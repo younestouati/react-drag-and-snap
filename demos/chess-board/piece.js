@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import makeDraggable from '../../src/make-draggable';
+import {makeDraggable} from '../lib-proxy';
 
 const Piece = ({piece, dragState, dragVelocity, isDragClone}) => {
 	const draggedClass = dragState !== 'inactive' && false ? 'is-dragged' : '';

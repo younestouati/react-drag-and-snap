@@ -1,5 +1,5 @@
-import React/*, {Component}*/ from 'react';
-import /*{findDOMNode}*/ ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import invariant from 'invariant';
 import {identity} from 'transformation-matrix';
@@ -22,8 +22,8 @@ import {normalizeTransform} from './drag-snap-logic/normalize-transform';
 import {makeClassBasedComponent} from './helpers/higher-order-components/make-class-based-component';
 import {normalizeSnapTargetConfig} from './drag-snap-logic/normalize-snap-target-config';
 import {DRAG_STATES} from './drag-snap-logic/drag-states'; 
-import {snapTargetCollectors} from './defaults/default-snap-target-collectors';
-import {distanceBasedWithOffset} from './defaults/default-snap-priority';
+import SnapTargetCollectors from './defaults/default-snap-target-collectors';
+import SnapPriorities from './defaults/default-snap-priorities';
 import {extend, shallowCloneExcluding, shallowEqual} from './utils/object-utils';
 import {getDisplayName} from './utils/react-utils';
 import {toArray} from './utils/array-utils';
@@ -32,7 +32,7 @@ import {createGuid} from './utils/guid-utils';
 import {distance} from './utils/point-utils';
 import {byId} from './utils/sort';
 
-function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLowFrequencyProps) {
+function configure(customConfig = {}, collect = SnapTargetCollectors.staticAndLowFrequencyProps) {
     const config = normalizeSnapTargetConfig(customConfig);
 
     return function makeSnapTarget(WrappedComponent) {
@@ -298,7 +298,7 @@ function configure(customConfig = {}, collect = snapTargetCollectors.staticAndLo
             onDropCancel: () => {},
             easyEscape: false,
             continuousUpdate: false,
-            snapPriority: distanceBasedWithOffset(100)
+            snapPriority: SnapPriorities.distanceBasedWithOffset(100)
         };
 
         SnapTarget.contextTypes = {

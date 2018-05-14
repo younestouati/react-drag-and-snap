@@ -1,5 +1,5 @@
 import React from 'react';
-import DragSnapContext from '../../src/drag-snap-context';
+import {DragSnapContext} from '../lib-proxy';
 import {DraggableTransitionElement} from './transition-element';
 import './styles.css';
 

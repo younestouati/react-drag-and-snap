@@ -1,4 +1,4 @@
-import React/*, {Component}*/ from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {CustomPropTypes} from '../prop-types/custom-prop-types';
 import {shallowClone} from '../utils/object-utils';

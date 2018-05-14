@@ -3,6 +3,24 @@ import makeSnapTarget from './make-snap-target';
 import DragSnapContext from './drag-snap-context.js';
 import InternalSnapTargetTransform from './internal-snap-target-transform.js';
 
-//TODO: ALSO EXPOSE DEFAULT DESCRIPTORS, PRIORITIES AND CRITERIA
+import SnapTransformers from './defaults/default-snap-transformers';
+import SnapCriteria from './defaults/default-snap-criteria';
+import SnapPriorities from './defaults/default-snap-priorities';
 
-export {makeDraggable, makeSnapTarget, DragSnapContext, InternalSnapTargetTransform};
+import DraggableCollectors from './defaults/default-draggable-collectors';
+import SnapTargetCollectors from './defaults/default-snap-target-collectors';
+
+import SpringConfigurations from './defaults/default-spring-configurations';
+
+export {
+    makeDraggable,
+    makeSnapTarget,
+    DragSnapContext,
+    InternalSnapTargetTransform,
+    SnapTransformers,
+    SnapCriteria,
+    SnapPriorities,
+    DraggableCollectors,
+    SnapTargetCollectors,
+    SpringConfigurations
+};

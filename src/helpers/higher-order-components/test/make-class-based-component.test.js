@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {mount} from 'enzyme';
 import {makeClassBasedComponent} from '../make-class-based-component';
 
 describe('Make class-based componnent', () => {
-    class ClassComponent extends Component {
+    class ClassComponent extends React.Component {
         render() {
             return <div>Originally Class-based</div>;
         }

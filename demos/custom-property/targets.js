@@ -1,28 +1,26 @@
 import React from 'react';
-import makeSnapTarget from '../../src/make-snap-target';
-import Criteria from '../../src/defaults/default-snap-criteria';
-import SnapTransformers from '../../src/defaults/default-snap-transformers';
+import {makeSnapTarget, SnapCriteria, SnapTransformers} from '../lib-proxy';
 
 const Square = () => <div className="square"/>;
 const Round = () => <div className="circle"/>;
 
 const squareConfigDefault = {
-    snapCriteria: Criteria.isCenterWithinRadius(100),
+    snapCriteria: SnapCriteria.isCenterWithinRadius(100),
     snapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.snapAllButScale, {gray: 1})
 };
 
 const roundConfigDefault = {
-    snapCriteria: Criteria.isCenterWithinRadius(100),
+    snapCriteria: SnapCriteria.isCenterWithinRadius(100),
     snapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.snapAllButScale, {radius: 50})
 };
 
 const squareConfigProportional = {
-    snapCriteria: Criteria.isCenterWithinRadius(200),
+    snapCriteria: SnapCriteria.isCenterWithinRadius(200),
     snapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.noSnapping, ({distance}) => ({gray: 1 - distance/200}))
 };
 
 const roundConfigProportional = {
-    snapCriteria: Criteria.isCenterWithinRadius(200),
+    snapCriteria: SnapCriteria.isCenterWithinRadius(200),
     snapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.noSnapping, ({distance}) => ({radius: 50 * (1  - distance/200)}))
 };
 

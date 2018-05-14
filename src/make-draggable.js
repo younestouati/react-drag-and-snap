@@ -1,5 +1,5 @@
-import React/*, {Component}*/ from 'react';
-import /*{createPortal, findDOMNode}*/ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {applyToPoint} from 'transformation-matrix';
 import {createGuid} from './utils/guid-utils';
@@ -16,7 +16,7 @@ import {asStatePublisher, asStateSubscriber} from './helpers/higher-order-compon
 import {getDragModeAttribute} from './drag-snap-logic/drag-modes';
 import {normalizeDraggableConfig} from './drag-snap-logic/normalize-draggable-config';
 import {DRAG_STATES} from './drag-snap-logic/drag-states';
-import {draggableCollectors} from './defaults/default-draggable-collectors';
+import draggableCollectors from './defaults/default-draggable-collectors';
 
 const {INACTIVE, GRABBED, DRAGGED, RELEASED} = DRAG_STATES;
 

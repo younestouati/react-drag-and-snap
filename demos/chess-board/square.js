@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import makeSnapTarget from '../../src/make-snap-target';
+import {makeSnapTarget, SnapCriteria} from '../lib-proxy';
 import {isMoveLegal} from './custom-snap-criteria/is-move-legal';
-import Criteria from '../../src/defaults/default-snap-criteria';
 
 class Square extends React.Component {
 	shouldComponentUpdate(nextProps) {
@@ -41,16 +40,16 @@ Square.propTypes = {
 };
 
 const snapConfig = {
-	dragSnapCriteria: Criteria.never,
+	dragSnapCriteria: SnapCriteria.never,
 	releaseSnapCriteria: [
-		Criteria.isCenterOverTarget,
+		SnapCriteria.isCenterOverTarget,
 		isMoveLegal
 	]
 };
 
 const customCollector = (draggableDescriptor, targetDescriptor) => {
 	return {
-		isCenterOverTarget: draggableDescriptor.some(draggableDescriptor => Criteria.isCenterOverTarget(draggableDescriptor, targetDescriptor)),
+		isCenterOverTarget: draggableDescriptor.some(draggableDescriptor => SnapCriteria.isCenterOverTarget(draggableDescriptor, targetDescriptor)),
 		isLegalMove: draggableDescriptor.some(draggableDescriptor => isMoveLegal(draggableDescriptor, targetDescriptor))
 	};
 }

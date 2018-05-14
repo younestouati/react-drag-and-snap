@@ -18,7 +18,7 @@ test('Criteria.isCenterOverTarget returns true when center is over target, false
 
 test('Criteria.isCenterWithinRadius returns true when center is within given radius (no hysteresis)', () => {
     const criterium = Criteria.isCenterWithinRadius(10);
-    const props = {draggedItems: [{id: 1, isSnappingToThisTarget: false}]};
+    const props = {draggables: [{id: 1, isSnappingToThisTarget: false}]};
 
     const width = 20;
     const height = 20;
@@ -30,7 +30,7 @@ test('Criteria.isCenterWithinRadius returns true when center is within given rad
 test('Criteria.isCenterWithinRadius returns true when center is within given radius (with hysteresis)', () => {
     const id = 1;
     const criterium = Criteria.isCenterWithinRadius(10, 30);
-    const props = {draggedItems: [{id, isSnappingToThisTarget: true}]};
+    const props = {draggables: [{id, isSnappingToThisTarget: true}]};
 
     const width = 20;
     const height = 20;
@@ -40,8 +40,8 @@ test('Criteria.isCenterWithinRadius returns true when center is within given rad
 });
 
 test('Criteria.isNoOtherDraggableSnapping returns true when no other draggable is snapping, false if it is', () => {
-    expect(Criteria.isNoOtherDraggableSnapping({id: 1},  {draggedItems: [{id: 1, isSnappingToThisTarget: true}]})).toBe(true);
-    expect(Criteria.isNoOtherDraggableSnapping({id: 1}, {draggedItems: [{id: 1, isSnappingToOtherTarget: true}]})).toBe(false);
+    expect(Criteria.isNoOtherDraggableSnapping({id: 1},  {draggables: [{id: 1, isSnappingToThisTarget: true}]})).toBe(true);
+    expect(Criteria.isNoOtherDraggableSnapping({id: 1}, {draggables: [{id: 1, isSnappingToOtherTarget: true}]})).toBe(false);
 });
 
 test('Criteria.isDragDataProp returns true when prop matches, false otherwise', () => {

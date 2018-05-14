@@ -60,7 +60,7 @@ const isDragDataProp = (prop, value) => {
 	return ({dragData}) => toArray(value).indexOf(dragData[prop]) > -1;
 };
 
-const Criteria = {
+const SnapCriteria = {
 	always,
 	never,
 	isCenterOverTarget,
@@ -70,4 +70,4 @@ const Criteria = {
 	draggableIsNotSnappingToOtherTarget
 }
 
-export default Criteria;
+export default SnapCriteria;
