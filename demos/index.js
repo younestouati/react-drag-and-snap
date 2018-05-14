@@ -19,7 +19,7 @@ import {CSSTransitionDemo} from './css-transition/index';
 import {SelfTransformDemo} from './self-transform/index';
 
 import {BoxModelDemo} from './box-model/box-model';
-//import {CenterFinderDemo} from './demos/box-model/center-finder';
+import './demo-styles.css';
 
 const demoComponents = {
     simpleDemo: {
