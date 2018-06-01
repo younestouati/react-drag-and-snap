@@ -4,7 +4,9 @@ import postcss from 'rollup-plugin-postcss';
 import uglify from 'rollup-plugin-uglify';
 import eslint from 'rollup-plugin-eslint';
 import babel from 'rollup-plugin-babel';
-import image from 'rollup-plugin-image';
+//import reactSvg from "rollup-plugin-react-svg";
+//import image from 'rollup-plugin-image';
+import url from "rollup-plugin-url"
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 import globals from 'rollup-plugin-node-globals';
@@ -15,11 +17,12 @@ const isProduction = ENV === 'production';
 const isDevelopment = ENV === 'development';
 
 const plugins = [
+    /*eslint({
+        exclude: '*.css',
+        envs: ["browser"]
+    }),*/
     postcss({
         extensions: ['.css'],
-    }),
-    eslint({
-        envs: ["browser"]
     }),
     babel({
         exclude: ['node_modules/**'],
@@ -27,7 +30,11 @@ const plugins = [
     }),
     resolve(), // Makes it possible to load third-party modules in node_modules.
     commonjs(), // Converts CommonJS modules to ES6.
-    image(), // For importing JPG, PNG, GIF and SVG images
+    //reactSvg(),
+    //image(), // For importing JPG, PNG, GIF and SVG images
+    url({
+        limit: 0
+    }),
     globals(), // Injects the same node globals browserify does (i.e process, Buffer, etc)    
 ]
 

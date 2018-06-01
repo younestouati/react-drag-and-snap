@@ -1,5 +1,8 @@
-import {isArray} from './type-utils';
+import { isArray } from './type-utils';
 
-const toArray = (val) => isArray(val) ? val : [val];
+const arrayUtils = {
+    toArray: val => (isArray(val) ? val : [val]),
+};
 
-export {toArray};
+
+export default arrayUtils;

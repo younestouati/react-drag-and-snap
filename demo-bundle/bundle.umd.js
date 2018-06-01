@@ -9,9 +9,6 @@ var global$1 = (typeof global !== "undefined" ? global :
             typeof self !== "undefined" ? self :
             typeof window !== "undefined" ? window : {});
 
-// shim for using process in browser
-// based off https://github.com/defunctzombie/node-process/blob/master/browser.js
-
 function defaultSetTimout() {
     throw new Error('setTimeout has not been defined');
 }
@@ -335,14 +332,6 @@ var objectAssign = shouldUseNative() ? Object.assign : function (target, source)
 	return to;
 };
 
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
 'use strict';
 
 /**
@@ -388,14 +377,6 @@ function invariant(condition, format, a, b, c, d, e, f) {
 }
 
 var invariant_1 = invariant;
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
 
 'use strict';
 
@@ -444,15 +425,6 @@ emptyFunction.thatReturnsArgument = function (arg) {
 
 var emptyFunction_1 = emptyFunction;
 
-/** @license React v16.3.2
- * react.production.min.js
- *
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 'use strict';var r="function"===typeof Symbol&&Symbol["for"]; var t=r?Symbol["for"]("react.element"):60103; var u=r?Symbol["for"]("react.portal"):60106; var v=r?Symbol["for"]("react.fragment"):60107; var w=r?Symbol["for"]("react.strict_mode"):60108; var x=r?Symbol["for"]("react.provider"):60109; var y=r?Symbol["for"]("react.context"):60110; var z=r?Symbol["for"]("react.async_mode"):60111; var A=r?Symbol["for"]("react.forward_ref"):
 60112; var B="function"===typeof Symbol&&Symbol.iterator;function C(a){for(var b=arguments.length-1,e="http://reactjs.org/docs/error-decoder.html?invariant\x3d"+a,c=0;c<b;c++)e+="\x26args[]\x3d"+encodeURIComponent(arguments[c+1]);invariant_1(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",e);}var D={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}};
 function E(a,b,e){this.props=a;this.context=b;this.refs=emptyObject_1;this.updater=e||D;}E.prototype.isReactComponent={};E.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?C("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState");};E.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate");};function F(){}F.prototype=E.prototype;function G(a,b,e){this.props=a;this.context=b;this.refs=emptyObject_1;this.updater=e||D;}var H=G.prototype=new F;
@@ -466,14 +438,6 @@ _calculateChangedBits:b,_defaultValue:a,_currentValue:a,_changedBits:0,Provider:
 (k=a.type.defaultProps);for(c in b)J.call(b,c)&&!K.hasOwnProperty(c)&&(d[c]=void 0===b[c]&&void 0!==k?k[c]:b[c]);}c=arguments.length-2;if(1===c)d.children=e;else if(1<c){k=Array(c);for(var l=0;l<c;l++)k[l]=arguments[l+2];d.children=k;}return{$$typeof:t,type:a.type,key:g,ref:h,props:d,_owner:f}},createFactory:function(a){var b=L.bind(null,a);b.type=a;return b},isValidElement:M,version:"16.3.2",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurrentOwner:I,assign:objectAssign}};
 var X=Object.freeze({default:W});
 var Y=X&&W||X;var react_production_min=Y["default"]?Y["default"]:Y;
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
 
 'use strict';
 
@@ -542,13 +506,6 @@ var warning_1 = warning;
 var ReactPropTypesSecret$1 = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 
 var ReactPropTypesSecret_1 = ReactPropTypesSecret$1;
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
 
 'use strict';
 
@@ -2030,6 +1987,381 @@ if (process.env.NODE_ENV === 'production') {
 }
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+
+
+
+
+var asyncGenerator = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
+
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
+
+
+
+
+
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+
+
+
+
+
+
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+var get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;
+  var desc = Object.getOwnPropertyDescriptor(object, property);
+
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;
+
+    if (getter === undefined) {
+      return undefined;
+    }
+
+    return getter.call(receiver);
+  }
+};
+
+var inherits = function (subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+};
+
+
+
+
+
+
+
+
+
+
+
+var possibleConstructorReturn = function (self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+};
+
+
+
+
+
+var slicedToArray = function () {
+  function sliceIterator(arr, i) {
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"]) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
+  return function (arr, i) {
+    if (Array.isArray(arr)) {
+      return arr;
+    } else if (Symbol.iterator in Object(arr)) {
+      return sliceIterator(arr, i);
+    } else {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+    }
+  };
+}();
+
+
+
+
+
+
+
+
+
+
+
+
+
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
+
+var Square = function (_React$Component) {
+    inherits(Square, _React$Component);
+
+    function Square() {
+        classCallCheck(this, Square);
+        return possibleConstructorReturn(this, (Square.__proto__ || Object.getPrototypeOf(Square)).apply(this, arguments));
+    }
+
+    createClass(Square, [{
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                isSnapping = _props.isSnapping,
+                dragState = _props.dragState;
+
+
+            var snapText = isSnapping ? 'Is snapping' : '';
+
+            return react.createElement(
+                'div',
+                { style: {
+                        display: 'inline-block',
+                        border: '3px dashed #333',
+                        width: '250px',
+                        height: '100px'
+                    }
+                },
+                'Hej ',
+                dragState,
+                ' and ',
+                snapText
+            );
+        }
+    }]);
+    return Square;
+}(react.Component);
+
+var distance = function distance(p1) {
+    var p2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { x: 0.0, y: 0 };
+
+    return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+};
+
+var Target = function (_React$Component) {
+    inherits(Target, _React$Component);
+
+    function Target() {
+        classCallCheck(this, Target);
+        return possibleConstructorReturn(this, (Target.__proto__ || Object.getPrototypeOf(Target)).apply(this, arguments));
+    }
+
+    createClass(Target, [{
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                draggedItems = _props.draggedItems,
+                children = _props.children;
+
+            var text = draggedItems.length ? 'Dist: ' + distance(draggedItems[0].transform) : '';
+
+            return react.createElement(
+                'div',
+                {
+                    style: {
+                        display: 'inline-block',
+                        border: '5px dashed green',
+                        position: 'relative',
+                        width: '250px',
+                        height: '100px',
+                        background: draggedItems.some(function (d) {
+                            return d.isSnappingToThisTarget;
+                        }) ? 'red' : 'white'
+                    }
+                },
+                children || 'Target ' + text
+            );
+        }
+    }]);
+    return Target;
+}(react.Component);
+
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -2251,18 +2583,6 @@ function containsNode(outerNode, innerNode) {
 
 var containsNode_1 = containsNode;
 
-/** @license React v16.3.2
- * react-dom.production.min.js
- *
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-/*
- Modernizr 3.0.0pre (Custom Build) | MIT
-*/
 'use strict';
 function D$1(a){for(var b=arguments.length-1,c="http://reactjs.org/docs/error-decoder.html?invariant\x3d"+a,d=0;d<b;d++)c+="\x26args[]\x3d"+encodeURIComponent(arguments[d+1]);invariant_1(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",c);}react?void 0:D$1("227");
 function ma(a,b,c,d,e,f,h,g,k){this._hasCaughtError=!1;this._caughtError=null;var v=Array.prototype.slice.call(arguments,3);try{b.apply(c,v);}catch(l){this._caughtError=l, this._hasCaughtError=!0;}}
@@ -2581,15 +2901,6 @@ function hyphenate(string) {
 
 var hyphenate_1 = hyphenate;
 
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @typechecks
- */
-
 'use strict';
 
 
@@ -2647,15 +2958,6 @@ function camelize(string) {
 }
 
 var camelize_1 = camelize;
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @typechecks
- */
 
 'use strict';
 
@@ -19384,387 +19686,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-
-
-
-
-
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
-
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
-
-
-
-
-
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
-
-
-
-
-
-
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
-
-var get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-};
-
-var inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-};
-
-
-
-
-
-
-
-
-
-
-
-var possibleConstructorReturn = function (self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-};
-
-
-
-
-
-var slicedToArray = function () {
-  function sliceIterator(arr, i) {
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _e = undefined;
-
-    try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-        _arr.push(_s.value);
-
-        if (i && _arr.length === i) break;
-      }
-    } catch (err) {
-      _d = true;
-      _e = err;
-    } finally {
-      try {
-        if (!_n && _i["return"]) _i["return"]();
-      } finally {
-        if (_d) throw _e;
-      }
-    }
-
-    return _arr;
-  }
-
-  return function (arr, i) {
-    if (Array.isArray(arr)) {
-      return arr;
-    } else if (Symbol.iterator in Object(arr)) {
-      return sliceIterator(arr, i);
-    } else {
-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
-    }
-  };
-}();
-
-
-
-
-
-
-
-
-
-
-
-
-
-var toConsumableArray = function (arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  } else {
-    return Array.from(arr);
-  }
-};
-
-var Square = function (_React$Component) {
-	inherits(Square, _React$Component);
-
-	function Square() {
-		classCallCheck(this, Square);
-		return possibleConstructorReturn(this, (Square.__proto__ || Object.getPrototypeOf(Square)).apply(this, arguments));
-	}
-
-	createClass(Square, [{
-		key: 'render',
-		value: function render() {
-			var _props = this.props,
-			    isSnapping = _props.isSnapping,
-			    dragState = _props.dragState;
-
-
-			var snapText = isSnapping ? 'Is snapping' : '';
-
-			return react.createElement(
-				'div',
-				{ style: {
-						display: 'inline-block',
-						border: '3px dashed #333',
-						width: '250px',
-						height: '100px'
-					} },
-				'Hej ',
-				dragState,
-				' and ',
-				snapText
-			);
-		}
-	}]);
-	return Square;
-}(react.Component);
-
-var distance = function distance(p1) {
-	var p2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { x: 0., y: 0 };
-
-	return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
-};
-
-var Target = function (_React$Component) {
-	inherits(Target, _React$Component);
-
-	function Target() {
-		classCallCheck(this, Target);
-		return possibleConstructorReturn(this, (Target.__proto__ || Object.getPrototypeOf(Target)).apply(this, arguments));
-	}
-
-	createClass(Target, [{
-		key: 'render',
-		value: function render() {
-			var _props = this.props,
-			    draggedItems = _props.draggedItems,
-			    children = _props.children;
-
-			var text = draggedItems.length ? 'Dist: ' + distance(draggedItems[0].transform) : '';
-
-			return react.createElement(
-				'div',
-				{
-					style: {
-						display: 'inline-block',
-						border: '5px dashed green',
-						position: 'relative',
-						width: '250px',
-						height: '100px',
-						background: draggedItems.some(function (d) {
-							return d.isSnappingToThisTarget;
-						}) ? 'red' : 'white'
-					}
-				},
-				children ? children : 'Target ' + text
-			);
-		}
-	}]);
-	return Target;
-}(react.Component);
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 'use strict';
 
 
@@ -20301,13 +20222,6 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
   return ReactPropTypes;
 };
 
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 'use strict';
 
 
@@ -20432,11 +20346,6 @@ function fromObject(object) {
  * @ignore
  * @type {RegExp}
  */
-/**
- * Parse a string matrix formatted as matrix(a,b,c,d,e,f)
- * @param string String with a matrix
- * @returns {{a: number, b: number, c: number, e: number, d: number, f: number}} Affine matrix
- */
 
 /**
  * Identity matrix
@@ -20476,12 +20385,6 @@ function inverse(matrix) {
     f: (b * e - a * f) / denom
   };
 }
-
-/**
- * Check if the object contain an affine matrix
- * @param object
- * @return {boolean}
- */
 
 function isUndefined(val) {
   return typeof val === 'undefined';
@@ -20586,12 +20489,6 @@ function rotateDEG(angle) {
   return rotate(angle * PI / 180, cx, cy);
 }
 
-/**
- * Calculate a scaling matrix
- * @param sx Scaling on axis x
- * @param [sy = sx] Scaling on axis y (default sx)
- * @returns {{a: number, b: number, c: number, e: number, d: number, f: number}} Affine matrix
- */
 function scale(sx) {
   var sy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
 
@@ -20630,171 +20527,176 @@ function scale(sx) {
  */
 
 var createGuid = function createGuid() {
-	function s4() {
-		return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-	}
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
 
-	return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
+    return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
+};
+
+var guidUtils = {
+    createGuid: createGuid
 };
 
 var DOMElementHelper = function () {
-	function DOMElementHelper(el) {
-		classCallCheck(this, DOMElementHelper);
+    function DOMElementHelper(el) {
+        classCallCheck(this, DOMElementHelper);
 
-		this.computedStyles = {
-			base: new Map(),
-			before: new Map(),
-			after: new Map()
-		};
-		this.el = el;
+        this.computedStyles = {
+            base: new Map(),
+            before: new Map(),
+            after: new Map()
+        };
+        this.el = el;
 
-		if (this.el) {
-			this.updateElement(this.el);
-		}
-	}
+        if (this.el) {
+            this.updateElement(this.el);
+        }
+    }
 
-	createClass(DOMElementHelper, [{
-		key: 'updateComputedStyles',
-		value: function updateComputedStyles() {
-			var _this = this;
+    createClass(DOMElementHelper, [{
+        key: 'updateComputedStyles',
+        value: function updateComputedStyles() {
+            var _this = this;
 
-			var computedStyles = {
-				base: window.getComputedStyle(this.el),
-				before: window.getComputedStyle(this.el, ':before'),
-				after: window.getComputedStyle(this.el, ':after')
-			};
+            var computedStyles = {
+                base: window.getComputedStyle(this.el),
+                before: window.getComputedStyle(this.el, ':before'),
+                after: window.getComputedStyle(this.el, ':after')
+            };
 
-			['base', 'before', 'after'].forEach(function (elementType) {
-				var m = new Map();
+            ['base', 'before', 'after'].forEach(function (elementType) {
+                var m = new Map();
 
-				for (var i = 0; i < computedStyles[elementType].length; i++) {
-					var key = computedStyles[elementType][i];
-					var value = computedStyles[elementType][computedStyles[elementType][i]];
-					m.set(key, value);
-				}
+                for (var i = 0; i < computedStyles[elementType].length; i += 1) {
+                    var key = computedStyles[elementType][i];
+                    var value = computedStyles[elementType][computedStyles[elementType][i]];
+                    m.set(key, value);
+                }
 
-				_this.computedStyles[elementType] = m;
-			});
-		}
-	}, {
-		key: 'updateElement',
-		value: function updateElement(el) {
-			this.el = el;
-			this.boundingClientRect = this.el.getBoundingClientRect();
-			this.updateComputedStyles();
+                _this.computedStyles[elementType] = m;
+            });
+        }
+    }, {
+        key: 'updateElement',
+        value: function updateElement(el) {
+            this.el = el;
+            this.boundingClientRect = this.el.getBoundingClientRect();
+            this.updateComputedStyles();
 
-			this.borderWidth = {
-				top: window.parseFloat(this.computedStyles.base.get('border-top-width')),
-				bottom: window.parseFloat(this.computedStyles.base.get('border-bottom-width')),
-				left: window.parseFloat(this.computedStyles.base.get('border-left-width')),
-				right: window.parseFloat(this.computedStyles.base.get('border-right-width'))
-			};
+            this.borderWidth = {
+                top: window.parseFloat(this.computedStyles.base.get('border-top-width')),
+                bottom: window.parseFloat(this.computedStyles.base.get('border-bottom-width')),
+                left: window.parseFloat(this.computedStyles.base.get('border-left-width')),
+                right: window.parseFloat(this.computedStyles.base.get('border-right-width'))
+            };
 
-			this.padding = {
-				left: window.parseFloat(this.computedStyles.base.get('padding-left')),
-				right: window.parseFloat(this.computedStyles.base.get('padding-right')),
-				top: window.parseFloat(this.computedStyles.base.get('padding-top')),
-				bottom: window.parseFloat(this.computedStyles.base.get('padding-bottom'))
-			};
+            this.padding = {
+                left: window.parseFloat(this.computedStyles.base.get('padding-left')),
+                right: window.parseFloat(this.computedStyles.base.get('padding-right')),
+                top: window.parseFloat(this.computedStyles.base.get('padding-top')),
+                bottom: window.parseFloat(this.computedStyles.base.get('padding-bottom'))
+            };
 
-			this.margin = {
-				left: window.parseFloat(this.computedStyles.base.get('margin-left')),
-				right: window.parseFloat(this.computedStyles.base.get('margin-right')),
-				top: window.parseFloat(this.computedStyles.base.get('margin-top')),
-				bottom: window.parseFloat(this.computedStyles.base.get('margin-bottom'))
-			};
+            this.margin = {
+                left: window.parseFloat(this.computedStyles.base.get('margin-left')),
+                right: window.parseFloat(this.computedStyles.base.get('margin-right')),
+                top: window.parseFloat(this.computedStyles.base.get('margin-top')),
+                bottom: window.parseFloat(this.computedStyles.base.get('margin-bottom'))
+            };
 
-			this.isBorderBox = this.computedStyles.base.get('box-sizing') === 'border-box';
+            this.isBorderBox = this.computedStyles.base.get('box-sizing') === 'border-box';
 
-			this.contentBoxSize = {
-				width: this.el.clientWidth - (this.padding.left + this.padding.right),
-				height: this.el.clientHeight - (this.padding.top + this.padding.bottom)
-			};
+            this.contentBoxSize = {
+                width: this.el.clientWidth - (this.padding.left + this.padding.right),
+                height: this.el.clientHeight - (this.padding.top + this.padding.bottom)
+            };
 
-			//Border-box size includes padding and border widths (padding already included in clientWidth)
-			this.borderBoxSize = {
-				width: this.el.clientWidth + this.borderWidth.left + this.borderWidth.right,
-				height: this.el.clientHeight + this.borderWidth.top + this.borderWidth.bottom
-			};
-		}
-	}, {
-		key: 'refresh',
-		value: function refresh() {
-			this.updateElement(this.el);
-		}
-	}, {
-		key: 'getElement',
-		value: function getElement() {
-			return this.el;
-		}
-	}, {
-		key: 'getSize',
-		value: function getSize() {
-			return this.isBorderBox ? this.borderBoxSize : this.contentBoxSize;
-		}
-	}, {
-		key: 'getScaledSize',
-		value: function getScaledSize(scaleX, scaleY) {
-			var size = this.getSize();
+            // Border-box size includes padding and border widths (padding already included
+            // in clientWidth)
+            this.borderBoxSize = {
+                width: this.el.clientWidth + this.borderWidth.left + this.borderWidth.right,
+                height: this.el.clientHeight + this.borderWidth.top + this.borderWidth.bottom
+            };
+        }
+    }, {
+        key: 'refresh',
+        value: function refresh() {
+            this.updateElement(this.el);
+        }
+    }, {
+        key: 'getElement',
+        value: function getElement() {
+            return this.el;
+        }
+    }, {
+        key: 'getSize',
+        value: function getSize() {
+            return this.isBorderBox ? this.borderBoxSize : this.contentBoxSize;
+        }
+    }, {
+        key: 'getScaledSize',
+        value: function getScaledSize(scaleX, scaleY) {
+            var size = this.getSize();
 
-			return {
-				width: size.width * scaleX,
-				height: size.height * scaleY
-			};
-		}
-	}, {
-		key: 'getBoundingClientRect',
-		value: function getBoundingClientRect() {
-			return this.boundingClientRect;
-		}
-	}, {
-		key: 'getSizeOrDefault',
-		value: function getSizeOrDefault(defaultSize) {
-			return this.getSize() || defaultSize;
-		}
-	}, {
-		key: 'getPadding',
-		value: function getPadding() {
-			return this.padding;
-		}
-	}, {
-		key: 'getBorderWidth',
-		value: function getBorderWidth() {
-			return this.borderWidth;
-		}
-	}, {
-		key: 'getIsBorderBox',
-		value: function getIsBorderBox() {
-			return this.isBorderBox;
-		}
+            return {
+                width: size.width * scaleX,
+                height: size.height * scaleY
+            };
+        }
+    }, {
+        key: 'getBoundingClientRect',
+        value: function getBoundingClientRect() {
+            return this.boundingClientRect;
+        }
+    }, {
+        key: 'getSizeOrDefault',
+        value: function getSizeOrDefault(defaultSize) {
+            return this.getSize() || defaultSize;
+        }
+    }, {
+        key: 'getPadding',
+        value: function getPadding() {
+            return this.padding;
+        }
+    }, {
+        key: 'getBorderWidth',
+        value: function getBorderWidth() {
+            return this.borderWidth;
+        }
+    }, {
+        key: 'getIsBorderBox',
+        value: function getIsBorderBox() {
+            return this.isBorderBox;
+        }
 
-		// Returns the center of the border-box or content-box depending on box-sizing CSS prop. Eitherway it will be
-		// returned in border box coordinates.
+        // Returns the center of the border-box or content-box depending on box-sizing CSS prop.
+        // Eitherway it will be returned in border box coordinates.
 
-	}, {
-		key: 'getCenterInBorderBoxCoordinates',
-		value: function getCenterInBorderBoxCoordinates() {
-			return this.isBorderBox ? {
-				x: this.borderBoxSize.width / 2, // + this.margin.left,
-				y: this.borderBoxSize.height / 2 // + this.margin.top
-			} : {
-				x: this.contentBoxSize.width / 2 + this.padding.left + this.borderWidth.left, // + this.margin.left,
-				y: this.contentBoxSize.height / 2 + this.padding.top + this.borderWidth.top // + this.margin.top
-			};
-		}
-	}, {
-		key: 'getComputedStyles',
-		value: function getComputedStyles() {
-			var invalidate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    }, {
+        key: 'getCenterInBorderBoxCoordinates',
+        value: function getCenterInBorderBoxCoordinates() {
+            return this.isBorderBox ? {
+                x: this.borderBoxSize.width / 2,
+                y: this.borderBoxSize.height / 2
+            } : {
+                x: this.contentBoxSize.width / 2 + this.padding.left + this.borderWidth.left,
+                y: this.contentBoxSize.height / 2 + this.padding.top + this.borderWidth.top
+            };
+        }
+    }, {
+        key: 'getComputedStyles',
+        value: function getComputedStyles() {
+            var invalidate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-			if (invalidate) {
-				this.updateComputedStyles();
-			}
+            if (invalidate) {
+                this.updateComputedStyles();
+            }
 
-			return this.computedStyles;
-		}
-	}]);
-	return DOMElementHelper;
+            return this.computedStyles;
+        }
+    }]);
+    return DOMElementHelper;
 }();
 
 var isBoolean = function isBoolean(val) {
@@ -20803,635 +20705,537 @@ var isBoolean = function isBoolean(val) {
 var isFunction = function isFunction(val) {
   return typeof val === 'function';
 };
+var isArray = function isArray(val) {
+  return Array.isArray(val);
+};
 var isObject$1 = function isObject(val) {
   return val !== null && (typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object' && !isArray(val);
 };
 var isNumber = function isNumber(val) {
   return typeof val === 'number';
 };
-var isArray = function isArray(val) {
-  return Array.isArray(val);
-};
 var isNullOrUndefined = function isNullOrUndefined(val) {
   return typeof val === 'undefined' || val === null;
 };
 
-var shallowClone = function shallowClone(obj) {
-	return Object.assign({}, obj);
-};
-var extend = function extend() {
-	for (var _len = arguments.length, objects = Array(_len), _key = 0; _key < _len; _key++) {
-		objects[_key] = arguments[_key];
-	}
-
-	return Object.assign.apply(Object, [{}].concat(objects));
-};
-var iterate = function iterate(obj, callback) {
-	return Object.keys(obj).forEach(function (key) {
-		return callback(obj[key], key);
-	});
-};
-
-var shallowCloneExcluding = function shallowCloneExcluding(obj, excludeKeys) {
-	var returnObject = {};
-	iterate(obj, function (val, key) {
-		if (excludeKeys.indexOf(key) === -1) {
-			returnObject[key] = val;
-		}
-	});
-
-	return returnObject;
-};
-
-var shallowEqual$1 = function shallowEqual(obj1, obj2) {
-	if (obj1 === obj2) {
-		return true;
-	}
-
-	var keys1 = Object.keys(obj1);
-	var keys2 = Object.keys(obj2);
-
-	if (keys1.length !== keys2.length) {
-		return false;
-	}
-
-	return keys1.every(function (k) {
-		return obj2.hasOwnProperty(k) && obj1[k] === obj2[k];
-	});
-};
-
 function matrixFromString(string) {
-	var entries = string.replace(/^.*\((.*)\)$/g, "$1").split(/, +/);
+    var entries = string.replace(/^.*\((.*)\)$/g, '$1').split(/, +/);
 
-	var parsedEntries = entries.length === 6 ? entries.map(parseFloat) : [1, 0, 0, 1, 0, 0];
+    var parsedEntries = entries.length === 6 ? entries.map(parseFloat) : [1, 0, 0, 1, 0, 0];
 
-	return {
-		a: parsedEntries[0],
-		b: parsedEntries[1],
-		c: parsedEntries[2],
-		d: parsedEntries[3],
-		e: parsedEntries[4],
-		f: parsedEntries[5]
-	};
+    return {
+        a: parsedEntries[0],
+        b: parsedEntries[1],
+        c: parsedEntries[2],
+        d: parsedEntries[3],
+        e: parsedEntries[4],
+        f: parsedEntries[5]
+    };
 }
 
 function extractRotation(matrix) {
-	return Math.atan2(matrix.b, matrix.a) / (Math.PI / 180);
+    return Math.atan2(matrix.b, matrix.a) / (Math.PI / 180);
 }
 
 function extractScale(matrix) {
-	var denom = Math.pow(matrix.a, 2) + Math.pow(matrix.b, 2);
-	var x = Math.sqrt(denom);
-	var y = (matrix.a * matrix.d - matrix.c * matrix.b) / x;
-	return { x: x, y: y };
+    var denom = Math.pow(matrix.a, 2) + Math.pow(matrix.b, 2);
+    var x = Math.sqrt(denom);
+    var y = (matrix.a * matrix.d - matrix.c * matrix.b) / x;
+    return { x: x, y: y };
 }
 
 function extractSkew(matrix) {
-	var denom = Math.pow(matrix.a, 2) + Math.pow(matrix.b, 2);
-	var skewX = Math.atan2(matrix.a * matrix.c + matrix.b * matrix.d, denom) / (Math.PI / 180);
+    var denom = Math.pow(matrix.a, 2) + Math.pow(matrix.b, 2);
+    var skewX = Math.atan2(matrix.a * matrix.c + matrix.b * matrix.d, denom) / (Math.PI / 180);
 
-	return {
-		x: skewX,
-		y: 0
-	};
+    return {
+        x: skewX,
+        y: 0
+    };
 }
 
 function extractTranslation(matrix) {
-	return {
-		x: matrix.e,
-		y: matrix.f
-	};
+    return {
+        x: matrix.e,
+        y: matrix.f
+    };
 }
 
 function skewXMatrix(x) {
-	return fromObject({
-		a: 1,
-		b: 0,
-		c: Math.tan(x / 180 * Math.PI),
-		d: 1,
-		e: 0,
-		f: 0
-	});
+    return fromObject({
+        a: 1,
+        b: 0,
+        c: Math.tan(x / 180 * Math.PI),
+        d: 1,
+        e: 0,
+        f: 0
+    });
 }
 
 function skew(x, y) {
-	return fromObject({
-		a: 1,
-		b: Math.tan(y / 180 * Math.PI),
-		c: Math.tan(x / 180 * Math.PI),
-		d: 1,
-		e: 0,
-		f: 0
-	});
+    return fromObject({
+        a: 1,
+        b: Math.tan(y / 180 * Math.PI),
+        c: Math.tan(x / 180 * Math.PI),
+        d: 1,
+        e: 0,
+        f: 0
+    });
 }
 
 function translationOnly(matrix) {
-	return extend(matrix, { a: 1, b: 0, c: 0, d: 1 });
+    return _extends({}, matrix, { a: 1, b: 0, c: 0, d: 1
+    });
 }
 
 function overrideTranslation(matrix, _ref) {
-	var x = _ref.x,
-	    y = _ref.y;
+    var x = _ref.x,
+        y = _ref.y;
 
-	return extend(matrix, { e: x, f: y });
+    return _extends({}, matrix, { e: x, f: y });
 }
 
-//Based on this: https://github.com/kangax/fabric.js/blob/master/src/util/misc.js
+// Based on this: https://github.com/kangax/fabric.js/blob/master/src/util/misc.js
 function qrDecompose(matrix) {
-	var scale = extractScale(matrix);
-	var skew = extractSkew(matrix);
+    var sc = extractScale(matrix);
+    var sk = extractSkew(matrix);
 
-	return {
-		rotate: extractRotation(matrix), // rotation in degrees
-		scaleX: scale.x,
-		scaleY: scale.y,
-		skewX: skew.x, // skewX in degrees
-		skewY: 0, // skewY in degrees
-		x: matrix.e,
-		y: matrix.f
-	};
+    return {
+        rotate: extractRotation(matrix), // rotation in degrees
+        scaleX: sc.x,
+        scaleY: sc.y,
+        skewX: sk.x, // skewX in degrees
+        skewY: 0, // skewY in degrees
+        x: matrix.e,
+        y: matrix.f
+    };
 }
 
 function getCenterOfBorderBox(domElementHelper) {
-	var _domElementHelper$get = domElementHelper.getBoundingClientRect(),
-	    left = _domElementHelper$get.left,
-	    top = _domElementHelper$get.top,
-	    width = _domElementHelper$get.width,
-	    height = _domElementHelper$get.height;
+    var _domElementHelper$get = domElementHelper.getBoundingClientRect(),
+        left = _domElementHelper$get.left,
+        top = _domElementHelper$get.top,
+        width = _domElementHelper$get.width,
+        height = _domElementHelper$get.height;
 
-	return {
-		x: left + width / 2,
-		y: top + height / 2
-	};
+    return {
+        x: left + width / 2,
+        y: top + height / 2
+    };
+}
+
+function transformMultiple() {
+    for (var _len = arguments.length, matrices = Array(_len), _key = 0; _key < _len; _key++) {
+        matrices[_key] = arguments[_key];
+    }
+
+    return matrices.reduce(function (acc, cur) {
+        return transform(acc, cur);
+    }, identity());
 }
 
 /*
- * The snapping functionality is based on the outermost HTML elements of the draggable and the 
- * snapTarget. That is, if the snapTransform dictates that the draggable should snap to the 
- * snapTarget by - say - exactly covering it, it will make the outermost element of the draggable 
- * adapt in position, size, rotation, and skew, to exactly match that of the outer most element of 
+ * The snapping functionality is based on the outermost HTML elements of the draggable and the
+ * snapTarget. That is, if the snapTransform dictates that the draggable should snap to the
+ * snapTarget by - say - exactly covering it, it will make the outermost element of the draggable
+ * adapt in position, size, rotation, and skew, to exactly match that of the outer most element of
  * the snapTarget when snapping.
- * 
- * React-drag-and-snap will use the element’s content-boxes or border-boxes in these snapping calculations 
+ *
+ * React-drag-and-snap will use the element’s content-boxes or border-boxes in these snapping calculations
  * depending on the values of the box-sizing CSS properties of the given elements.
  *
- * To do the snapping react-drag-and-snap needs to determine the transformation matrices of the draggable 
- * and snap target. That is the matrices that describe the element’s poses in the global window coordinate system. 
- * The scaling, rotation and skew parts are determined by reading and accumulating the CSS transforms for the 
- * element and its entire ancestor tree. However, the position - defined as the position of the center of the 
- * element - is hard to determine analytically, as it is the result of CSS transformations, left/top/bottom/right 
- * props if position is relative/absolute/fixed, and the element's natural position in the document flow given 
- * the current viewport size. Consequently, the position is determined by ‘measuring’, i.e. using 
+ * To do the snapping react-drag-and-snap needs to determine the transformation matrices of the draggable
+ * and snap target. That is the matrices that describe the element’s poses in the global window coordinate system.
+ * The scaling, rotation and skew parts are determined by reading and accumulating the CSS transforms for the
+ * element and its entire ancestor tree. However, the position - defined as the position of the center of the
+ * element - is hard to determine analytically, as it is the result of CSS transformations, left/top/bottom/right
+ * props if position is relative/absolute/fixed, and the element's natural position in the document flow given
+ * the current viewport size. Consequently, the position is determined by ‘measuring’, i.e. using
  * getBoundingClientRect().
  *
- * GetBoundingClientRect returns the position and size of the boundingBox, which is the smallest axis-aligned 
- * rectangle that fully contains the entire element, including padding and border (that is the border box - not 
- * the content box)! The center of this rectangle will always coincide with the center of the content box 
- * (regardless of any affine transformation that might have be applied to the the element or any ancestor) 
+ * GetBoundingClientRect returns the position and size of the boundingBox, which is the smallest axis-aligned
+ * rectangle that fully contains the entire element, including padding and border (that is the border box - not
+ * the content box)! The center of this rectangle will always coincide with the center of the content box
+ * (regardless of any affine transformation that might have be applied to the the element or any ancestor)
  * provided that:
  *   1) The sum of padding left and border left width equals the sum of padding right and border right width
  *   2) The sum of padding top and border top width equals the sum of padding bottom and border bottom width
  *
- * When the criteria above aren’t met, the non-uniform padding/border needs to be accounted for, in order to find 
+ * When the criteria above aren’t met, the non-uniform padding/border needs to be accounted for, in order to find
  * the center of the content box. That is the reason for the complexity of this method.
  */
 function getCenterOfContentBox(domElementHelper, CSSTransform) {
-	var _domElementHelper$get2 = domElementHelper.getBoundingClientRect(),
-	    left = _domElementHelper$get2.left,
-	    top = _domElementHelper$get2.top,
-	    width = _domElementHelper$get2.width,
-	    height = _domElementHelper$get2.height;
+    var _domElementHelper$get2 = domElementHelper.getBoundingClientRect(),
+        left = _domElementHelper$get2.left,
+        top = _domElementHelper$get2.top,
+        width = _domElementHelper$get2.width,
+        height = _domElementHelper$get2.height;
 
-	var padding = domElementHelper.getPadding();
-	var borderWidth = domElementHelper.getBorderWidth();
+    var padding = domElementHelper.getPadding();
+    var borderWidth = domElementHelper.getBorderWidth();
 
-	var _qrDecompose = qrDecompose(CSSTransform),
-	    rotation = _qrDecompose.rotate,
-	    scaleX = _qrDecompose.scaleX,
-	    scaleY = _qrDecompose.scaleY,
-	    skewX = _qrDecompose.skewX;
+    var _qrDecompose = qrDecompose(CSSTransform),
+        rotation = _qrDecompose.rotate,
+        scaleX = _qrDecompose.scaleX,
+        scaleY = _qrDecompose.scaleY,
+        skewX = _qrDecompose.skewX;
 
-	var x = left + width / 2 - (padding.right - padding.left) / 2 - (borderWidth.right - borderWidth.left) / 2;
-	var y = top + height / 2 - (padding.bottom - padding.top) / 2 - (borderWidth.bottom - borderWidth.top) / 2;
+    /* eslint-disable max-len */
 
-	var matrix = transformMultiple(translate(left + width / 2, top + height / 2), rotate(rotation * Math.PI / 180), scale(scaleX, scaleY), skewXMatrix(skewX), translate(-(left + width / 2), -(top + height / 2)));
 
-	return applyToPoint(matrix, { x: x, y: y });
+    var x = left + width / 2 - (padding.right - padding.left) / 2 - (borderWidth.right - borderWidth.left) / 2;
+    var y = top + height / 2 - (padding.bottom - padding.top) / 2 - (borderWidth.bottom - borderWidth.top) / 2;
+    /* eslint-enable max-len */
+
+    var matrix = transformMultiple(translate(left + width / 2, top + height / 2), rotate(rotation * Math.PI / 180), scale(scaleX, scaleY), skewXMatrix(skewX), translate(-(left + width / 2), -(top + height / 2)));
+
+    return applyToPoint(matrix, { x: x, y: y });
 }
 
 function getCSSTransformsMatrix(DOMElement) {
-	var elementTransform = window.getComputedStyle(DOMElement).transform;
-	return elementTransform && elementTransform !== 'none' ? matrixFromString(elementTransform) : identity();
+    var elementTransform = window.getComputedStyle(DOMElement).transform;
+    return elementTransform && elementTransform !== 'none' ? matrixFromString(elementTransform) : identity();
 }
 
 function getAccumulatedCSSTransform(DOMElement) {
-	var accumulatedMatrix = identity();
+    var currentDOMElement = DOMElement;
+    var accumulatedMatrix = identity();
 
-	do {
-		accumulatedMatrix = transform(getCSSTransformsMatrix(DOMElement), accumulatedMatrix);
-		DOMElement = DOMElement.offsetParent;
-	} while (DOMElement);
+    do {
+        accumulatedMatrix = transform(getCSSTransformsMatrix(currentDOMElement), accumulatedMatrix);
+        currentDOMElement = currentDOMElement.offsetParent;
+    } while (currentDOMElement);
 
-	return accumulatedMatrix;
+    return accumulatedMatrix;
 }
 
 function getTransformationMatrix(DOMElement) {
-	var domElementHelper = new DOMElementHelper(DOMElement);
-	var accumulatedCSSTransform = getAccumulatedCSSTransform(DOMElement);
+    var domElementHelper = new DOMElementHelper(DOMElement);
+    var accumulatedCSSTransform = getAccumulatedCSSTransform(DOMElement);
 
-	var elementCenter = domElementHelper.getIsBorderBox() ? getCenterOfBorderBox(domElementHelper) : getCenterOfContentBox(domElementHelper, accumulatedCSSTransform);
+    var elementCenter = domElementHelper.getIsBorderBox() ? getCenterOfBorderBox(domElementHelper) : getCenterOfContentBox(domElementHelper, accumulatedCSSTransform);
 
-	return overrideTranslation(getAccumulatedCSSTransform(DOMElement), elementCenter);
-}
-
-function transformMultiple() {
-	for (var _len = arguments.length, matrices = Array(_len), _key = 0; _key < _len; _key++) {
-		matrices[_key] = arguments[_key];
-	}
-
-	return matrices.reduce(function (acc, cur) {
-		return transform(acc, cur);
-	}, identity());
+    return overrideTranslation(getAccumulatedCSSTransform(DOMElement), elementCenter);
 }
 
 function transformPosition(matrix, position) {
-	return applyToPoint(inverse(matrix), position);
+    return applyToPoint(inverse(matrix), position);
 }
 
 function transformVelocity(matrix, velocity) {
-	var _extractTranslation = extractTranslation(matrix),
-	    x = _extractTranslation.x,
-	    y = _extractTranslation.y;
+    var _extractTranslation = extractTranslation(matrix),
+        x = _extractTranslation.x,
+        y = _extractTranslation.y;
 
-	var translatedVelocityVector = {
-		x: velocity.x + x,
-		y: velocity.y + y
-	};
+    var translatedVelocityVector = {
+        x: velocity.x + x,
+        y: velocity.y + y
+    };
 
-	return applyToPoint(inverse(matrix), translatedVelocityVector);
+    return applyToPoint(inverse(matrix), translatedVelocityVector);
 }
 
 function transformRotation(matrix, rotation) {
-	return rotation - extractRotation(matrix);
+    return rotation - extractRotation(matrix);
 }
 
 function transformScale(actualSnapTargetSize, actualDraggableSize) {
-	return {
-		scaleX: actualDraggableSize.width / actualSnapTargetSize.width,
-		scaleY: actualDraggableSize.height / actualSnapTargetSize.height
-	};
+    return {
+        scaleX: actualDraggableSize.width / actualSnapTargetSize.width,
+        scaleY: actualDraggableSize.height / actualSnapTargetSize.height
+    };
 }
 
-function transformSkew(matrix, skew) {
-	var targetSkew = extractSkew(matrix);
+function transformSkew(matrix, skewToTransform) {
+    var targetSkew = extractSkew(matrix);
 
-	return {
-		skewX: skew.x - targetSkew.x,
-		skewY: skew.y - targetSkew.y
-	};
+    return {
+        skewX: skewToTransform.x - targetSkew.x,
+        skewY: skewToTransform.y - targetSkew.y
+    };
 }
 
-/* 
+/*
  * Given to transforms (objects with properties x, y, rotate, scale (or scaleX and scaleY), and skewX),
  * this function returns the matrix that represents the transformation from the first transform to the second.
  * If any of the transforms is only partially defined, any missing value will default to 0, except scale which
  * defaults to 1.
  */
 function deltaMatrix() {
-	var oldTransform = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-	var newTransform = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var oldTransform = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var newTransform = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-	var DETAULT_TRANSFORM = { x: 0, y: 0, rotate: 0, skewX: 0, scale: 1 };
-	var o = extend(DETAULT_TRANSFORM, oldTransform);
-	var n = extend(DETAULT_TRANSFORM, newTransform);
+    var DEFAULT_TRANSFORM = {
+        x: 0, y: 0, rotate: 0, skewX: 0, scale: 1
+    };
+    var o = _extends({}, DEFAULT_TRANSFORM, oldTransform);
+    var n = _extends({}, DEFAULT_TRANSFORM, newTransform);
 
-	var oScaleX = !isNullOrUndefined(o.scaleX) ? o.scaleX : o.scale;
-	var oScaleY = !isNullOrUndefined(o.scaleY) ? o.scaleY : o.scale;
-	var nScaleX = !isNullOrUndefined(n.scaleX) ? n.scaleX : n.scale;
-	var nScaleY = !isNullOrUndefined(n.scaleY) ? n.scaleY : n.scale;
+    var oScaleX = !isNullOrUndefined(o.scaleX) ? o.scaleX : o.scale;
+    var oScaleY = !isNullOrUndefined(o.scaleY) ? o.scaleY : o.scale;
+    var nScaleX = !isNullOrUndefined(n.scaleX) ? n.scaleX : n.scale;
+    var nScaleY = !isNullOrUndefined(n.scaleY) ? n.scaleY : n.scale;
 
-	return transform(translate(n.x - o.x, n.y - o.y), rotateDEG(n.rotate - o.rotate), scale(nScaleX / oScaleX, nScaleY / oScaleY), skewXMatrix(n.skewX - o.skewX));
+    return transform(translate(n.x - o.x, n.y - o.y), rotateDEG(n.rotate - o.rotate), scale(nScaleX / oScaleX, nScaleY / oScaleY), skewXMatrix(n.skewX - o.skewX));
 }
 
-var getDisplayName = function getDisplayName(component) {
-  return component.displayName || component.name || 'Component';
+var getComponentDisplayName = function getComponentDisplayName(component) {
+    return component.displayName || component.name || 'Component';
+};
+
+var reactUtils = {
+    getComponentDisplayName: getComponentDisplayName
 };
 
 var subtractPoints = function subtractPoints(p1, p2) {
-	return {
-		x: p1.x - p2.x,
-		y: p1.y - p2.y
-	};
+    return {
+        x: p1.x - p2.x,
+        y: p1.y - p2.y
+    };
 };
 
 var averagePoints = function averagePoints(points) {
-	return {
-		x: points.reduce(function (acc, curr) {
-			return curr.x + acc;
-		}, 0) / points.length,
-		y: points.reduce(function (acc, curr) {
-			return curr.y + acc;
-		}, 0) / points.length
-	};
+    return {
+        x: points.reduce(function (acc, curr) {
+            return curr.x + acc;
+        }, 0) / points.length,
+        y: points.reduce(function (acc, curr) {
+            return curr.y + acc;
+        }, 0) / points.length
+    };
 };
 
 var scalePoint = function scalePoint(point, scale) {
-	return {
-		x: point.x * scale,
-		y: point.y * scale
-	};
+    return {
+        x: point.x * scale,
+        y: point.y * scale
+    };
 };
 
 var distance$1 = function distance(p1) {
-	var p2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { x: 0, y: 0 };
-	return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+    var p2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { x: 0, y: 0 };
+    return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 };
 
 var getOrigo = function getOrigo() {
-	return { x: 0, y: 0 };
+    return { x: 0, y: 0 };
 };
 
 function extractPointFromEvent(e, identifier) {
-	var points = {};
-	if (e.changedTouches) {
-		for (var i = 0; i < e.changedTouches.length; i++) {
-			var touch = e.changedTouches.item(i);
-			points[touch.identifier] = {
-				x: touch.clientX,
-				y: touch.clientY
-			};
-		}
-	} else {
-		points.mouse = {
-			x: e.clientX,
-			y: e.clientY
-		};
-	}
+    var points = {};
+    if (e.changedTouches) {
+        for (var i = 0; i < e.changedTouches.length; i += 1) {
+            var touch = e.changedTouches.item(i);
+            points[touch.identifier] = {
+                x: touch.clientX,
+                y: touch.clientY
+            };
+        }
+    } else {
+        points.mouse = {
+            x: e.clientX,
+            y: e.clientY
+        };
+    }
 
-	return points[identifier];
+    return points[identifier];
 }
 
 function extractFirstIdentifier(e) {
-	return e.changedTouches ? e.changedTouches.item(0).identifier : 'mouse';
+    return e.changedTouches ? e.changedTouches.item(0).identifier : 'mouse';
 }
 
+var shallowClone = function shallowClone(obj) {
+    return Object.assign({}, obj);
+};
+var iterate = function iterate(obj, callback) {
+    return Object.keys(obj).forEach(function (key) {
+        return callback(obj[key], key);
+    });
+};
+
+var shallowCloneExcluding = function shallowCloneExcluding(obj, excludeKeys) {
+    var returnObject = {};
+    iterate(obj, function (val, key) {
+        if (excludeKeys.indexOf(key) === -1) {
+            returnObject[key] = val;
+        }
+    });
+
+    return returnObject;
+};
+
+var shallowEqual$1 = function shallowEqual(obj1, obj2) {
+    if (obj1 === obj2) {
+        return true;
+    }
+
+    var keys1 = Object.keys(obj1);
+    var keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) {
+        return false;
+    }
+
+    return keys1.every(function (k) {
+        return Object.prototype.hasOwnProperty.call(obj2, k) && obj1[k] === obj2[k];
+    });
+};
+
 var EventThrottler = function () {
-	function EventThrottler(handler) {
-		classCallCheck(this, EventThrottler);
+    function EventThrottler(handler) {
+        classCallCheck(this, EventThrottler);
 
-		this.handler = handler;
-		this.latestEvent = null;
-		this.animationId = null;
-	}
+        this.handler = handler;
+        this.latestEvent = null;
+        this.animationId = null;
+    }
 
-	createClass(EventThrottler, [{
-		key: 'invokeCallback',
-		value: function invokeCallback() {
-			this.handler(this.latestEvent);
-			this.animationId = requestAnimationFrame(this.invokeCallback.bind(this));
-		}
-	}, {
-		key: 'pause',
-		value: function pause() {
-			cancelAnimationFrame(this.animationId);
-			this.animationId = null;
-		}
-	}, {
-		key: 'addEvent',
-		value: function addEvent(event) {
-			this.latestEvent = shallowClone(event);
-			if (!this.animationId) {
-				this.animationId = requestAnimationFrame(this.invokeCallback.bind(this));
-			}
-		}
-	}]);
-	return EventThrottler;
+    createClass(EventThrottler, [{
+        key: 'invokeCallback',
+        value: function invokeCallback() {
+            this.handler(this.latestEvent);
+            this.animationId = requestAnimationFrame(this.invokeCallback.bind(this));
+        }
+    }, {
+        key: 'pause',
+        value: function pause() {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+        }
+    }, {
+        key: 'addEvent',
+        value: function addEvent(event) {
+            this.latestEvent = shallowClone(event);
+            if (!this.animationId) {
+                this.animationId = requestAnimationFrame(this.invokeCallback.bind(this));
+            }
+        }
+    }]);
+    return EventThrottler;
 }();
 
 var AVERAGING_WINDOW = 3;
 
 var PointerTracker = function () {
-	function PointerTracker(startCallback, moveCallback, endCallback) {
-		var eventThrottler = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : EventThrottler;
-		classCallCheck(this, PointerTracker);
+    function PointerTracker(startCallback, moveCallback, endCallback) {
+        var InjectedEventThrottler = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : EventThrottler;
+        classCallCheck(this, PointerTracker);
 
-		this.startCallback = startCallback;
-		this.endCallback = endCallback;
-		this.pointerIdentifier = null;
+        this.startCallback = startCallback;
+        this.endCallback = endCallback;
+        this.pointerIdentifier = null;
 
-		this.boundMoveHandler = this.moveHandler.bind(this);
-		this.boundEndHandler = this.endHandler.bind(this);
-		this.boundCancelHandler = this.cancelHandler.bind(this);
+        this.boundMoveHandler = this.moveHandler.bind(this);
+        this.boundEndHandler = this.endHandler.bind(this);
+        this.boundCancelHandler = this.cancelHandler.bind(this);
 
-		this.eventThrottler = new eventThrottler(moveCallback);
-	}
+        this.eventThrottler = new InjectedEventThrottler(moveCallback);
+    }
 
-	createClass(PointerTracker, [{
-		key: 'destroy',
-		value: function destroy() {
-			this.removeEventHandlers();
-		}
-	}, {
-		key: 'removeEventHandlers',
-		value: function removeEventHandlers() {
-			window.removeEventListener('mousemove', this.boundMoveHandler);
-			window.removeEventListener('mouseup', this.boundEndHandler);
-			window.removeEventListener('touchmove', this.boundMoveHandler);
-			window.removeEventListener('touchend', this.boundEndHandler);
-			window.removeEventListener('touchcancel', this.boundCancelHandler);
-		}
-	}, {
-		key: 'addEventHandlers',
-		value: function addEventHandlers() {
-			this.removeEventHandlers();
+    createClass(PointerTracker, [{
+        key: 'destroy',
+        value: function destroy() {
+            this.removeEventHandlers();
+        }
+    }, {
+        key: 'removeEventHandlers',
+        value: function removeEventHandlers() {
+            window.removeEventListener('mousemove', this.boundMoveHandler);
+            window.removeEventListener('mouseup', this.boundEndHandler);
+            window.removeEventListener('touchmove', this.boundMoveHandler);
+            window.removeEventListener('touchend', this.boundEndHandler);
+            window.removeEventListener('touchcancel', this.boundCancelHandler);
+        }
+    }, {
+        key: 'addEventHandlers',
+        value: function addEventHandlers() {
+            this.removeEventHandlers();
 
-			window.addEventListener('mousemove', this.boundMoveHandler, { passive: false });
-			window.addEventListener('mouseup', this.boundEndHandler, { passive: false });
-			window.addEventListener('touchmove', this.boundMoveHandler, { passive: false });
-			window.addEventListener('touchend', this.boundEndHandler, { passive: false });
-			window.addEventListener('touchcancel', this.boundCancelHandler, { passive: false });
-		}
-	}, {
-		key: 'resetVelocities',
-		value: function resetVelocities() {
-			this.point = null;
-			this.prevTime = null;
-			this.prevPosition = null;
-			this.animationId = null;
-			this.velocities = [];
-		}
-	}, {
-		key: 'updateVelocities',
-		value: function updateVelocities(point) {
-			var currentTime = performance.now();
+            window.addEventListener('mousemove', this.boundMoveHandler, { passive: false });
+            window.addEventListener('mouseup', this.boundEndHandler, { passive: false });
+            window.addEventListener('touchmove', this.boundMoveHandler, { passive: false });
+            window.addEventListener('touchend', this.boundEndHandler, { passive: false });
+            window.addEventListener('touchcancel', this.boundCancelHandler, { passive: false });
+        }
+    }, {
+        key: 'resetVelocities',
+        value: function resetVelocities() {
+            this.point = null;
+            this.prevTime = null;
+            this.prevPosition = null;
+            this.animationId = null;
+            this.velocities = [];
+        }
+    }, {
+        key: 'updateVelocities',
+        value: function updateVelocities(point) {
+            var currentTime = performance.now();
 
-			if (this.prevTime) {
-				var deltaPosition = subtractPoints(point, this.prevPosition);
-				var deltaTime = currentTime - this.prevTime;
-				this.velocities.push(scalePoint(deltaPosition, 1 / deltaTime));
+            if (this.prevTime) {
+                var deltaPosition = subtractPoints(point, this.prevPosition);
+                var deltaTime = currentTime - this.prevTime;
+                this.velocities.push(scalePoint(deltaPosition, 1 / deltaTime));
 
-				if (this.velocities.length === AVERAGING_WINDOW) {
-					this.velocities.shift();
-				}
-			}
+                if (this.velocities.length === AVERAGING_WINDOW) {
+                    this.velocities.shift();
+                }
+            }
 
-			this.prevTime = currentTime;
-			this.prevPosition = shallowClone(point);
-		}
-	}, {
-		key: 'getVelocity',
-		value: function getVelocity() {
-			return this.velocities.length ? averagePoints(this.velocities) : getOrigo();
-		}
-	}, {
-		key: 'startHandler',
-		value: function startHandler(e) {
-			e.stopPropagation();
-			var point = extractPointFromEvent(e, this.pointerIdentifier);
+            this.prevTime = currentTime;
+            this.prevPosition = shallowClone(point);
+        }
+    }, {
+        key: 'getVelocity',
+        value: function getVelocity() {
+            return this.velocities.length ? averagePoints(this.velocities) : getOrigo();
+        }
+    }, {
+        key: 'startHandler',
+        value: function startHandler(e) {
+            e.stopPropagation();
+            var point = extractPointFromEvent(e, this.pointerIdentifier);
 
-			this.startCallback({ position: point, velocity: { x: 0, y: 0 } });
-		}
-	}, {
-		key: 'moveHandler',
-		value: function moveHandler(e) {
-			var point = extractPointFromEvent(e, this.pointerIdentifier);
+            this.startCallback({ position: point, velocity: { x: 0, y: 0 } });
+        }
+    }, {
+        key: 'moveHandler',
+        value: function moveHandler(e) {
+            var point = extractPointFromEvent(e, this.pointerIdentifier);
 
-			if (point) {
-				e.preventDefault();
-				this.updateVelocities(point);
-				this.eventThrottler.addEvent({ position: point, velocity: this.getVelocity() });
-			}
-		}
-	}, {
-		key: 'endHandler',
-		value: function endHandler(e) {
-			var point = extractPointFromEvent(e, this.pointerIdentifier);
+            if (point) {
+                e.preventDefault();
+                this.updateVelocities(point);
+                this.eventThrottler.addEvent({ position: point, velocity: this.getVelocity() });
+            }
+        }
+    }, {
+        key: 'endHandler',
+        value: function endHandler(e) {
+            var point = extractPointFromEvent(e, this.pointerIdentifier);
 
-			if (point) {
-				this.endCallback({ position: point, velocity: this.getVelocity() });
-				this.removeEventHandlers();
-				this.eventThrottler.pause();
-			}
-		}
-	}, {
-		key: 'cancelHandler',
-		value: function cancelHandler(e) {
-			this.endHandler(e);
-		}
-	}, {
-		key: 'track',
-		value: function track(e) {
-			this.pointerIdentifier = extractFirstIdentifier(e);
-			this.resetVelocities();
-			this.addEventHandlers();
-			this.startHandler(e);
-		}
-	}]);
-	return PointerTracker;
+            if (point) {
+                this.endCallback({ position: point, velocity: this.getVelocity() });
+                this.removeEventHandlers();
+                this.eventThrottler.pause();
+            }
+        }
+    }, {
+        key: 'cancelHandler',
+        value: function cancelHandler(e) {
+            this.endHandler(e);
+        }
+    }, {
+        key: 'track',
+        value: function track(e) {
+            this.pointerIdentifier = extractFirstIdentifier(e);
+            this.resetVelocities();
+            this.addEventHandlers();
+            this.startHandler(e);
+        }
+    }]);
+    return PointerTracker;
 }();
-
-/**
- * Dragging elements around works by rendering a clone of the draggable, which follows the mouse/finger. That means,
- * while dragging is going on, two versions of the element will be rendered (the original may or may not be visible -
- * but it is there).
- *
- * Draggable elements can be configured to work in one of three modes (through the dragMode prop), while dragging is
- * conducted:
- * 1. default: The original element will be hidden, but still occupy space (i.e. visibility:hidden).
- * 2. move: The original will be hidden and no longer occupy any space (i.e. display:none)
- * 3. clone: The original remains visible while the clone is being dragged around
- */
-
-var DRAG_MODES = ['default', 'move', 'clone'];
-
-//[style] is a way of overwriting even inline styles (https://css-tricks.com/override-inline-styles-with-css/)
-var dragModeStyles = '\n\t[data-drag-mode-move],\n\t[data-drag-mode-move][style] {\n\t\tdisplay: none!important;\n\t}\n\t[data-drag-mode-default],\n\t[data-drag-mode-default][style] {\n\t\tvisibility: hidden!important;\n\t}\n';
-
-var getDragModeAttribute = function getDragModeAttribute(dragMode) {
-  return 'data-drag-mode-' + dragMode.toLowerCase();
-};
-
-var handleMissingProp = function handleMissingProp(isRequired, propName, componentName) {
-	if (isRequired) {
-		return new Error('Missing required property ' + propName + ' in ' + componentName);
-	}
-
-	return null;
-};
-
-var createSpringConfigPropType = function createSpringConfigPropType(isRequired) {
-	var shape = propTypes.shape({
-		damping: propTypes.number.isRequired,
-		stiffness: propTypes.number.isRequired
-	});
-
-	return isRequired ? shape.isRequired : shape;
-};
-
-var createDragModePropType = function createDragModePropType(isRequired) {
-	return function (props, propName, componentName) {
-		var prop = props[propName];
-		var type = typeof prop === 'undefined' ? 'undefined' : _typeof(prop);
-
-		if (type === 'undefined') {
-			return handleMissingProp(isRequired, propName, componentName);
-		}
-
-		if (type !== 'string' || DRAG_MODES.indexOf(prop.toLowerCase()) === -1) {
-			return new Error(propName + ' in ' + componentName + ' must be one of the strings: ' + DRAG_MODES.join(', '));
-		}
-
-		return null;
-	};
-};
-
-var createTransformPropType = function createTransformPropType(isRequired) {
-	var shape = propTypes.shape({
-		rotate: propTypes.number,
-		skewX: propTypes.number,
-		x: propTypes.number,
-		y: propTypes.number,
-		scaleX: propTypes.number,
-		scaleY: propTypes.number
-	});
-
-	return isRequired ? shape.isRequired : shape;
-};
-
-var createSizePropType = function createSizePropType(isRequired) {
-	var shape = propTypes.shape({
-		width: propTypes.number.isRequired,
-		height: propTypes.number.isRequried
-	});
-
-	return isRequired ? shape.isRequired : shape;
-};
-
-var createPointPropType = function createPointPropType(isRequired) {
-	var shape = propTypes.shape({
-		x: propTypes.number.isRequired,
-		y: propTypes.number.isRequried
-	});
-
-	return isRequired ? shape.isRequired : shape;
-};
-
-var springConfig = createSpringConfigPropType(false);
-springConfig.isRequired = createSpringConfigPropType(true);
-
-var dragMode = createDragModePropType(false);
-dragMode.isRequired = createDragModePropType(true);
-
-var transform$1 = createTransformPropType(false);
-transform$1.isRequired = createTransformPropType(true);
-
-var size = createSizePropType(false);
-size.isRequired = createSizePropType(true);
-
-var point = createPointPropType(false);
-point.isRequired = createPointPropType(true);
-
-var CustomPropTypes = { springConfig: springConfig, dragMode: dragMode, transform: transform$1, size: size, point: point };
 
 var mapToZero_1 = createCommonjsModule(function (module, exports) {
 // currently used to initiate the velocity style object to 0
@@ -21597,7 +21401,7 @@ var performanceNow$3 = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-
+//# sourceMappingURL=performance-now.js.map
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window;
@@ -23024,99 +22828,233 @@ var reactMotion_3 = reactMotion.TransitionMotion;
 var reactMotion_4 = reactMotion.spring;
 var reactMotion_5 = reactMotion.presets;
 
+/*
+* When hiding the draggable (original or clone) we  are not using visibility: hidden to hide the 
+* element for two reasons:
+* 1. It can be overriden by the children
+* 2. If any child has a CSS rule like 'transition: 3s', the fact that visibility is inherited,
+* and that transitions apply to it, means that the child's hiding will be delayed, due to
+* the way CSS transitions between non-numeric values: https://stackoverflow.com/a/37905071.
+* Instead the element is hidden with clip-path (which can't be overriden by children and ensures
+* that events won't be responded to). However, since it isn't supported in Edge, opacity: 0 and
+* pointer-event: none is used as a fallback as well:
+*/
+
+var invisibilityStyles = {
+    clipPath: 'polygon(0px 0px,0px 0px,0px 0px,0px 0px)!important',
+    WebkitClipPath: 'polygon(0px 0px,0px 0px,0px 0px,0px 0px)!important',
+    opacity: '0!important',
+    pointerEvents: 'none!important'
+};
+
+function getCSSHidingRulesAsObject() {
+    return _extends({}, invisibilityStyles);
+}
+
+function getCSSHidingRulesAsString() {
+    return '\n        clip-path: polygon(0px 0px,0px 0px,0px 0px,0px 0px)!important;\n        -webkit-clip-path: polygon(0px 0px,0px 0px,0px 0px,0px 0px)!important;\n        opacity: 0!important;\n        pointer-events: none!important;\n    ';
+}
+
+var DRAG_MODES = ['default', 'move', 'clone'];
+
+// [style] is a way of overwriting even inline styles (https://css-tricks.com/override-inline-styles-with-css/)
+var dragModeStyles = '\n    [data-drag-mode-move],\n    [data-drag-mode-move][style] {\n        display: none!important;\n    }\n    [data-drag-mode-default],\n    [data-drag-mode-default][style] {\n        ' + getCSSHidingRulesAsString() + '\n    }\n';
+
+var getDragModeAttribute = function getDragModeAttribute(dragMode) {
+    return 'data-drag-mode-' + dragMode.toLowerCase();
+};
+
+var handleMissingProp = function handleMissingProp(isRequired, propName, componentName) {
+    if (isRequired) {
+        return new Error('Missing required property ' + propName + ' in ' + componentName);
+    }
+
+    return null;
+};
+
+var createSpringConfigPropType = function createSpringConfigPropType(isRequired) {
+    var shape = propTypes.shape({
+        damping: propTypes.number.isRequired,
+        stiffness: propTypes.number.isRequired
+    });
+
+    return isRequired ? shape.isRequired : shape;
+};
+
+var createDragModePropType = function createDragModePropType(isRequired) {
+    return function (props, propName, componentName) {
+        var prop = props[propName];
+        var type = typeof prop === 'undefined' ? 'undefined' : _typeof(prop);
+
+        if (type === 'undefined') {
+            return handleMissingProp(isRequired, propName, componentName);
+        }
+
+        if (type !== 'string' || DRAG_MODES.indexOf(prop.toLowerCase()) === -1) {
+            return new Error(propName + ' in ' + componentName + ' must be one of the strings: ' + DRAG_MODES.join(', '));
+        }
+
+        return null;
+    };
+};
+
+var createTransformPropType = function createTransformPropType(isRequired) {
+    var shape = propTypes.shape({
+        rotate: propTypes.number,
+        skewX: propTypes.number,
+        x: propTypes.number,
+        y: propTypes.number,
+        scaleX: propTypes.number,
+        scaleY: propTypes.number
+    });
+
+    return isRequired ? shape.isRequired : shape;
+};
+
+var createSizePropType = function createSizePropType(isRequired) {
+    var shape = propTypes.shape({
+        width: propTypes.number.isRequired,
+        height: propTypes.number.isRequried
+    });
+
+    return isRequired ? shape.isRequired : shape;
+};
+
+var createPointPropType = function createPointPropType(isRequired) {
+    var shape = propTypes.shape({
+        x: propTypes.number.isRequired,
+        y: propTypes.number.isRequried
+    });
+
+    return isRequired ? shape.isRequired : shape;
+};
+
+var createChildrenPropType = function createChildrenPropType(isRequired) {
+    var children = propTypes.oneOfType([propTypes.arrayOf(propTypes.node), propTypes.node]);
+
+    return isRequired ? children.isRequired : children;
+};
+
+var springConfig = createSpringConfigPropType(false);
+springConfig.isRequired = createSpringConfigPropType(true);
+
+var dragMode = createDragModePropType(false);
+dragMode.isRequired = createDragModePropType(true);
+
+var transform$1 = createTransformPropType(false);
+transform$1.isRequired = createTransformPropType(true);
+
+var size = createSizePropType(false);
+size.isRequired = createSizePropType(true);
+
+var point = createPointPropType(false);
+point.isRequired = createPointPropType(true);
+
+var children = createChildrenPropType(false);
+children.isRequired = createChildrenPropType(true);
+
+var CustomPropTypes = {
+    springConfig: springConfig, dragMode: dragMode, transform: transform$1, size: size, point: point, children: children
+};
+
 var PositionSpringSwitch = function (_React$Component) {
-	inherits(PositionSpringSwitch, _React$Component);
+    inherits(PositionSpringSwitch, _React$Component);
 
-	function PositionSpringSwitch(props) {
-		classCallCheck(this, PositionSpringSwitch);
+    function PositionSpringSwitch(props) {
+        classCallCheck(this, PositionSpringSwitch);
 
-		var _this = possibleConstructorReturn(this, (PositionSpringSwitch.__proto__ || Object.getPrototypeOf(PositionSpringSwitch)).call(this, props));
+        var _this = possibleConstructorReturn(this, (PositionSpringSwitch.__proto__ || Object.getPrototypeOf(PositionSpringSwitch)).call(this, props));
 
-		_this.state = {
-			initialRawTransform: props.rawTransform,
-			isSpringOnForPosition: props.alwaysOn,
-			startDelta: { x: 0, y: 0 }
-		};
-		return _this;
-	}
+        _this.state = {
+            initialRawTransform: props.rawTransform,
+            isSpringOnForPosition: props.alwaysOn,
+            startDelta: { x: 0, y: 0 }
+        };
+        return _this;
+    }
 
-	createClass(PositionSpringSwitch, [{
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(nextProps) {
-			var _this2 = this;
+    createClass(PositionSpringSwitch, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            var _this2 = this;
 
-			if (this.props.activations !== nextProps.activations) {
-				var startDelta = {
-					x: this.props.springTransform.x - this.props.rawTransform.x,
-					y: this.props.springTransform.y - this.props.rawTransform.y
-				};
+            if (this.props.activations !== nextProps.activations) {
+                var startDelta = {
+                    x: this.props.springTransform.x - this.props.rawTransform.x,
+                    y: this.props.springTransform.y - this.props.rawTransform.y
+                };
 
-				this.setState({ isSpringOnForPosition: true, startDelta: startDelta, initialRawTransform: this.props.rawTransform });
-				requestAnimationFrame(function () {
-					return _this2.setState({ isSpringOnForPosition: false });
-				});
-			}
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var _props = this.props,
-			    children = _props.children,
-			    currentRawTransform = _props.rawTransform,
-			    springTransform = _props.springTransform,
-			    springConfig = _props.springConfig,
-			    alwaysOn = _props.alwaysOn;
-			var _state = this.state,
-			    isSpringOnForPosition = _state.isSpringOnForPosition,
-			    startDelta = _state.startDelta,
-			    initialRawTransform = _state.initialRawTransform;
+                this.setState({
+                    isSpringOnForPosition: true,
+                    startDelta: startDelta,
+                    initialRawTransform: this.props.rawTransform
+                });
 
-			//TODO: EXPLAIN THIS!!
+                requestAnimationFrame(function () {
+                    return _this2.setState({ isSpringOnForPosition: false });
+                });
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                children = _props.children,
+                currentRawTransform = _props.rawTransform,
+                springTransform = _props.springTransform,
+                springConfig = _props.springConfig,
+                alwaysOn = _props.alwaysOn;
+            var _state = this.state,
+                isSpringOnForPosition = _state.isSpringOnForPosition,
+                startDelta = _state.startDelta,
+                initialRawTransform = _state.initialRawTransform;
 
-			var rawTransform = isSpringOnForPosition ? initialRawTransform : currentRawTransform;
+            // TODO: EXPLAIN THIS!!
 
-			return react.createElement(
-				reactMotion_1,
-				{
-					style: {
-						multiplier: isSpringOnForPosition ? 1 : reactMotion_4(0, springConfig)
-					}
-				},
-				function (_ref) {
-					var multiplier = _ref.multiplier;
+            var rawTransform = isSpringOnForPosition ? initialRawTransform : currentRawTransform;
 
-					var transformToApply = shallowClone(springTransform);
+            return react.createElement(
+                reactMotion_1,
+                {
+                    style: {
+                        multiplier: isSpringOnForPosition ? 1 : reactMotion_4(0, springConfig)
+                    }
+                },
+                function (_ref) {
+                    var multiplier = _ref.multiplier;
 
-					if (!alwaysOn) {
-						var delta = {
-							x: springTransform.x - rawTransform.x,
-							y: springTransform.y - rawTransform.y
-						};
+                    var transformToApply = shallowClone(springTransform);
 
-						transformToApply.x = rawTransform.x + (delta.x - startDelta.x) * multiplier;
-						transformToApply.y = rawTransform.y + (delta.y - startDelta.y) * multiplier;
-					}
+                    if (!alwaysOn) {
+                        var delta = {
+                            x: springTransform.x - rawTransform.x,
+                            y: springTransform.y - rawTransform.y
+                        };
 
-					var displacement = {
-						x: transformToApply.x - rawTransform.x,
-						y: transformToApply.y - rawTransform.y
-					};
+                        transformToApply.x = rawTransform.x + (delta.x - startDelta.x) * multiplier;
+                        transformToApply.y = rawTransform.y + (delta.y - startDelta.y) * multiplier;
+                    }
 
-					return children(transformToApply, displacement);
-				}
-			);
-		}
-	}]);
-	return PositionSpringSwitch;
+                    var displacement = {
+                        x: transformToApply.x - rawTransform.x,
+                        y: transformToApply.y - rawTransform.y
+                    };
+
+                    return children(transformToApply, displacement);
+                }
+            );
+        }
+    }]);
+    return PositionSpringSwitch;
 }(react.Component);
 
 PositionSpringSwitch.propTypes = {
-	rawTransform: CustomPropTypes.transform.isRequired,
-	springTransform: CustomPropTypes.transform.isRequired,
-	activations: propTypes.number.isRequired,
-	switchOffAutomatically: propTypes.bool.isRequired,
-	alwaysOn: propTypes.bool.isRequired,
-	springConfig: propTypes.object.isRequired
+    rawTransform: CustomPropTypes.transform.isRequired,
+    springTransform: CustomPropTypes.transform.isRequired,
+    activations: propTypes.number.isRequired,
+    alwaysOn: propTypes.bool.isRequired,
+    springConfig: CustomPropTypes.springConfig.isRequired,
+    children: propTypes.func.isRequired
 };
 
 var PropMonitor = function () {
@@ -23173,64 +23111,57 @@ var PropMonitor = function () {
     return PropMonitor;
 }();
 
-var SpringRendererApplier = function (_React$Component) {
-    inherits(SpringRendererApplier, _React$Component);
+var SpringRendererApplier = function SpringRendererApplier(props) {
+    var onRegrab = props.onRegrab,
+        isVisible = props.isVisible,
+        children = props.children,
+        transform = props.transform,
+        contextSize = props.contextSize,
+        draggableCenterInBorderBoxCoordinates = props.draggableCenterInBorderBoxCoordinates;
+    var x = transform.x,
+        y = transform.y,
+        rotate = transform.rotate,
+        scaleX = transform.scaleX,
+        scaleY = transform.scaleY,
+        skewX = transform.skewX;
+    /*
+    * Offset x and y by half the context size, since x and y are in a coordinate system that
+    * has its origo in the middle of the dragSnapContext - not the upper left corner. It would
+    * be tempting just to set left: 50%, and top: 50% to achieve this, thus eliminating the
+    * need of know the contextSize. However, 'splitting' the positioning across left/top and
+    * transform sometimes leads to rounding errors in Chrome
+    */
 
-    function SpringRendererApplier() {
-        classCallCheck(this, SpringRendererApplier);
-        return possibleConstructorReturn(this, (SpringRendererApplier.__proto__ || Object.getPrototypeOf(SpringRendererApplier)).apply(this, arguments));
-    }
-
-    createClass(SpringRendererApplier, [{
-        key: 'render',
-        value: function render() {
-            var _props = this.props,
-                onRegrab = _props.onRegrab,
-                isVisible = _props.isVisible,
-                children = _props.children,
-                transform = _props.transform,
-                contextSize = _props.contextSize,
-                draggableCenterInBorderBoxCoordinates = _props.draggableCenterInBorderBoxCoordinates;
-            var x = transform.x,
-                y = transform.y,
-                rotate = transform.rotate,
-                scaleX = transform.scaleX,
-                scaleY = transform.scaleY,
-                skewX = transform.skewX;
-            /* 
-             * Offset x and y by half the context size, since x and y are in a coordinate system that has its origo
-             * in the middle of the dragSnapContext - not the upper left corner. It would be tempting just to set
-             * left: 50%, and top: 50% to achieve this, thus eliminating the need of know the contextSize. However,
-             * 'splitting' the positioning across left/top and transform sometimes leads to rounding errors in Chrome
-             */
-
-            var _x = contextSize.width / 2 + x;
-            var _y = contextSize.height / 2 + y;
-            return react.createElement(
-                'div',
-                {
-                    onTouchStart: onRegrab,
-                    onMouseDown: onRegrab,
-                    style: {
-                        lineHeight: 0,
-                        display: 'inline-block',
-                        transformOrigin: '0 0',
-                        transform: '' + 'translate3d(' + _x + 'px, ' + _y + 'px, 0) ' + 'rotate(' + rotate + 'deg) ' + 'scaleX(' + scaleX + ') ' + 'scaleY(' + scaleY + ') ' + 'skewX(' + skewX + 'deg) ' + 'translate3d(-' + draggableCenterInBorderBoxCoordinates.x + 'px, -' + draggableCenterInBorderBoxCoordinates.y + 'px, 0) ' + '',
-                        WebkitTouchCallout: 'none',
-                        WebkitUserSelect: 'none',
-                        visibility: isVisible ? 'visible' : 'hidden',
-                        userSelect: 'none',
-                        position: 'absolute',
-                        left: 0,
-                        top: 0
-                    }
-                },
-                children
-            );
-        }
-    }]);
-    return SpringRendererApplier;
-}(react.Component);
+    var xToApply = contextSize.width / 2 + x;
+    var yToApply = contextSize.height / 2 + y;
+    return (
+        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+        react.createElement(
+            'div',
+            {
+                onTouchStart: onRegrab,
+                onMouseDown: onRegrab,
+                style: _extends({
+                    lineHeight: 0,
+                    display: 'inline-block',
+                    transformOrigin: '0 0',
+                    transform: '' + ('' + 'translate3d(') + xToApply + 'px, ' + yToApply + 'px, 0) ' + ('rotate(' + rotate + 'deg) ') + ('scaleX(' + scaleX + ') ') + ('scaleY(' + scaleY + ') ') + ('skewX(' + skewX + 'deg) ') + (
+                    /* eslint-disable max-len */
+                    'translate3d(-' + draggableCenterInBorderBoxCoordinates.x + 'px, -' + draggableCenterInBorderBoxCoordinates.y + 'px, 0) ') +
+                    /* eslint-enable max-len */
+                    '',
+                    WebkitTouchCallout: 'none',
+                    WebkitUserSelect: 'none',
+                    userSelect: 'none',
+                    position: 'absolute',
+                    left: 0,
+                    top: 0
+                }, isVisible ? {} : getCSSHidingRulesAsObject())
+            },
+            children
+        )
+    );
+};
 
 SpringRendererApplier.propTypes = {
     contextSize: CustomPropTypes.size.isRequired,
@@ -23241,8 +23172,8 @@ SpringRendererApplier.propTypes = {
     children: propTypes.node.isRequired
 };
 
-//Component needed because react motion only support a single child, 
-//whereas we want to pass in an array of children (original element and drag clone)
+// Component needed because react motion only support a single child,
+// whereas we want to pass in an array of children (original element and drag clone)
 var Tweener = function Tweener(_ref) {
     var children = _ref.children,
         transform = _ref.transform,
@@ -23259,61 +23190,65 @@ var nullTransform = {
     skewX: 0
 };
 
-var SpringRenderer = function (_React$Component2) {
-    inherits(SpringRenderer, _React$Component2);
+var SpringRenderer = function (_React$Component) {
+    inherits(SpringRenderer, _React$Component);
 
     function SpringRenderer(props) {
         classCallCheck(this, SpringRenderer);
 
-        var _this2 = possibleConstructorReturn(this, (SpringRenderer.__proto__ || Object.getPrototypeOf(SpringRenderer)).call(this, props));
+        var _this = possibleConstructorReturn(this, (SpringRenderer.__proto__ || Object.getPrototypeOf(SpringRenderer)).call(this, props));
 
-        _this2.state = {
+        _this.state = {
             flipIsActive: false,
             springActivations: 0
         };
 
-        _this2.atRest = true;
-        return _this2;
+        _this.atRest = true;
+        _this.boundRestHandler = _this.restHandler.bind(_this);
+        return _this;
     }
 
+    // TODO: Consider using componentDidUpdate instead. Seems like this is called synchronously,
+    // when state in parent component (make-draggable) is set, which means onRestAfterRelease
+    // may be called earlier than one would expect!
+
+
     createClass(SpringRenderer, [{
-        key: 'activateSpring',
-        value: function activateSpring() {
-            var springActivations = this.state.springActivations;
-
-            this.setState({ springActivations: springActivations + 1 });
-        }
-
-        //TODO: Consider using componentDidUpdate instead. Seems like this is called synchronously, when state in
-        //parent component (make-draggable) is set, which means onRestAfterRelease may be called earlier than
-        //one would expect!
-
-    }, {
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
-            var _this3 = this;
+            var _this2 = this;
 
             var propMonitor = new PropMonitor(this.props, nextProps);
-            propMonitor.ifShallowChange('transform', function () {
-                return _this3.atRest = !nextProps.isActive;
+            propMonitor.ifShallowChange('transform',
+            /* eslint-disable-next-line no-return-assign */
+            function () {
+                return _this2.atRest = !nextProps.isActive;
             });
             propMonitor.ifBecomingTrue('isReleased', function () {
-                return _this3.atRest ? nextProps.onRestAfterRelease() : null;
+                return _this2.atRest ? nextProps.onRestAfterRelease() : null;
             });
 
             propMonitor.ifDefinedValueChange('snapTargetId', this.activateSpring.bind(this));
             propMonitor.ifDefinedValueChange('isPositionSnapped', this.activateSpring.bind(this));
             propMonitor.ifBecomingTrue('isSnappingBack', this.activateSpring.bind(this));
 
-            //Flip isActive flag for one frame, given react motion a chance to update to right start position before animation
+            // Flip isActive flag for one frame, given react motion a chance to update to right start
+            // position before animation
             propMonitor.ifBecomingTrue('isActive', function () {
                 return requestAnimationFrame(function () {
-                    return _this3.setState({ flipIsActive: false });
+                    return _this2.setState({ flipIsActive: false });
                 });
             });
             propMonitor.ifBecomingFalse('isActive', function () {
-                return _this3.setState({ flipIsActive: true });
+                return _this2.setState({ flipIsActive: true });
             });
+        }
+    }, {
+        key: 'activateSpring',
+        value: function activateSpring() {
+            var springActivations = this.state.springActivations;
+
+            this.setState({ springActivations: springActivations + 1 });
         }
     }, {
         key: 'restHandler',
@@ -23323,19 +23258,20 @@ var SpringRenderer = function (_React$Component2) {
                 this.props.onRestAfterRelease();
             }
 
-            //Important that this is called after onRestAfterRelease as the unit tests rely on it (this method is only needed for testing anyway)
+            // Important that this is called after onRestAfterRelease as the unit tests rely
+            // on it (this method is only needed for testing anyway)
             this.props.onRest();
         }
     }, {
         key: 'render',
         value: function render() {
-            var _props2 = this.props,
-                transform = _props2.transform,
-                children = _props2.children,
-                springConfig = _props2.springConfig,
-                sticky = _props2.sticky,
-                isReleased = _props2.isReleased,
-                isActive = _props2.isActive;
+            var _props = this.props,
+                transform = _props.transform,
+                children = _props.children,
+                springConfig = _props.springConfig,
+                sticky = _props.sticky,
+                isReleased = _props.isReleased,
+                isActive = _props.isActive;
             var _state = this.state,
                 springActivations = _state.springActivations,
                 flipIsActive = _state.flipIsActive;
@@ -23353,7 +23289,7 @@ var SpringRenderer = function (_React$Component2) {
                         scaleY: useSpring ? reactMotion_4(transform.scaleY, springConfig) : transform.scaleY,
                         skewX: useSpring ? reactMotion_4(transform.skewX, springConfig) : transform.skewX
                     },
-                    onRest: this.restHandler.bind(this)
+                    onRest: this.boundRestHandler
                 },
                 function (springTransform) {
                     return react.createElement(
@@ -23392,9 +23328,11 @@ SpringRenderer.propTypes = {
     onRest: propTypes.func,
     isActive: propTypes.bool.isRequired,
     isReleased: propTypes.bool.isRequired,
+    /* eslint-disable */
     snapTargetId: propTypes.string,
     isPositionSnapped: propTypes.bool,
     isSnappingBack: propTypes.bool.isRequired,
+    /* eslint-enable */
     springConfig: CustomPropTypes.springConfig.isRequired,
     sticky: propTypes.bool.isRequired
 };
@@ -23405,376 +23343,417 @@ SpringRenderer.defaultProps = {
 };
 
 var StyleInjector = function () {
-	function StyleInjector() {
-		var mountNode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : document.getElementsByTagName('head')[0];
-		classCallCheck(this, StyleInjector);
+    createClass(StyleInjector, null, [{
+        key: 'remove',
+        value: function remove(node) {
+            node.parentNode.removeChild(node);
+        }
+    }]);
 
-		this.mountNode = mountNode;
-	}
+    function StyleInjector() {
+        var mountNode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : document.getElementsByTagName('head')[0];
+        classCallCheck(this, StyleInjector);
 
-	createClass(StyleInjector, [{
-		key: 'inject',
-		value: function inject(style) {
-			var first = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+        this.mountNode = mountNode;
+    }
 
-			var node = document.createElement('style');
-			node.type = 'text/css';
-			node.innerHTML = style;
+    createClass(StyleInjector, [{
+        key: 'inject',
+        value: function inject(style) {
+            var first = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-			if (first) {
-				this.mountNode.insertBefore(node, this.mountNode.firstChild);
-			} else {
-				this.mountNode.appendChild(node);
-			}
+            var node = document.createElement('style');
+            node.type = 'text/css';
+            node.innerHTML = style;
 
-			return node;
-		}
-	}, {
-		key: 'remove',
-		value: function remove(node) {
-			node.parentNode.removeChild(node);
-		}
-	}]);
-	return StyleInjector;
+            if (first) {
+                this.mountNode.insertBefore(node, this.mountNode.firstChild);
+            } else {
+                this.mountNode.appendChild(node);
+            }
+
+            return node;
+        }
+    }]);
+    return StyleInjector;
 }();
 
 /**
- * The purpose of this utility is to ensure the correct appearance of the draggable while it is being dragged. 
- * While dragging, a clone of the original component will be rendered in a 'drag layer', within the DragSnapContext. 
+ * The purpose of this utility is to ensure the correct appearance of the draggable while it is being dragged.
+ * While dragging, a clone of the original component will be rendered in a 'drag layer', within the DragSnapContext.
  * Rendering in a separate part of the DOM helps overcome z-index and overflow:hidden issues that could otherwise
- * prevent a proper dragging experience. Due to the nature of CSS, rendering in a different part of the DOM, does 
- * however present some challenges regarding ensuring that the visual appearance of the component is correct. 
+ * prevent a proper dragging experience. Due to the nature of CSS, rendering in a different part of the DOM, does
+ * however present some challenges regarding ensuring that the visual appearance of the component is correct.
  * Specifically, the following needs to be addressed:
  *
  * Inheritance
- * The fact that some CSS properties are inherited can cause inconsistent styling. The original component, and the 
- * dragged clone, do not share the same ancestors, and therefore inherits different CSS values. To address this, 
- * react-drag-and-snap will extract the computed styles of the original when a drag starts, and apply these directly 
- * to the drag clone. This way, the entire subtree of the drag clone will be subject to the same inherited styles 
- * (all of which can be overriden) as the subtree of the original component. Note, that the property 
+ * The fact that some CSS properties are inherited can cause inconsistent styling. The original component, and the
+ * dragged clone, do not share the same ancestors, and therefore inherits different CSS values. To address this,
+ * react-drag-and-snap will extract the computed styles of the original when a drag starts, and apply these directly
+ * to the drag clone. This way, the entire subtree of the drag clone will be subject to the same inherited styles
+ * (all of which can be overriden) as the subtree of the original component. Note, that the property
  * -webkit-text-fill-color gets special treatment as explained below.
- * 
+ *
  * Relative Sizes
  * CSS values such as width, height, padding, min-height, etc. can be specified in terms of percentages
- * in which case the applied pixel values are derived based on the size of the parent element. Since the original 
+ * in which case the applied pixel values are derived based on the size of the parent element. Since the original
  * element and the drag clone have different parents, this may result in different applied sizes. To handle this,
- * react-drag-and-snap will measure the actual sizes, paddings, etc. of the original when a drag starts, and apply 
- * these to the drag clone. These CSS properties will be applied in such a way, that they overrule the drag clone's 
- * own styles (even if they are inline styles) (see https://css-tricks.com/override-inline-styles-with-css/ for details).
- * 
+ * react-drag-and-snap will measure the actual sizes, paddings, etc. of the original when a drag starts, and apply
+ * these to the drag clone. These CSS properties will be applied in such a way, that they overrule the drag clone's
+ * own styles (even if they are inline styles) (see https://css-tricks.com/override-inline-styles-with-css/ for
+ * details).
+ *
  * The -webkit-text-fill-color property
- * The -webkit-text-fill-color is a special (non-standard) CSS property that is supported by most modern browsers 
- * (including non-webkit browsers such as Firefox). It is largely equivalent to the much more common `color` property, 
- * in that it allows for specifying the text color (but it supports more values than `color`). The default value of 
- * `-webkit-text-fill-color` is 'currentColor', meaning whatever is specified by `color`. When explicitly set, 
- * `-webkit-text-fill-color` will overrule  whatever value `color` has. Furthermore, `-webkit-text-fill-color` is an 
- * inherited property. These last two points present a problem, in regards to how inherited values are dealt with as 
- * described earlier. If we where to extract the computed value of `-webkit-text-fill-color` from the original component 
- * and apply that to the drag clone, this would 'lock' the entire subtree of the drag clone to this text color, in a 
- * way that can only be overruled using `-webkit-text-fill-color`, and not the much more common `color` property. 
- * Consequently, react-drag-and-snap will not copy the computed value of `-webkit-text-fill-color` to the drag clone, 
- * except if it has a different value from the `color` property, which would indicate that the developer has explicitly 
+ * The -webkit-text-fill-color is a special (non-standard) CSS property that is supported by most modern browsers
+ * (including non-webkit browsers such as Firefox). It is largely equivalent to the much more common `color` property,
+ * in that it allows for specifying the text color (but it supports more values than `color`). The default value of
+ * `-webkit-text-fill-color` is 'currentColor', meaning whatever is specified by `color`. When explicitly set,
+ * `-webkit-text-fill-color` will overrule  whatever value `color` has. Furthermore, `-webkit-text-fill-color` is an
+ * inherited property. These last two points present a problem, in regards to how inherited values are dealt with as
+ * described earlier. If we where to extract the computed value of `-webkit-text-fill-color` from the original component
+ * and apply that to the drag clone, this would 'lock' the entire subtree of the drag clone to this text color, in a
+ * way that can only be overruled using `-webkit-text-fill-color`, and not the much more common `color` property.
+ * Consequently, react-drag-and-snap will not copy the computed value of `-webkit-text-fill-color` to the drag clone,
+ * except if it has a different value from the `color` property, which would indicate that the developer has explicitly
  * set `-webkit-text-fill-color`.
- * 
+ *
  * Limitations
- * The approaches outlined above, will mitigate with the majority of styling inconsistencies between original and 
+ * The approaches outlined above, will mitigate with the majority of styling inconsistencies between original and
  * drag clone, that would otherwise arise. There are, however, certain scenarios it does not address:
- * 
- * 1. The transfering of CSS from original to drag clone happens only when dragging starts. If classes or inline 
- * styles applied to the draggable (or its subtree) are changed during the drag, these will generally be applied to 
- * the drag clone as well, just by virtue of being render output of the same react component. If, however, an inherited 
- * style changes in one of the original element's ancestors during the drag, this will not be reflected in the drag 
+ *
+ * 1. The transfering of CSS from original to drag clone happens only when dragging starts. If classes or inline
+ * styles applied to the draggable (or its subtree) are changed during the drag, these will generally be applied to
+ * the drag clone as well, just by virtue of being render output of the same react component. If, however, an inherited
+ * style changes in one of the original element's ancestors during the drag, this will not be reflected in the drag
  * clone. Whether or not this would be desired, will probably vary anyway. And the discrepancy that this might lead
- * to (between original element and drag clone) will only be apparent when dragMode is 'clone' (in which case original 
- * and clone are rendered simultanously). In general, the recommended way of dealing with this issue, is to not rely 
+ * to (between original element and drag clone) will only be apparent when dragMode is 'clone' (in which case original
+ * and clone are rendered simultanously). In general, the recommended way of dealing with this issue, is to not rely
  * on CSS inheritance for styling (which fits badly with a component based architecture anyway).
- * 
- * 2. Compound selectors present a challenge similar to the inheritance problem (see above). Basically, a change in 
- * the DOM, outside the draggable component, can impact the appearance of the component. Say - for example - the 
+ *
+ * 2. Compound selectors present a challenge similar to the inheritance problem (see above). Basically, a change in
+ * the DOM, outside the draggable component, can impact the appearance of the component. Say - for example - the
  * following selector is used in CSS:
- * 
+ *
  * .class-applied-to-some-parent-ouside-the-component .class-applied-to-the-component {
  *    /* Some CSS rules * /
  * }
- * 
- * Assume the latter class is always applied to - say - the outer most element of the component. These rules will not 
- * be applied, unless the former class is set on a ancestor in the DOM tree. If this class is set (or removed) during 
- * a drag, it will change the styling of the original, but not the drag clone. Like for the inheritance problem, the 
- * suggested solution is to not use these kinds of compound selectors that bind the component to the outside DOM. This 
+ *
+ * Assume the latter class is always applied to - say - the outer most element of the component. These rules will not
+ * be applied, unless the former class is set on a ancestor in the DOM tree. If this class is set (or removed) during
+ * a drag, it will change the styling of the original, but not the drag clone. Like for the inheritance problem, the
+ * suggested solution is to not use these kinds of compound selectors that bind the component to the outside DOM. This
  * is very bad practice anyway.
- * 
- * 3. React-drag-and-snap ensures correct sizing of the drag clone by measuring the size of the original at the moment 
- * the dragging begins (this measurement will also take css scaling into account). If the size/scale is being animated 
+ *
+ * 3. React-drag-and-snap ensures correct sizing of the drag clone by measuring the size of the original at the moment
+ * the dragging begins (this measurement will also take css scaling into account). If the size/scale is being animated
  * (imagine for example an element that has an infinite css scaling animation alternating between 0.5 and 2),
- * the applied size of the drag clone will depend on the specific moment the dragging starts. The animation would be 
- * applied to the drag clone as well - but scaling would be based on a different base size (whatever the size was the 
+ * the applied size of the drag clone will depend on the specific moment the dragging starts. The animation would be
+ * applied to the drag clone as well - but scaling would be based on a different base size (whatever the size was the
  * moment we sampled). Given that this is only an issue when the size is animating, it will typically not be
- * something developers run into. It can be addressed by wrapping the component in a fixed size container with 
- * overflow:visible (as it is the outer element of the draggable component whose size will be sampled), an apply the 
+ * something developers run into. It can be addressed by wrapping the component in a fixed size container with
+ * overflow:visible (as it is the outer element of the draggable component whose size will be sampled), an apply the
  * scaling animation to a child element instead.
- * 
- * 4. As explained above the -webkit-text-fill-property value is not copied to the drag clone if it has the same value 
- * as the `color` property, as this suggests that it hasn't been explicitly set by the developer. Technically, this 
- * might not be true. The developer could have explicitly given both `color` and `-webkit-text-fill-color` the same 
- * value. This is however and extreme edge case, and whathever unexpected styling it might cause, will be easy to fix 
+ *
+ * 4. As explained above the -webkit-text-fill-property value is not copied to the drag clone if it has the same value
+ * as the `color` property, as this suggests that it hasn't been explicitly set by the developer. Technically, this
+ * might not be true. The developer could have explicitly given both `color` and `-webkit-text-fill-color` the same
+ * value. This is however and extreme edge case, and whathever unexpected styling it might cause, will be easy to fix
  * for the developer by explitictly setting the desired text colors wherever needed.
  */
 var StyleEnforcer = function (_React$Component) {
-	inherits(StyleEnforcer, _React$Component);
+    inherits(StyleEnforcer, _React$Component);
+    createClass(StyleEnforcer, null, [{
+        key: 'cleanUpComputedStyles',
+        value: function cleanUpComputedStyles(computedStyles) {
+            var cleanUpComputedStyles = {};
 
-	function StyleEnforcer(props) {
-		classCallCheck(this, StyleEnforcer);
+            ['base', 'before', 'after'].forEach(function (elementType) {
+                var m = new Map(computedStyles[elementType]);
+                // m.delete('display'); //TODO: EXPLAIN THIS AS WELL. FIGURE OUT WHEN IT IS RELEVANT!!!!!!
+                m.delete('visibility'); // PROBABLY BECAUSE CLONE IS VISIBILTY:HIDDEN ON GRABBED (BEFORE DRAGGED)!
 
-		var _this = possibleConstructorReturn(this, (StyleEnforcer.__proto__ || Object.getPrototypeOf(StyleEnforcer)).call(this, props));
+                // See documentation at the top of this file for info about the -webkit-text-fill-color property
+                if (m.get('color') === m.get('-webkit-text-fill-color')) {
+                    m.delete('-webkit-text-fill-color');
+                }
 
-		_this.state = {
-			id: 'ID_' + props.createGuid()
-		};
+                cleanUpComputedStyles[elementType] = m;
+            });
 
-		_this.styleInjector = new props.StyleInjector();
-		return _this;
-	}
+            return cleanUpComputedStyles;
+        }
+    }]);
 
-	createClass(StyleEnforcer, [{
-		key: 'injectStyles',
-		value: function injectStyles(props) {
-			var width = props.width,
-			    height = props.height,
-			    padding = props.padding,
-			    borderWidth = props.borderWidth,
-			    computedStyles = props.computedStyles;
+    function StyleEnforcer(props) {
+        classCallCheck(this, StyleEnforcer);
 
+        var _this = possibleConstructorReturn(this, (StyleEnforcer.__proto__ || Object.getPrototypeOf(StyleEnforcer)).call(this, props));
 
-			var baseStyles = [];
-			var beforeStyles = [];
-			var afterStyles = [];
+        _this.state = {
+            id: 'ID_' + props.createGuid()
+        };
 
-			computedStyles.base.forEach(function (value, key) {
-				return baseStyles.push(key + ': ' + value + ';');
-			});
-			computedStyles.before.forEach(function (value, key) {
-				return beforeStyles.push(key + ': ' + value + ';');
-			});
-			computedStyles.after.forEach(function (value, key) {
-				return afterStyles.push(key + ': ' + value + ';');
-			});
+        _this.styleInjector = new props.StyleInjector();
+        return _this;
+    }
 
-			this.lowPriorityStyles = this.styleInjector.inject('\n\t\t\t.' + this.state.id + ' > * {\n\t\t\t\t' + baseStyles.join('') + '\n\t\t\t}\n\t\t\t.' + this.state.id + ' > *:before {\n\t\t\t\t' + beforeStyles.join('') + '\n\t\t\t}\n\t\t\t.' + this.state.id + ' > *:after {\n\t\t\t\t' + afterStyles.join('') + '\n\t\t\t}\n\t\t', true);
+    createClass(StyleEnforcer, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            var size = this.props.DOMElementHelper.getSize();
+            var padding = this.props.DOMElementHelper.getPadding();
+            var borderWidth = this.props.DOMElementHelper.getBorderWidth();
+            var computedStyles = StyleEnforcer.cleanUpComputedStyles(this.props.DOMElementHelper.getComputedStyles());
 
-			//[style] is a way of overwriting even inline styles (https://css-tricks.com/override-inline-styles-with-css/)
-			//Also setting transform to none. Transform is already account for (for element itself) as well
-			//as ancestor in the matrix applied while dragging
-			this.highPriorityStyles = this.styleInjector.inject('\n\t\t\t#' + this.state.id + ' > *,\n\t\t\t#' + this.state.id + ' > *[style] {\n\t\t\t\tdisplay: inline-block !important;\n\t\t\t\tfloat: none !important;\n\t\t\t\tposition: static !important;\n\t\t\t\tmin-width: none !important;\n\t\t\t\tmax-width: none !important;\n\t\t\t\tmin-height: none !important;\n\t\t\t\tmax-height: none !important;\n\t\t\t\twidth: ' + width + 'px !important;\n\t\t\t\theight: ' + height + 'px !important;\n\t\t\t\tpadding-left: ' + padding.left + 'px !important;\n\t\t\t\tpadding-right: ' + padding.right + 'px !important;\n\t\t\t\tpadding-top: ' + padding.top + 'px !important;\n\t\t\t\tpadding-bottom: ' + padding.bottom + 'px !important;\n\t\t\t\tborder-left-width: ' + borderWidth.left + 'px !important;\n\t\t\t\tborder-right-width: ' + borderWidth.right + 'px !important;\n\t\t\t\tborder-top-width: ' + borderWidth.top + 'px !important;\n\t\t\t\tborder-bottom-width: ' + borderWidth.bottom + 'px !important;\n\t\t\t\tpointer-events: none !important;\n\t\t\t\ttransform: none !important;\n\t\t\t\tmargin-left: 0 !important;\n\t\t\t\tmargin-right: 0 !important;\n\t\t\t\tmargin-top: 0 !important;\n\t\t\t\tmargin-bottom: 0 !important;\n\t\t\t}');
-		}
-	}, {
-		key: 'removeStyles',
-		value: function removeStyles() {
-			this.styleInjector.remove(this.lowPriorityStyles);
-			this.styleInjector.remove(this.highPriorityStyles);
-		}
-	}, {
-		key: 'cleanUpComputedStyles',
-		value: function cleanUpComputedStyles(computedStyles) {
-			var cleanUpComputedStyles = {};
-
-			['base', 'before', 'after'].forEach(function (elementType) {
-				var m = new Map(computedStyles[elementType]);
-				//m.delete('display'); //TODO: EXPLAIN THIS AS WELL. FIGURE OUT WHEN IT IS RELEVANT!!!!!!
-				m.delete('visibility'); //PROBABLY BECAUSE CLONE IS VISIBILTY:HIDDEN ON GRABBED (BEFORE DRAGGED)!
-
-				//See documentation at the top of this file for info about the -webkit-text-fill-color property
-				if (m.get('color') === m.get('-webkit-text-fill-color')) {
-					m.delete('-webkit-text-fill-color');
-				}
-
-				cleanUpComputedStyles[elementType] = m;
-			});
-
-			return cleanUpComputedStyles;
-		}
-	}, {
-		key: 'componentWillMount',
-		value: function componentWillMount() {
-			var size = this.props.DOMElementHelper.getSize();
-			var padding = this.props.DOMElementHelper.getPadding();
-			var borderWidth = this.props.DOMElementHelper.getBorderWidth();
-			var computedStyles = this.cleanUpComputedStyles(this.props.DOMElementHelper.getComputedStyles());
-
-			this.injectStyles(extend(size, { padding: padding, borderWidth: borderWidth }, { computedStyles: computedStyles }));
-		}
-	}, {
-		key: 'componentWillUnmount',
-		value: function componentWillUnmount() {
-			this.removeStyles();
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var children = this.props.children;
-			var id = this.state.id;
+            this.injectStyles(_extends({}, size, { padding: padding, borderWidth: borderWidth, computedStyles: computedStyles
+            }));
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            this.removeStyles();
+        }
+    }, {
+        key: 'injectStyles',
+        value: function injectStyles(props) {
+            var width = props.width,
+                height = props.height,
+                padding = props.padding,
+                borderWidth = props.borderWidth,
+                computedStyles = props.computedStyles;
 
 
-			return react.createElement(
-				'div',
-				{ id: id, className: id },
-				children
-			);
-		}
-	}]);
-	return StyleEnforcer;
+            var baseStyles = [];
+            var beforeStyles = [];
+            var afterStyles = [];
+
+            computedStyles.base.forEach(function (value, key) {
+                return baseStyles.push(key + ': ' + value + ';');
+            });
+            computedStyles.before.forEach(function (value, key) {
+                return beforeStyles.push(key + ': ' + value + ';');
+            });
+            computedStyles.after.forEach(function (value, key) {
+                return afterStyles.push(key + ': ' + value + ';');
+            });
+
+            this.lowPriorityStyles = this.styleInjector.inject('\n            .' + this.state.id + ' > * {\n                ' + baseStyles.join('') + '\n            }\n            .' + this.state.id + ' > *:before {\n                ' + beforeStyles.join('') + '\n            }\n            .' + this.state.id + ' > *:after {\n                ' + afterStyles.join('') + '\n            }\n        ', true);
+
+            // [style] is a way of overwriting even inline styles (https://css-tricks.com/override-inline-styles-with-css/)
+            // Also setting transform to none. Transform is already account for (for element itself) as well
+            // as ancestor in the matrix applied while dragging
+            this.highPriorityStyles = this.styleInjector.inject('\n            #' + this.state.id + ' > *,\n            #' + this.state.id + ' > *[style] {\n                display: inline-block !important;\n                float: none !important;\n                position: static !important;\n                min-width: none !important;\n                max-width: none !important;\n                min-height: none !important;\n                max-height: none !important;\n                width: ' + width + 'px !important;\n                height: ' + height + 'px !important;\n                padding-left: ' + padding.left + 'px !important;\n                padding-right: ' + padding.right + 'px !important;\n                padding-top: ' + padding.top + 'px !important;\n                padding-bottom: ' + padding.bottom + 'px !important;\n                border-left-width: ' + borderWidth.left + 'px !important;\n                border-right-width: ' + borderWidth.right + 'px !important;\n                border-top-width: ' + borderWidth.top + 'px !important;\n                border-bottom-width: ' + borderWidth.bottom + 'px !important;\n                pointer-events: none !important;\n                transform: none !important;\n                margin-left: 0 !important;\n                margin-right: 0 !important;\n                margin-top: 0 !important;\n                margin-bottom: 0 !important;\n            }\n            ');
+        }
+    }, {
+        key: 'removeStyles',
+        value: function removeStyles() {
+            StyleInjector.remove(this.lowPriorityStyles);
+            StyleInjector.remove(this.highPriorityStyles);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var children = this.props.children;
+            var id = this.state.id;
+
+
+            return react.createElement(
+                'div',
+                { id: id, className: id },
+                children
+            );
+        }
+    }]);
+    return StyleEnforcer;
 }(react.Component);
 
 StyleEnforcer.propTypes = {
-	DOMElementHelper: propTypes.object.isRequired,
-	children: propTypes.node.isRequired,
-	StyleInjector: propTypes.func.isRequired,
-	createGuid: propTypes.func.isRequired
+    /* eslint-disable-next-line react/forbid-prop-types */
+    DOMElementHelper: propTypes.object.isRequired,
+    children: propTypes.node.isRequired,
+    StyleInjector: propTypes.func.isRequired,
+    createGuid: propTypes.func.isRequired
 };
 
 StyleEnforcer.defaultProps = {
-	createGuid: createGuid,
-	StyleInjector: StyleInjector
+    /* eslint-disable react/default-props-match-prop-types */
+    createGuid: guidUtils.createGuid,
+    StyleInjector: StyleInjector
+    /* eslint-enable react/default-props-match-prop-types */
 };
 
 function isFunctionalComponent(Component) {
-	return !Component.prototype.render;
+    return !Component.prototype.render;
 }
 
 /**
- * Higher order component that returns a class based equivalent to any given functional component, or the the given
- * component in case it is already class based. Functional components need to be converted because they can't have refs,
- * which this library depends on.
+ * Higher order component that returns a class based equivalent to any given functional \
+ * component, or the the given component in case it is already class based. Functional
+ * components need to be converted because they can't have refs, which this library depends on.
  */
 function makeClassBasedComponent(WrappedComponent) {
-	if (isFunctionalComponent(WrappedComponent)) {
-		var ClassBasedComponent = function (_React$Component) {
-			inherits(ClassBasedComponent, _React$Component);
+    if (isFunctionalComponent(WrappedComponent)) {
+        /* eslint-disable react/prefer-stateless-function */
+        var ClassBasedComponent = function (_React$Component) {
+            inherits(ClassBasedComponent, _React$Component);
 
-			function ClassBasedComponent() {
-				classCallCheck(this, ClassBasedComponent);
-				return possibleConstructorReturn(this, (ClassBasedComponent.__proto__ || Object.getPrototypeOf(ClassBasedComponent)).apply(this, arguments));
-			}
+            function ClassBasedComponent() {
+                classCallCheck(this, ClassBasedComponent);
+                return possibleConstructorReturn(this, (ClassBasedComponent.__proto__ || Object.getPrototypeOf(ClassBasedComponent)).apply(this, arguments));
+            }
 
-			createClass(ClassBasedComponent, [{
-				key: 'render',
-				value: function render() {
-					return react.createElement(WrappedComponent, this.props);
-				}
-			}]);
-			return ClassBasedComponent;
-		}(react.Component);
+            createClass(ClassBasedComponent, [{
+                key: 'render',
+                value: function render() {
+                    return react.createElement(WrappedComponent, this.props);
+                }
+            }]);
+            return ClassBasedComponent;
+        }(react.Component);
+        /* eslint-enable react/prefer-stateless-function */
 
-		return ClassBasedComponent;
-	} else {
-		return WrappedComponent;
-	}
+        return ClassBasedComponent;
+    }
+    return WrappedComponent;
 }
 
-/**
- * asStateSubscriber and asStatePublisher are two 'sibling' higher order components, that makes it possible to have to
- * components share state. One will publish its state each time it updates, and the other one suppresses its own internal
- * state, in favor of subscribing to an external state which it will adopt.
- *
- * The components assume a common ancestor component will provide the methods subscribeToState, unsubscribeToState, and
- * publishState used to publish and subscribe to the state.
- *
- * Note that only the components own state will be synced - not the state of any subcomponents!
- */
-
-//Higher order component that 'disables' the components own state in favor of subscribing an externally enforced state
-//injected by means of a context-provided subscription method.
 function asStateSubscriber(WrappedComponent) {
-	var StateSubscriber = function (_WrappedComponent) {
-		inherits(StateSubscriber, _WrappedComponent);
+    var StateSubscriber = function (_WrappedComponent) {
+        inherits(StateSubscriber, _WrappedComponent);
 
-		function StateSubscriber(props) {
-			classCallCheck(this, StateSubscriber);
+        function StateSubscriber(props) {
+            classCallCheck(this, StateSubscriber);
 
-			var _this = possibleConstructorReturn(this, (StateSubscriber.__proto__ || Object.getPrototypeOf(StateSubscriber)).call(this, props));
+            var _this = possibleConstructorReturn(this, (StateSubscriber.__proto__ || Object.getPrototypeOf(StateSubscriber)).call(this, props));
 
-			_this.boundStateChangeHandler = _this.stateChangeHandler.bind(_this);
-			return _this;
-		}
+            _this.boundStateChangeHandler = _this.stateChangeHandler.bind(_this);
+            return _this;
+        }
 
-		createClass(StateSubscriber, [{
-			key: 'componentWillMount',
-			value: function componentWillMount() {
-				if (get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentWillMount', this)) {
-					get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentWillMount', this).call(this);
-				}
+        createClass(StateSubscriber, [{
+            key: 'componentWillMount',
+            value: function componentWillMount() {
+                if (get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentWillMount', this)) {
+                    get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentWillMount', this).call(this);
+                }
 
-				this.context.subscribeToState(this.boundStateChangeHandler);
-			}
-		}, {
-			key: 'componentWillUnmount',
-			value: function componentWillUnmount() {
-				if (get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentWillUnmount', this)) {
-					get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentWillUnmount', this).call(this);
-				}
+                this.props.draggableContext.subscribeToState(this.boundStateChangeHandler);
+            }
+        }, {
+            key: 'componentWillUnmount',
+            value: function componentWillUnmount() {
+                if (get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentWillUnmount', this)) {
+                    get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentWillUnmount', this).call(this);
+                }
 
-				this.context.unsubscribeToState(this.boundStateChangeHandler);
-			}
-		}, {
-			key: 'stateChangeHandler',
-			value: function stateChangeHandler(state) {
-				WrappedComponent.prototype.setState.call(this, state);
-			}
-		}, {
-			key: 'setState',
-			value: function setState() {/*Disabling setState for component*/}
-		}]);
-		return StateSubscriber;
-	}(WrappedComponent);
+                this.props.draggableContext.unsubscribeToState(this.boundStateChangeHandler);
+            }
+        }, {
+            key: 'stateChangeHandler',
+            value: function stateChangeHandler(state) {
+                WrappedComponent.prototype.setState.call(this, state);
+            }
 
-	StateSubscriber.contextTypes = {
-		subscribeToState: propTypes.func.isRequired,
-		unsubscribeToState: propTypes.func.isRequired
-	};
+            /* eslint-disable class-methods-use-this */
 
-	StateSubscriber.displayName = 'asStateSubscriber(' + getDisplayName(WrappedComponent) + ')';
+        }, {
+            key: 'setState',
+            value: function setState() {} /* Disabling setState for component */
+            /* eslint-enable class-methods-use-this */
 
-	return StateSubscriber;
+        }]);
+        return StateSubscriber;
+    }(WrappedComponent);
+
+    /* eslint-disable-next-line react/prefer-stateless-function */
+
+
+    var StateSubscriberWithContext = function (_React$Component) {
+        inherits(StateSubscriberWithContext, _React$Component);
+
+        function StateSubscriberWithContext() {
+            classCallCheck(this, StateSubscriberWithContext);
+            return possibleConstructorReturn(this, (StateSubscriberWithContext.__proto__ || Object.getPrototypeOf(StateSubscriberWithContext)).apply(this, arguments));
+        }
+
+        createClass(StateSubscriberWithContext, [{
+            key: 'render',
+            value: function render() {
+                var _this3 = this;
+
+                return react.createElement(
+                    draggableContext.Consumer,
+                    null,
+                    function (context) {
+                        return react.createElement(StateSubscriber, _extends({ draggableContext: context }, _this3.props));
+                    }
+                );
+            }
+        }]);
+        return StateSubscriberWithContext;
+    }(react.Component);
+
+    StateSubscriberWithContext.displayName = 'asStateSubscriber(\n        ' + reactUtils.getComponentDisplayName(WrappedComponent) + '\n    )';
+
+    return StateSubscriberWithContext;
 }
 
-//Higher order component that ensures the components internal state is published by means of a context provided publishing
-//method
+// Higher order component that ensures the components internal state is published by means
+// of a context provided publishing method
 function asStatePublisher(WrappedComponent) {
-	var StatePublisher = function (_WrappedComponent2) {
-		inherits(StatePublisher, _WrappedComponent2);
+    var StatePublisher = function (_WrappedComponent2) {
+        inherits(StatePublisher, _WrappedComponent2);
 
-		function StatePublisher() {
-			classCallCheck(this, StatePublisher);
-			return possibleConstructorReturn(this, (StatePublisher.__proto__ || Object.getPrototypeOf(StatePublisher)).apply(this, arguments));
-		}
+        function StatePublisher() {
+            classCallCheck(this, StatePublisher);
+            return possibleConstructorReturn(this, (StatePublisher.__proto__ || Object.getPrototypeOf(StatePublisher)).apply(this, arguments));
+        }
 
-		createClass(StatePublisher, [{
-			key: 'componentWillUpdate',
-			value: function componentWillUpdate(nextProps, nextState) {
-				if (get(StatePublisher.prototype.__proto__ || Object.getPrototypeOf(StatePublisher.prototype), 'componentWillUpdate', this)) {
-					get(StatePublisher.prototype.__proto__ || Object.getPrototypeOf(StatePublisher.prototype), 'componentWillUpdate', this).call(this, nextProps, nextState);
-				}
+        createClass(StatePublisher, [{
+            key: 'componentWillUpdate',
+            value: function componentWillUpdate(nextProps, nextState) {
+                if (get(StatePublisher.prototype.__proto__ || Object.getPrototypeOf(StatePublisher.prototype), 'componentWillUpdate', this)) {
+                    get(StatePublisher.prototype.__proto__ || Object.getPrototypeOf(StatePublisher.prototype), 'componentWillUpdate', this).call(this, nextProps, nextState);
+                }
 
-				this.context.publishState(nextState);
-			}
-		}]);
-		return StatePublisher;
-	}(WrappedComponent);
+                this.props.draggableContext.publishState(nextState);
+            }
+        }]);
+        return StatePublisher;
+    }(WrappedComponent);
 
-	StatePublisher.contextTypes = {
-		publishState: propTypes.func.isRequired
-	};
+    /* eslint-disable-next-line react/prefer-stateless-function, react/no-multi-comp */
 
-	StatePublisher.displayName = 'asStatePublisher(' + getDisplayName(WrappedComponent) + ')';
 
-	return StatePublisher;
+    var StatePublisherWithContext = function (_React$Component2) {
+        inherits(StatePublisherWithContext, _React$Component2);
+
+        function StatePublisherWithContext() {
+            classCallCheck(this, StatePublisherWithContext);
+            return possibleConstructorReturn(this, (StatePublisherWithContext.__proto__ || Object.getPrototypeOf(StatePublisherWithContext)).apply(this, arguments));
+        }
+
+        createClass(StatePublisherWithContext, [{
+            key: 'render',
+            value: function render() {
+                var _this6 = this;
+
+                return react.createElement(
+                    draggableContext.Consumer,
+                    null,
+                    function (context) {
+                        return react.createElement(StatePublisher, _extends({ draggableContext: context }, _this6.props));
+                    }
+                );
+            }
+        }]);
+        return StatePublisherWithContext;
+    }(react.Component);
+
+    StatePublisherWithContext.displayName = 'asStatePublisher(' + reactUtils.getComponentDisplayName(WrappedComponent) + ')';
+
+    return StatePublisherWithContext;
 }
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
 
 'use strict';
 
@@ -23830,7 +23809,7 @@ var defaultConfig = {
 var normalizeDraggableConfig = function normalizeDraggableConfig() {
     var customConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-    var config = extend(defaultConfig, customConfig);
+    var config = _extends({}, defaultConfig, customConfig);
 
     invariant_1$2(isNumber(config.stiffness), 'Invalid property \'stiffness\' in draggable config. Must be a number. Was: ' + config.stiffness);
 
@@ -23868,848 +23847,6 @@ var draggableCollectors = {
     allProps: allProps
 };
 
-var INACTIVE = DRAG_STATES.INACTIVE;
-var GRABBED = DRAG_STATES.GRABBED;
-var DRAGGED = DRAG_STATES.DRAGGED;
-var RELEASED = DRAG_STATES.RELEASED;
-
-
-var initialState = {
-    dragState: INACTIVE, //Either INACTIVE, GRABBED, DRAGGED, or RELEASED
-    isSnapping: false, //If this draggable is currently snapping to a snapTarget
-    isPositionSnapped: null, //If it's position specificially is currently controlled by a snapTarget. Initially unknown
-    isSnappingBack: false, //If it is currently snapping back to its initial position (after a drop)
-    snapTargetId: null, //The id of the snapTarget it is currently snapping to. Null when not snapping
-    customSnapProps: {}, //The customSnapProps as defined by the snapTarget currently snapped to
-    flipGrabbedFlag: false, //Used to postpone dragState sent to wrapped component one frame, when dragged
-    velocity: null, //The velocity (pixels/ms) by which the draggable is currently being dragged
-    baseMatrix: null, //The draggable's position in window coordinate system prior to dragging
-    matrix: null, //The draggable's current position in window coordinate system
-    hasEscaped: false, //If the draggable has escaped its first snapTarget in a new drag
-    firstSnapTargetId: null, //Id of the first snapTarget to which draggable snapped in current drag session
-    touchOffset: null //Local coordinates of where the draggable has been grabbed
-};
-
-function configure() {
-    var customConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    var collect = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : draggableCollectors.allProps;
-
-    var config = normalizeDraggableConfig(customConfig);
-    var dragModeAttribute = getDragModeAttribute(config.mode);
-
-    return function makeDraggable(WrappedComponent) {
-        var helpers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { DOMElementHelper: DOMElementHelper, PointerTracker: PointerTracker };
-
-        var Draggable = function (_React$Component) {
-            inherits(Draggable, _React$Component);
-
-            function Draggable(props) {
-                classCallCheck(this, Draggable);
-
-                var _this = possibleConstructorReturn(this, (Draggable.__proto__ || Object.getPrototypeOf(Draggable)).call(this, props));
-
-                _this.state = initialState;
-                _this.id = createGuid();
-                _this.DOMElementHelper = new helpers.DOMElementHelper();
-                _this.pointerTracker = new helpers.PointerTracker(_this.dragStartHandler.bind(_this), _this.dragMoveHandler.bind(_this), _this.dragEndHandler.bind(_this));
-
-                //Convert to class based, if functional. Functional components can't have refs since. We need refs
-                var ClassBasedWrappedComponent = makeClassBasedComponent(WrappedComponent);
-                _this.statePublishingWrappedComponent = asStatePublisher(ClassBasedWrappedComponent);
-                _this.stateSubscribingWrappedComponent = asStateSubscriber(ClassBasedWrappedComponent);
-                _this.stateChangeHandler = function () {};
-                _this.boundStartPointerTracker = _this.startTracker.bind(_this);
-                return _this;
-            }
-
-            createClass(Draggable, [{
-                key: 'getChildContext',
-                value: function getChildContext() {
-                    var _this2 = this;
-
-                    return {
-                        publishState: function publishState(state) {
-                            return _this2.stateChangeHandler(state);
-                        },
-                        subscribeToState: function subscribeToState(handler) {
-                            return _this2.stateChangeHandler = handler;
-                        },
-                        unsubscribeToState: function unsubscribeToState() {
-                            return _this2.stateChangeHandler = function () {};
-                        }
-                    };
-                }
-            }, {
-                key: 'componentDidMount',
-                value: function componentDidMount() {
-                    this.DOMElement = reactDom.findDOMNode(this.el);
-                    this.DOMElement.addEventListener('mousedown', this.boundStartPointerTracker, { passive: true });
-                    this.DOMElement.addEventListener('touchstart', this.boundStartPointerTracker, { passive: true });
-                }
-            }, {
-                key: 'componentWillUnmount',
-                value: function componentWillUnmount() {
-                    this.DOMElement.removeEventListener('mousedown', this.boundStartPointerTracker);
-                    this.DOMElement.removeEventListener('touchstart', this.boundStartPointerTracker);
-                    this.pointerTracker.destroy();
-
-                    if (this.state.dragState !== INACTIVE) {
-                        if (this.state.dragState !== RELEASED) {
-                            this.context.onDragStateUpdate('ending');
-                        }
-
-                        this.context.relayDraggableRemovalToTargets(this.id);
-                        this.context.onDragStateUpdate('ended');
-                    }
-                }
-            }, {
-                key: 'componentWillUpdate',
-                value: function componentWillUpdate(nextProps, _ref) {
-                    var nextDragState = _ref.dragState;
-                    var dragState = this.state.dragState;
-
-
-                    if (dragState !== DRAGGED && nextDragState === DRAGGED) {
-                        this.DOMElement.setAttribute(dragModeAttribute, true);
-                    }
-
-                    if (dragState !== INACTIVE && nextDragState === INACTIVE) {
-                        this.DOMElement.removeAttribute(dragModeAttribute);
-                    }
-                }
-            }, {
-                key: 'componentDidUpdate',
-                value: function componentDidUpdate() {
-                    var _this3 = this;
-
-                    if (this.state.flipGrabbedFlag) {
-                        //Postpone till after next DOM update after clone is mounted (to support css transition 
-                        //triggered by change of the grabbed property)
-                        requestAnimationFrame(function () {
-                            return _this3.setState({ flipGrabbedFlag: false });
-                        });
-                    }
-                }
-            }, {
-                key: 'startTracker',
-                value: function startTracker(e) {
-                    if (this.state.dragState === INACTIVE) {
-                        this.pointerTracker.track(e);
-                    }
-                }
-            }, {
-                key: 'getSnapping',
-                value: function getSnapping(dragState, cursorPosition, velocity) {
-                    var state = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.state;
-
-                    var elementDragPosition = subtractPoints(cursorPosition, state.touchOffset);
-                    var draggedMatrix = overrideTranslation(state.baseMatrix, elementDragPosition);
-
-                    return this.context.snap(state.firstSnapTargetId, state.hasEscaped, dragState, this.getDraggableDescriptor(dragState, draggedMatrix, cursorPosition, velocity, state.snapTargetId));
-                }
-            }, {
-                key: 'getDraggableDescriptor',
-                value: function getDraggableDescriptor(dragState, matrix, cursorPosition, velocity, snapTargetId) {
-                    var _qrDecompose = qrDecompose(matrix),
-                        scaleX = _qrDecompose.scaleX,
-                        scaleY = _qrDecompose.scaleY;
-
-                    return {
-                        id: this.id,
-                        dragData: this.props.dragData,
-                        DOMElementHelper: this.DOMElementHelper,
-                        scaledSize: {
-                            width: this.DOMElementHelper.getSize().width * scaleX,
-                            height: this.DOMElementHelper.getSize().height * scaleY
-                        },
-                        dragState: dragState,
-                        velocity: velocity,
-                        cursorPosition: cursorPosition,
-                        matrix: matrix,
-                        snapTargetId: snapTargetId
-                    };
-                }
-            }, {
-                key: 'setInactive',
-                value: function setInactive() {
-                    this.setState({ dragState: INACTIVE, isSnappingBack: false, customSnapProps: {}, velocity: getOrigo() });
-                    //this.setState(initialState);    
-                }
-            }, {
-                key: 'restAfterReleaseHandler',
-                value: function restAfterReleaseHandler() {
-                    this.setInactive();
-                    var _state = this.state,
-                        snapTargetId = _state.snapTargetId,
-                        matrix = _state.matrix;
-
-
-                    if (snapTargetId) {
-                        var draggableDescriptor = this.getDraggableDescriptor(INACTIVE, matrix);
-                        this.context.relayDropEvent(snapTargetId, 'complete', draggableDescriptor);
-                    }
-
-                    this.context.relayDraggableRemovalToTargets(this.id);
-                    this.context.onDragStateUpdate('ended');
-                }
-            }, {
-                key: 'dragEndHandler',
-                value: function dragEndHandler(_ref2) {
-                    var position = _ref2.position,
-                        velocity = _ref2.velocity;
-
-                    if (this.state.dragState === GRABBED) {
-                        this.setInactive();
-                        this.context.onDragStateUpdate('cancel');
-                        return;
-                    }
-
-                    var dragState = RELEASED;
-                    var _state2 = this.state,
-                        baseMatrix = _state2.baseMatrix,
-                        priorMatrix = _state2.matrix;
-
-                    var snapping = this.getSnapping(dragState, position, velocity);
-                    var matrix = snapping.matrix;
-                    var isSnappingBack = false;
-
-                    if (snapping.isSnapping) {
-                        var draggableDescriptor = this.getDraggableDescriptor(dragState, priorMatrix, position, velocity, snapping.snapTargetId);
-                        this.context.relayDropEvent(snapping.snapTargetId, 'start', draggableDescriptor, snapping.matrix);
-                    } else if (this.props.snapBack) {
-                        matrix = baseMatrix;
-                        isSnappingBack = true;
-                    }
-
-                    this.setState(extend(snapping, { matrix: matrix, velocity: velocity, isSnappingBack: isSnappingBack, dragState: dragState }));
-
-                    this.context.relayDraggableUpdateToTargets(this.getDraggableDescriptor(dragState, matrix, position, velocity, snapping.snapTargetId));
-
-                    this.context.onDragStateUpdate('ending');
-                }
-            }, {
-                key: 'dragMoveHandler',
-                value: function dragMoveHandler(_ref3) {
-                    var position = _ref3.position,
-                        velocity = _ref3.velocity;
-
-                    if (this.state.dragState === GRABBED) {
-                        this.context.onDragStateUpdate('start');
-                    }
-
-                    var dragState = DRAGGED;
-                    var snapping = this.getSnapping(dragState, position, velocity);
-
-                    this.setState(extend({ dragState: dragState, velocity: velocity }, snapping));
-
-                    this.context.relayDraggableUpdateToTargets(this.getDraggableDescriptor(dragState, snapping.matrix, position, velocity, snapping.snapTargetId));
-                }
-            }, {
-                key: 'getInitialDragState',
-                value: function getInitialDragState(globalTouchOffset) {
-                    var dragState = GRABBED;
-                    var baseMatrix = getTransformationMatrix(this.DOMElement);
-                    var touchOffset = subtractPoints(globalTouchOffset, applyToPoint(baseMatrix, getOrigo()));
-
-                    return {
-                        dragState: dragState,
-                        baseMatrix: baseMatrix,
-                        touchOffset: touchOffset,
-                        hasEscaped: false,
-                        firstSnapTargetId: null,
-                        flipGrabbedFlag: true,
-                        isSnappingBack: false,
-                        isPositionSnapped: null //Unclear if this is true or false at this point. Initialize to null
-                    };
-                }
-            }, {
-                key: 'startDrag',
-                value: function startDrag(position, velocity) {
-                    this.context.onDragStateUpdate('grab');
-                    this.DOMElementHelper.updateElement(this.DOMElement);
-                    var initialState = this.getInitialDragState(position);
-                    var snapping = this.getSnapping(initialState.dragState, position, velocity, initialState);
-
-                    this.setState(extend(initialState, snapping, { velocity: velocity }));
-
-                    this.context.relayDraggableUpdateToTargets(this.getDraggableDescriptor(initialState.dragState, snapping.matrix, position, velocity, snapping.snapTargetId));
-                }
-            }, {
-                key: 'resumeDrag',
-                value: function resumeDrag(position, velocity) {
-                    var dragState = DRAGGED;
-                    var priorMatrix = this.state.matrix;
-
-
-                    var newState = extend(this.state, {
-                        dragState: dragState,
-                        isSnappingBack: false,
-                        touchOffset: subtractPoints(position, applyToPoint(priorMatrix, getOrigo()))
-                    });
-
-                    var snapping = this.getSnapping(dragState, position, velocity, newState);
-
-                    this.setState(extend(newState, snapping, { velocity: velocity }));
-
-                    this.context.onDragStateUpdate('resume');
-                    this.context.relayDraggableUpdateToTargets(this.getDraggableDescriptor(dragState, snapping.matrix, position, velocity, snapping.snapTargetId));
-
-                    if (snapping.snapTargetId) {
-                        this.context.relayDropEvent(snapping.snapTargetId, 'cancel', this.getDraggableDescriptor(dragState, snapping.matrix));
-                    }
-                }
-            }, {
-                key: 'dragStartHandler',
-                value: function dragStartHandler(_ref4) {
-                    var position = _ref4.position,
-                        velocity = _ref4.velocity;
-
-                    if (this.props.draggingDisabled) {
-                        return;
-                    }
-
-                    if (this.state.dragState === INACTIVE) {
-                        this.startDrag(position, velocity);
-                    } else {
-                        this.resumeDrag(position, velocity);
-                    }
-                }
-            }, {
-                key: 'render',
-                value: function render() {
-                    var _this4 = this;
-
-                    var _state3 = this.state,
-                        dragState = _state3.dragState,
-                        velocity = _state3.velocity,
-                        isSnapping = _state3.isSnapping,
-                        snapTargetId = _state3.snapTargetId,
-                        isPositionSnapped = _state3.isPositionSnapped,
-                        isSnappingBack = _state3.isSnappingBack,
-                        customSnapProps = _state3.customSnapProps,
-                        flipGrabbedFlag = _state3.flipGrabbedFlag,
-                        matrix = _state3.matrix;
-
-                    var snapProps = { isSnapping: isSnapping, isSnappingBack: isSnappingBack, customSnapProps: customSnapProps };
-                    var applyState = dragState === GRABBED && flipGrabbedFlag ? INACTIVE : dragState;
-
-                    //Matrix is in window coordinates, but draggables will be rendered in the context, so must be transformed
-                    var contextTransform = matrix ? qrDecompose(this.context.windowToContext(matrix)) : undefined;
-
-                    return react.createElement(
-                        SpringRenderer,
-                        {
-                            transform: contextTransform,
-                            snapTargetId: snapTargetId,
-                            isPositionSnapped: isPositionSnapped,
-                            isSnappingBack: isSnappingBack,
-                            onRestAfterRelease: this.restAfterReleaseHandler.bind(this),
-                            isActive: dragState !== INACTIVE,
-                            isReleased: dragState === RELEASED,
-                            springConfig: {
-                                stiffness: config.stiffness,
-                                damping: config.damping
-                            },
-                            sticky: config.sticky
-                        },
-                        function (transform, dragDisplacement) {
-                            var dragProps = collect({
-                                dragState: applyState,
-                                dragVelocity: velocity, //TODO: CAN IT BE DETERMINED BASED ON THE DRAG DISPLACEMENT??
-                                dragDisplacement: dragDisplacement
-                            });
-
-                            return [react.createElement(_this4.statePublishingWrappedComponent, _extends({
-                                ref: function ref(el) {
-                                    return _this4.el = el;
-                                }
-                            }, _this4.props, snapProps, dragProps, {
-                                isDragClone: false,
-                                key: 'static-version'
-                            })), dragState !== INACTIVE ? reactDom.createPortal(react.createElement(
-                                SpringRendererApplier,
-                                {
-                                    draggableCenterInBorderBoxCoordinates: _this4.DOMElementHelper.getCenterInBorderBoxCoordinates(),
-                                    contextSize: _this4.context.getSize(),
-                                    transform: transform,
-                                    onRegrab: function onRegrab(e) {
-                                        return _this4.pointerTracker.track(e);
-                                    },
-                                    isVisible: [DRAGGED, RELEASED].includes(dragState),
-                                    key: 'dragged-version'
-                                },
-                                react.createElement(
-                                    StyleEnforcer,
-                                    { DOMElementHelper: _this4.DOMElementHelper },
-                                    react.createElement(_this4.stateSubscribingWrappedComponent, _extends({}, _this4.props, snapProps, dragProps, {
-                                        isDragClone: true
-                                    }))
-                                )
-                            ), _this4.context.getDragContainerDOMElement()) : null];
-                        }
-                    );
-                }
-            }]);
-            return Draggable;
-        }(react.Component);
-
-        Draggable.displayName = 'makeDraggable(' + getDisplayName(WrappedComponent) + ')';
-
-        Draggable.propTypes = {
-            draggingDisabled: propTypes.bool,
-            dragData: propTypes.any,
-            snapBack: propTypes.bool
-        };
-
-        Draggable.defaultProps = {
-            draggingDisabled: false,
-            snapBack: true
-        };
-
-        Draggable.childContextTypes = {
-            publishState: propTypes.func,
-            subscribeToState: propTypes.func,
-            unsubscribeToState: propTypes.func
-        };
-
-        Draggable.contextTypes = {
-            snap: propTypes.func.isRequired,
-            windowToContext: propTypes.func.isRequired,
-            contextToWindow: propTypes.func.isRequired,
-            onDragStateUpdate: propTypes.func.isRequired,
-            getSize: propTypes.func.isRequired,
-            getDragContainerDOMElement: propTypes.func.isRequired,
-            relayDropEvent: propTypes.func.isRequired,
-            relayDraggableUpdateToTargets: propTypes.func.isRequired,
-            relayDraggableRemovalToTargets: propTypes.func.isRequired
-        };
-
-        return Draggable;
-    };
-}
-
-/*
-* Given the snapTargetMatrix (the matrix that describes the snapTarget's position in the window coordinate system) and a snapTransform that
-* describes a draggable's target position in the coordinate system of the snapTarget, this method returns a snapMatrix that describes the
-* draggable's target position in the window coordinate system.
-*
-* The user defined snapTransform's properties are to be added to the equivalent properties from the the snapTargetMatrix. Consequently, these
-* properties are extracted from the snapTargetMartrix, and addition is done indenpendently for each property. These are then converted back to
-* matrix form, and multiplied together to produce the final snapMatrix
-*/
-var createSnapMatrix = function createSnapMatrix(snapTargetMatrix, snapTransform, snapTargetDOMElementHelper, draggableDOMElementHelper) {
-			//Extract properties from snapTarget's matrix so we can add then (independently) with the equivalent values from the snapTransform.
-			//After this addition has been done, we will convert back to matrix form
-			var _qrDecompose = qrDecompose(snapTargetMatrix),
-			    skewX = _qrDecompose.skewX,
-			    rotate = _qrDecompose.rotate,
-			    scaleX = _qrDecompose.scaleX,
-			    scaleY = _qrDecompose.scaleY;
-
-			var snapTargetScaledSize = snapTargetDOMElementHelper.getScaledSize(scaleX, scaleY);
-			var currentScaleX = draggableDOMElementHelper.getSize().width / snapTargetScaledSize.width;
-			var currentScaleY = draggableDOMElementHelper.getSize().height / snapTargetScaledSize.height;
-
-			var scalingMatrix = scale(snapTransform.scaleX / currentScaleX, snapTransform.scaleY / currentScaleY);
-
-			var rotationMatrix = rotateDEG(snapTransform.rotate + rotate);
-
-			//The snapTransform's scaling will impact that translation and skew (but leave rotation unaffected)
-			var snapTransformScalingMatrix = scale(snapTransform.scaleX, snapTransform.scaleY);
-
-			var skewMatrix = skew(skewX + snapTransform.skewX, snapTransform.skewY);
-			//Create a translation matrix taking the snap transform's scaling (in x and y directions) into account.
-			var localTranslationMatrix = translate(snapTransform.x / scaleX, snapTransform.y / scaleY);
-			//Extract the translation part and create a translation only matrix
-			var translationMatrix = translationOnly(transformMultiple(snapTargetMatrix, localTranslationMatrix, snapTransformScalingMatrix));
-
-			//Merge all matrices together into one and return
-			return transformMultiple(translationMatrix, rotationMatrix, scalingMatrix, skewMatrix);
-};
-
-var isPercentage = function isPercentage(value) {
-    return typeof value === 'string' && value.slice(-1) === '%';
-};
-
-function getFirstDefinedValue() {
-    var firstDefinedValue = void 0;
-
-    for (var _len = arguments.length, values = Array(_len), _key = 0; _key < _len; _key++) {
-        values[_key] = arguments[_key];
-    }
-
-    values.some(function (value) {
-        if (!isNullOrUndefined(value)) {
-            firstDefinedValue = value;
-            return true;
-        }
-
-        return false;
-    });
-
-    return firstDefinedValue;
-}
-
-var TRANSFORM_PROPS = ['x', 'y', 'rotate', 'scaleX', 'scaleY', 'skewX', 'skewY'];
-
-/*
-* Accepts a (partial or complete) transform, and returns an equivalent, completed transform in a normalized format. 
-* If the given transform was incomplete, default values will be use for the omitted properties. 
-*
-* The normalized transform format is an object with the following properties:
-*
-* - x: number             (default: 0)
-* - y: number             (default: 0)
-* - scaleX: number        (default: ratio betweens draggable's width and snapTarget's width)
-* - scaleY: number        (default: ratio betweens draggable's height and snapTarget's height)
-* - rotate: number        (default: 0)
-* - skewX: number         (default: 0)
-* - skewY: number         (default: 0)
-* - customSnapProps: any  (default: {})
-*
-* Valid input:
-* The input transform can have any number of the properties listed below specified. In addition note that:
-* - translateX can be used as an alias for x and translateY can be used as an alias for y
-* - x and y (and translateX and translateY) can be percentages encoded as string, e.g. '50%'. The percentage is based on the width/height of the snapTarget
-* - scale can be used to set scaleX and scaleY to the same value in one go
-*/
-function normalizeTransform(inputTransform, draggableScaledSize, snapTargetScaledSize) {
-    var normalizedTransform = {};
-    normalizedTransform.x = getFirstDefinedValue(inputTransform.x, inputTransform.translateX, 0);
-    normalizedTransform.y = getFirstDefinedValue(inputTransform.y, inputTransform.translateY, 0);
-    normalizedTransform.rotate = getFirstDefinedValue(inputTransform.rotate, 0);
-    normalizedTransform.scaleX = getFirstDefinedValue(inputTransform.scaleX, inputTransform.scale, draggableScaledSize.width / snapTargetScaledSize.width);
-    normalizedTransform.scaleY = getFirstDefinedValue(inputTransform.scaleY, inputTransform.scale, draggableScaledSize.height / snapTargetScaledSize.height);
-    normalizedTransform.skewX = getFirstDefinedValue(inputTransform.skewX, 0);
-    normalizedTransform.skewY = getFirstDefinedValue(inputTransform.skewY, 0);
-    normalizedTransform.customSnapProps = getFirstDefinedValue(inputTransform.customSnapProps, {});
-
-    normalizedTransform.x = isPercentage(normalizedTransform.x) ? parseFloat(normalizedTransform.x) / 100 * snapTargetScaledSize.width : normalizedTransform.x;
-
-    normalizedTransform.y = isPercentage(normalizedTransform.y) ? parseFloat(normalizedTransform.y) / 100 * snapTargetScaledSize.height : normalizedTransform.y;
-
-    TRANSFORM_PROPS.forEach(function (p) {
-        invariant_1$2(isNumber(normalizedTransform[p]), 'Invalid property ' + p + ' in transform ' + inputTransform + ': ' + inputTransform[p]);
-    });
-
-    return normalizedTransform;
-}
-
-var toArray$1 = function toArray(val) {
-  return isArray(val) ? val : [val];
-};
-
-var isPercentageString = function isPercentageString(value) {
-	return typeof value === 'string' && value.slice(-1) === '%';
-};
-
-var parsePercentageString = function parsePercentageString(value) {
-	var percentage = parseFloat(value);
-
-	if (isNaN(percentage)) {
-		throw new Error('invalid-percentage');
-	}
-
-	return percentage;
-};
-
-var always = function always() {
-	return true;
-};
-var never = function never() {
-	return false;
-};
-
-var isCenterOverTarget = function isCenterOverTarget(_ref, _ref2) {
-	var transform = _ref.transform;
-	var width = _ref2.width,
-	    height = _ref2.height;
-	var x = transform.x,
-	    y = transform.y;
-
-	return x > -width / 2 && x < width / 2 && y > -height / 2 && y < height / 2;
-};
-
-var isCenterWithinRadius = function isCenterWithinRadius(radius, hysteresisRadius) {
-	return function (_ref3, _ref4, _ref5) {
-		var id = _ref3.id,
-		    transform = _ref3.transform,
-		    isSnappingToThisTarget = _ref3.isSnappingToThisTarget;
-		var width = _ref4.width,
-		    height = _ref4.height;
-		var x = transform.x,
-		    y = transform.y;
-
-		var _radius = isSnappingToThisTarget && hysteresisRadius ? hysteresisRadius : radius;
-
-		if (isPercentageString(_radius)) {
-			var diagonal = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
-			var percentage = parsePercentageString(_radius);
-
-			_radius = diagonal / 2 / 100 * percentage;
-		}
-
-		return distance$1({ x: x, y: y }) < _radius;
-	};
-};
-
-var isNoOtherDraggableSnapping = function isNoOtherDraggableSnapping(_ref6, _, _ref7) {
-	var id = _ref6.id;
-	var draggedItems = _ref7.draggedItems;
-
-	return !draggedItems.filter(function (d) {
-		return d.id !== id;
-	}).some(function (d) {
-		return d.isSnappingToThisTarget;
-	});
-};
-
-/*
- * Usually a target doesn't need to worry about whether or not the draggable is snapping to another target.
- * It is only possible to for draggables to snap to one target at a time, and if multiple targets want the same 
- * draggable to snap simultaneously, the conflict is resolved based on the targets' snap priorities. The following snap
- * criteria function allows a target to be 'polite', so that it doesn't take over a draggable that is already 
- * (was in previous 'frame') snapping to another target with a lower snap priority.
- */
-var draggableIsNotSnappingToOtherTarget = function draggableIsNotSnappingToOtherTarget(_ref8) {
-	var isSnappingToOtherTarget = _ref8.isSnappingToOtherTarget;
-
-	return !isSnappingToOtherTarget;
-};
-
-var isDragDataProp = function isDragDataProp(prop, value) {
-	return function (_ref9) {
-		var dragData = _ref9.dragData;
-		return toArray$1(value).indexOf(dragData[prop]) > -1;
-	};
-};
-
-var SnapCriteria = {
-	always: always,
-	never: never,
-	isCenterOverTarget: isCenterOverTarget,
-	isCenterWithinRadius: isCenterWithinRadius,
-	isDragDataProp: isDragDataProp,
-	isNoOtherDraggableSnapping: isNoOtherDraggableSnapping,
-	draggableIsNotSnappingToOtherTarget: draggableIsNotSnappingToOtherTarget
-};
-
-var noSnapping = function noSnapping(_ref) {
-	var transform = _ref.transform;
-	return transform;
-};
-
-var snapAllButScale = function snapAllButScale(_ref2) {
-	var transform = _ref2.transform;
-	return {
-		x: 0,
-		y: 0,
-		scaleX: transform.scaleX,
-		scaleY: transform.scaleY,
-		skewX: 0,
-		skewY: 0,
-		rotate: 0
-	};
-};
-
-var snapAll = function snapAll() {
-	return { scale: 1 };
-};
-var snapPosition = function snapPosition(_ref3) {
-	var transform = _ref3.transform;
-	return extend(transform, { x: 0, y: 0 });
-};
-var snapRotation = function snapRotation(_ref4) {
-	var transform = _ref4.transform;
-	return extend(transform, { rotate: 0 });
-};
-var snapScale = function snapScale(_ref5) {
-	var transform = _ref5.transform;
-	return extend(transform, { scale: 1 });
-};
-var snapPositionAndRotation = function snapPositionAndRotation(_ref6) {
-	var transform = _ref6.transform;
-	return extend(transform, { x: 0, y: 0, rotate: 0 });
-};
-var snapPositionAndScale = function snapPositionAndScale(_ref7) {
-	var transform = _ref7.transform;
-	return extend(transform, { x: 0, y: 0, scale: 1 });
-};
-var snapScaleAndRotation = function snapScaleAndRotation(_ref8) {
-	var transform = _ref8.transform;
-	return extend(transform, { scale: 1, rotate: 0 });
-};
-
-var snapProportionally = function snapProportionally(denominator) {
-	var innerRadius = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-	return function (draggable) {
-		var transform = draggable.transform;
-		var x = transform.x,
-		    y = transform.y,
-		    scaleX = transform.scaleX,
-		    scaleY = transform.scaleY,
-		    skewX = transform.skewX,
-		    skewY = transform.skewY,
-		    rotate = transform.rotate;
-
-		var dist = distance$1({ x: x, y: y });
-
-		if (dist < innerRadius) {
-			return snapAll(draggable);
-		} else {
-			return {
-				x: x * dist / denominator,
-				y: y * dist / denominator,
-				scaleX: scaleX + (1 - scaleX) * (1 - dist / denominator),
-				scaleY: scaleY + (1 - scaleY) * (1 - dist / denominator),
-				skewX: skewX * dist / denominator,
-				skewY: skewY * dist / denominator,
-				rotate: rotate * dist / denominator
-			};
-		}
-	};
-};
-
-var snapRotationProportionally = function snapRotationProportionally(denominator) {
-	var innerRadius = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-	return function (draggable) {
-		var transform = draggable.transform;
-
-		var dist = distance$1(transform);
-
-		return dist < innerRadius ? snapAllButScale(draggable) : extend(transform, { rotate: transform.rotate * dist / denominator });
-	};
-};
-
-var snapScaleProportionally = function snapScaleProportionally(denominator) {
-	var innerRadius = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-	return function (draggable) {
-		var transform = draggable.transform;
-		var x = transform.x,
-		    y = transform.y,
-		    scaleX = transform.scaleX,
-		    scaleY = transform.scaleY;
-
-		var dist = distance$1({ x: x, y: y });
-
-		return dist < innerRadius ? snapAll(draggable) : extend(draggable.transform, {
-			scaleX: scaleX + (1 - scaleX) * (1 - dist / denominator),
-			scaleY: scaleY + (1 - scaleY) * (1 - dist / denominator)
-		});
-	};
-};
-
-var snapScaleAndRotationProportionally = function snapScaleAndRotationProportionally(denominator) {
-	var innerRadius = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-	return function (draggable) {
-		var transform = draggable.transform;
-		var x = transform.x,
-		    y = transform.y,
-		    scaleX = transform.scaleX,
-		    scaleY = transform.scaleY,
-		    rotate = transform.rotate;
-
-		var dist = distance$1({ x: x, y: y });
-
-		return dist < innerRadius ? snapAll(draggable) : extend(draggable.transform, {
-			scaleX: scaleX + (1 - scaleX) * (1 - dist / denominator),
-			scaleY: scaleY + (1 - scaleY) * (1 - dist / denominator),
-			rotate: rotate * dist / denominator
-		});
-	};
-};
-
-var withCustomSnapProps = function withCustomSnapProps(_snapTransform, _customSnapProps) {
-	return function () {
-		var snapTransform = isFunction(_snapTransform) ? _snapTransform.apply(undefined, arguments) : _snapTransform;
-		var customSnapProps = isFunction(_customSnapProps) ? _customSnapProps.apply(undefined, arguments) : _customSnapProps;
-		return extend(snapTransform, { customSnapProps: customSnapProps });
-	};
-};
-
-var SnapTransformers = {
-	snapAllButScale: snapAllButScale,
-	snapAll: snapAll,
-	noSnapping: noSnapping,
-	snapPosition: snapPosition,
-	snapRotation: snapRotation,
-	snapScale: snapScale,
-	snapPositionAndRotation: snapPositionAndRotation,
-	snapPositionAndScale: snapPositionAndScale,
-	snapScaleAndRotation: snapScaleAndRotation,
-	snapProportionally: snapProportionally,
-	snapRotationProportionally: snapRotationProportionally,
-	snapScaleProportionally: snapScaleProportionally,
-	snapScaleAndRotationProportionally: snapScaleAndRotationProportionally,
-	withCustomSnapProps: withCustomSnapProps
-};
-
-var defaultConfig$1 = {
-	snapCriteria: SnapCriteria.isCenterWithinRadius('150%'),
-	snapTransform: SnapTransformers.snapAllButScale
-};
-
-var normalizeSnapTargetConfig = function normalizeSnapTargetConfig() {
-	var customConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-	var config = extend(defaultConfig$1, customConfig);
-	config.dragSnapCriteria = config.dragSnapCriteria || config.snapCriteria;
-	config.releaseSnapCriteria = config.releaseSnapCriteria || config.snapCriteria;
-	config.dragSnapTransform = config.dragSnapTransform || config.snapTransform;
-	config.releaseSnapTransform = config.releaseSnapTransform || config.snapTransform;
-
-	invariant_1$2(isFunction(config.dragSnapCriteria) || isArray(config.dragSnapCriteria) && config.dragSnapCriteria.every(isFunction), 'Invalid property \'dragSnapCriteria\' in snapTarget config. Must be a function or an array of functions. Was: ' + config.dragSnapCriteria);
-	invariant_1$2(isFunction(config.releaseSnapCriteria) || isArray(config.releaseSnapCriteria) && config.releaseSnapCriteria.every(isFunction), 'Invalid property \'releaseSnapCriteria\' in snapTarget config. Must be a function or an array of functions. Was: ' + config.releaseSnapCriteria);
-
-	invariant_1$2(isFunction(config.dragSnapTransform) || isObject$1(config.dragSnapTransform), 'Invalid property \'dragSnapTransform\' in snapTarget config. Must be a function or an object. Was: ' + config.dragSnapTransform);
-
-	invariant_1$2(isFunction(config.releaseSnapTransform) || isObject$1(config.releaseSnapTransform), 'Invalid property \'releaseSnapTransform\' in snapTarget config. Must be a function or an object. Was: ' + config.releaseSnapTransform);
-
-	return config;
-};
-
-var noProps$1 = function noProps() {};
-
-var extractStaticProps = function extractStaticProps(draggableDescriptor) {
-    return {
-        id: draggableDescriptor.id,
-        dragData: draggableDescriptor.dragData
-    };
-};
-
-var extractLowFrequencyProps = function extractLowFrequencyProps(draggableDescriptor) {
-    return {
-        dragState: draggableDescriptor.dragState,
-        isSnappingToThisTarget: draggableDescriptor.isSnappingToThisTarget,
-        isSnappingToOtherTarget: draggableDescriptor.isSnappingToOtherTarget
-    };
-};
-
-var staticProps = function staticProps(draggableDescriptors) {
-    return draggableDescriptors.map(extractStaticProps);
-};
-
-var staticAndLowFrequencyProps$1 = function staticAndLowFrequencyProps(draggableDescriptors) {
-    return draggableDescriptors.map(function (draggableDescriptor) {
-        return extend(extractStaticProps(draggableDescriptor), extractLowFrequencyProps(draggableDescriptor));
-    });
-};
-
-var allProps$1 = function allProps(draggableDescriptors) {
-    return draggableDescriptors;
-};
-
-var SnapTargetCollectors = {
-    noProps: noProps$1,
-    staticProps: staticProps,
-    staticAndLowFrequencyProps: staticAndLowFrequencyProps$1,
-    allProps: allProps$1
-};
-
 var lowestPriority = Number.MAX_VALUE;
 var highestPriority = 1;
 var defaultPriority = 10;
@@ -24730,360 +23867,6 @@ var SnapPriorities = {
     distanceBased: distanceBased,
     distanceBasedWithOffset: distanceBasedWithOffset
 };
-
-var byId = function byId(_ref, _ref2) {
-  var a = _ref.id;
-  var b = _ref2.id;
-  return a > b ? -1 : 1;
-};
-
-function configure$1() {
-    var customConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    var collect = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : SnapTargetCollectors.staticAndLowFrequencyProps;
-
-    var config = normalizeSnapTargetConfig(customConfig);
-
-    return function makeSnapTarget(WrappedComponent) {
-        var SnapTarget = function (_React$Component) {
-            inherits(SnapTarget, _React$Component);
-
-            function SnapTarget(props) {
-                classCallCheck(this, SnapTarget);
-
-                var _this = possibleConstructorReturn(this, (SnapTarget.__proto__ || Object.getPrototypeOf(SnapTarget)).call(this, props));
-
-                _this.draggedItems = [];
-                _this.baseExternalTransformation = null;
-                _this.internalTransformation = null;
-                _this.matrix = null;
-                _this.size = null;
-                _this.DOMElementHelper = new DOMElementHelper();
-
-                _this.state = {
-                    collectedDragProps: _this.collectDragProps().collectedDragProps
-                };
-
-                //Convert to class based component, if functional. Functional components can't have refs since. We need refs
-                _this.ClassBasedWrappedComponent = makeClassBasedComponent(WrappedComponent);
-                _this.id = createGuid();
-                return _this;
-            }
-
-            createClass(SnapTarget, [{
-                key: 'getChildContext',
-                value: function getChildContext() {
-                    return {
-                        setInternalTransformation: this.setInternalTransformation.bind(this)
-                    };
-                }
-            }, {
-                key: 'componentDidMount',
-                value: function componentDidMount() {
-                    this.DOMElementHelper.updateElement(reactDom.findDOMNode(this.el));
-
-                    if (this.context.registerAsSnapTarget) {
-                        this.context.registerAsSnapTarget(this.id, this);
-                    } else {
-                        console.warn('Not in a drag and snap context!');
-                    }
-                }
-            }, {
-                key: 'componentWillUnmount',
-                value: function componentWillUnmount() {
-                    this.context.unregisterAsSnapTarget(this.id);
-                }
-            }, {
-                key: 'getId',
-                value: function getId() {
-                    return this.id;
-                }
-            }, {
-                key: 'update',
-                value: function update() {
-                    this.matrix = null; //Invalidate the matrix, so it will be recalculated next time it is needed
-                    this.DOMElementHelper.refresh();
-                }
-            }, {
-                key: 'continuousUpdateIfEnabled',
-                value: function continuousUpdateIfEnabled() {
-                    if (this.props.continuousUpdate) {
-                        this.update();
-                    }
-                }
-            }, {
-                key: 'getMatrix',
-                value: function getMatrix() {
-                    if (!this.matrix) {
-                        this.matrix = getTransformationMatrix(this.DOMElementHelper.getElement());
-                        this.baseExternalTransformation = this.props.externalTransformation;
-                    }
-
-                    var externalDelta = this.props.externalTransformation ? deltaMatrix(this.baseExternalTransformation, this.props.externalTransformation) : identity();
-
-                    var internalDelta = this.internalTransformation ? deltaMatrix({ x: 0, y: 0, rotate: 0, skewX: 0, scale: 1 }, this.internalTransformation) : identity();
-
-                    return transformMultiple(this.matrix, externalDelta, internalDelta);
-                }
-            }, {
-                key: 'getSize',
-                value: function getSize() {
-                    //If size is queried before first render, just report 0 size
-                    return this.DOMElementHelper.getSizeOrDefault({ width: 0, height: 0 });
-                }
-            }, {
-                key: 'getScaledSize',
-                value: function getScaledSize() {
-                    var size = this.getSize();
-
-                    var _qrDecompose = qrDecompose(this.getMatrix()),
-                        scaleX = _qrDecompose.scaleX,
-                        scaleY = _qrDecompose.scaleY;
-
-                    return {
-                        width: size.width * scaleX,
-                        height: size.height * scaleY
-                    };
-                }
-
-                //Converts the descriptor, velocity and cursor point from the global (window) coordinate system, to the local coordinate system of the snap taget.
-
-            }, {
-                key: 'makeSnapTargetSpecific',
-                value: function makeSnapTargetSpecific(_ref) {
-                    var id = _ref.id,
-                        dragState = _ref.dragState,
-                        dragData = _ref.dragData,
-                        matrix = _ref.matrix,
-                        scaledSize = _ref.scaledSize,
-                        velocity = _ref.velocity,
-                        cursorPosition = _ref.cursorPosition,
-                        snapTargetId = _ref.snapTargetId;
-
-                    var _qrDecompose2 = qrDecompose(matrix),
-                        x = _qrDecompose2.x,
-                        y = _qrDecompose2.y,
-                        rotate = _qrDecompose2.rotate,
-                        skewX = _qrDecompose2.skewX,
-                        skewY = _qrDecompose2.skewY;
-
-                    var localPosition = transformPosition(this.getMatrix(), { x: x, y: y });
-                    var localRotation = transformRotation(this.getMatrix(), rotate);
-                    var localScale = transformScale(this.getScaledSize(), scaledSize);
-                    var localSkew = transformSkew(this.getMatrix(), { x: skewX, y: skewY });
-                    var isSnappingToThisTarget = this.id === snapTargetId;
-                    var isSnappingToOtherTarget = !isNullOrUndefined(snapTargetId) && !isSnappingToThisTarget;
-
-                    var localTransform = extend({ rotate: localRotation }, localPosition, localScale, localSkew);
-
-                    return {
-                        id: id,
-                        dragState: dragState,
-                        dragData: dragData,
-                        transform: localTransform,
-                        distance: distance$1({ x: localTransform.x, y: localTransform.y }),
-                        velocity: velocity ? transformVelocity(this.getMatrix(), velocity) : null,
-                        cursorPosition: cursorPosition ? transformPosition(this.getMatrix(), cursorPosition) : null,
-                        isSnappingToThisTarget: isSnappingToThisTarget,
-                        isSnappingToOtherTarget: isSnappingToOtherTarget
-                    };
-                }
-            }, {
-                key: 'getProps',
-                value: function getProps() {
-                    var collectedDragProps = this.state.collectedDragProps;
-
-
-                    return isArray(collectedDragProps) ? extend(shallowCloneExcluding(this.props, LIBRARY_PROPS), { draggedItems: collectedDragProps }) : extend(shallowCloneExcluding(this.props, LIBRARY_PROPS), collectedDragProps);
-                }
-            }, {
-                key: 'getSelfDescriptor',
-                value: function getSelfDescriptor() {
-                    return extend(this.getSize(), { props: this.getProps() });
-                }
-            }, {
-                key: 'getParams',
-                value: function getParams(draggableDescriptor) {
-                    return [this.makeSnapTargetSpecific(draggableDescriptor), this.getSelfDescriptor(), { draggedItems: this.draggedItems }]; //TODO: SHOULD WE SOMEHOW INJECT THE draggableToTarget and targetToDraggable matrices here?
-                }
-            }, {
-                key: 'isSnapCriteriaMet',
-                value: function isSnapCriteriaMet(dragState, draggableDescriptor) {
-                    var criteria = toArray$1(dragState === DRAG_STATES.RELEASED ? config.releaseSnapCriteria : config.dragSnapCriteria);
-                    var params = this.getParams(draggableDescriptor);
-                    return criteria.every(function (criterium) {
-                        return criterium.apply(undefined, toConsumableArray(params));
-                    });
-                }
-            }, {
-                key: 'getSnapPriority',
-                value: function getSnapPriority(dragState, draggableDescriptor) {
-                    var _props = this.props,
-                        releaseSnapPriority = _props.releaseSnapPriority,
-                        dragSnapPriority = _props.dragSnapPriority,
-                        commonPriority = _props.snapPriority;
-
-                    var snapPriority = (dragState === DRAG_STATES.RELEASED ? releaseSnapPriority : dragSnapPriority) || commonPriority;
-                    var params = this.getParams(draggableDescriptor);
-                    var priority = isFunction(snapPriority) ? snapPriority.apply(undefined, toConsumableArray(params)) : snapPriority;
-
-                    invariant_1$2(isNumber(priority), 'snapPriority must be a number or a function that returns a number.');
-                    invariant_1$2(priority >= 1, 'SnapPriority should be 1 (highest priority) or larger. Was ' + priority);
-
-                    return priority;
-                }
-            }, {
-                key: 'getSnapping',
-                value: function getSnapping(dragState, draggableDescriptor) {
-                    var _snapTransform = dragState === DRAG_STATES.RELEASED ? config.releaseSnapTransform : config.dragSnapTransform;
-                    var params = this.getParams(draggableDescriptor);
-                    var snapTransform = isFunction(_snapTransform) ? _snapTransform.apply(undefined, toConsumableArray(params)) : _snapTransform;
-
-                    var normalizedSnapTransform = normalizeTransform(snapTransform, draggableDescriptor.scaledSize, this.getScaledSize());
-
-                    var snapMatrix = createSnapMatrix(this.getMatrix(), normalizedSnapTransform, this.DOMElementHelper, draggableDescriptor.DOMElementHelper);
-
-                    var _transformPosition = transformPosition(this.getMatrix(), extractTranslation(draggableDescriptor.matrix)),
-                        x = _transformPosition.x,
-                        y = _transformPosition.y;
-
-                    var isPositionSnapped = x !== normalizedSnapTransform.x || y !== normalizedSnapTransform.y;
-
-                    return {
-                        matrix: snapMatrix,
-                        customSnapProps: normalizedSnapTransform.customSnapProps,
-                        isPositionSnapped: isPositionSnapped,
-                        snapTargetId: this.id
-                    };
-                }
-            }, {
-                key: 'allowsEasyEscape',
-                value: function allowsEasyEscape(draggableDescriptor) {
-                    var easyEscape = this.props.easyEscape;
-
-                    var params = this.getParams(draggableDescriptor);
-                    return isFunction(easyEscape) ? easyEscape.apply(undefined, toConsumableArray(params)) : easyEscape;
-                }
-            }, {
-                key: 'onDropEvent',
-                value: function onDropEvent(type, draggableDescriptor, globalSnapMatrix) {
-                    var snapTargetSpecificDraggableDescriptor = this.makeSnapTargetSpecific(draggableDescriptor);
-
-                    switch (type) {
-                        case 'start':
-                            this.props.onDropStart(snapTargetSpecificDraggableDescriptor, this.getSelfDescriptor(), qrDecompose(globalSnapMatrix)); //TODO: FIGURE OUT IF THIS SHOULD INFACT BE GLOABEL? PROBABLY NOT!!!
-                            break;
-                        case 'complete':
-                            this.props.onDropComplete(snapTargetSpecificDraggableDescriptor, this.getSelfDescriptor());
-                            break;
-                        case 'cancel':
-                            this.props.onDropCancel(snapTargetSpecificDraggableDescriptor, this.getSelfDescriptor());
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }, {
-                key: 'collectDragProps',
-                value: function collectDragProps(cur) {
-                    var items = this.draggedItems || [];
-                    items.sort(byId);
-                    var next = collect(items, extend(this.getSize(), { props: shallowCloneExcluding(this.props, LIBRARY_PROPS) }));
-
-                    invariant_1$2(isObject$1(next) || isArray(next) && next.length === items.length, 'collect function must return an object or an array of objects equal to the number of dragged items');
-
-                    var hasChanged = isNullOrUndefined(cur) || isObject$1(next) && !shallowEqual$1(cur, next) || isArray(next) && (cur.length !== next.length || next.some(function (o, i) {
-                        return !shallowEqual$1(o, cur[i]);
-                    }));
-
-                    return {
-                        hasChanged: hasChanged,
-                        collectedDragProps: next
-                    };
-                }
-            }, {
-                key: 'updateDragProps',
-                value: function updateDragProps() {
-                    var _collectDragProps = this.collectDragProps(this.state.collectedDragProps),
-                        collectedDragProps = _collectDragProps.collectedDragProps,
-                        hasChanged = _collectDragProps.hasChanged;
-
-                    if (hasChanged) {
-                        this.setState({ collectedDragProps: collectedDragProps });
-                    }
-                }
-            }, {
-                key: 'updateItem',
-                value: function updateItem(draggableDescriptor) {
-                    var localDragStateDescriptor = this.makeSnapTargetSpecific(draggableDescriptor);
-                    this.draggedItems = this.draggedItems.filter(function (p) {
-                        return p.id !== draggableDescriptor.id;
-                    }).concat(localDragStateDescriptor);
-                    this.updateDragProps();
-                }
-            }, {
-                key: 'removeItem',
-                value: function removeItem(id) {
-                    this.draggedItems = this.draggedItems.filter(function (d) {
-                        return d.id !== id;
-                    });
-                    this.updateDragProps();
-                }
-            }, {
-                key: 'setInternalTransformation',
-                value: function setInternalTransformation(internalTransformation) {
-                    this.internalTransformation = internalTransformation;
-                }
-            }, {
-                key: 'render',
-                value: function render() {
-                    var _this2 = this;
-
-                    return react.createElement(this.ClassBasedWrappedComponent, _extends({}, this.getProps(), { ref: function ref(el) {
-                            return _this2.el = el;
-                        } }));
-                }
-            }]);
-            return SnapTarget;
-        }(react.Component);
-
-        SnapTarget.displayName = 'makeSnapTarget(' + getDisplayName(WrappedComponent) + ')';
-        SnapTarget.propTypes = SnapTargetPropTypes;
-
-        SnapTarget.defaultProps = {
-            onDropStart: function onDropStart() {},
-            onDropComplete: function onDropComplete() {},
-            onDropCancel: function onDropCancel() {},
-            easyEscape: false,
-            continuousUpdate: false,
-            snapPriority: SnapPriorities.distanceBasedWithOffset(100)
-        };
-
-        SnapTarget.contextTypes = {
-            registerAsSnapTarget: propTypes.func.isRequired,
-            unregisterAsSnapTarget: propTypes.func.isRequired
-        };
-
-        SnapTarget.childContextTypes = {
-            setInternalTransformation: propTypes.func
-        };
-
-        return SnapTarget;
-    };
-}
-
-var SnapTargetPropTypes = {
-    snapPriority: propTypes.oneOfType([propTypes.number, propTypes.func]),
-    dragSnapPriority: propTypes.oneOfType([propTypes.number, propTypes.func]),
-    releaseSnapPriority: propTypes.oneOfType([propTypes.number, propTypes.func]),
-    onDropStart: propTypes.func,
-    onDropComplete: propTypes.func,
-    onDropCancel: propTypes.func,
-    easyEscape: propTypes.oneOfType([propTypes.bool, propTypes.func]),
-    continuousUpdate: propTypes.bool,
-    externalTransformation: CustomPropTypes.transform
-};
-
-var LIBRARY_PROPS = Object.keys(SnapTargetPropTypes);
 
 function debounce(fn) {
     var _this = this;
@@ -25118,7 +23901,7 @@ var WindowSizeMonitor = function () {
             var debouncedCallback = debounce(callback);
             window.addEventListener('resize', debouncedCallback);
             this.subscriptions[id] = debouncedCallback;
-            this.nextId++;
+            this.nextId += 1;
 
             return id;
         }
@@ -25137,6 +23920,8 @@ var WindowSizeMonitor = function () {
     return WindowSizeMonitor;
 }();
 
+var MainContext = react.createContext();
+
 var DragSnapContext = function (_React$Component) {
     inherits(DragSnapContext, _React$Component);
 
@@ -25151,27 +23936,22 @@ var DragSnapContext = function (_React$Component) {
         _this.releasedCount = 0;
         _this.styleInjector = new StyleInjector();
         _this.windowSizeMonitor = new WindowSizeMonitor();
+
+        _this.boundSnap = _this.snap.bind(_this);
+        _this.boundWindowToContext = _this.windowToContext.bind(_this);
+        _this.boundContextToWindow = _this.contextToWindow.bind(_this);
+        _this.boundOnDragStateUpdate = _this.onDragStateUpdate.bind(_this);
+        _this.boundRelayDropEvent = _this.relayDropEvent.bind(_this);
+        _this.boundRegisterAsSnapTarget = _this.registerAsSnapTarget.bind(_this);
+        _this.boundUnregisterAsSnapTarget = _this.unregisterAsSnapTarget.bind(_this);
+        _this.boundGetDragContainerDOMElement = _this.getDragContainerDOMElement.bind(_this);
+        _this.boundGetSize = _this.getSize.bind(_this);
+        _this.boundRelayDraggableUpdateToTargets = _this.relayDraggableUpdateToTargets.bind(_this);
+        _this.boundRelayDraggableRemovalToTargets = _this.relayDraggableRemovalToTargets.bind(_this);
         return _this;
     }
 
     createClass(DragSnapContext, [{
-        key: 'getChildContext',
-        value: function getChildContext() {
-            return {
-                snap: this.snap.bind(this),
-                windowToContext: this.windowToContext.bind(this),
-                contextToWindow: this.contextToWindow.bind(this),
-                onDragStateUpdate: this.onDragStateUpdate.bind(this),
-                relayDropEvent: this.relayDropEvent.bind(this),
-                registerAsSnapTarget: this.registerAsSnapTarget.bind(this),
-                unregisterAsSnapTarget: this.unregisterAsSnapTarget.bind(this),
-                getDragContainerDOMElement: this.getDragContainerDOMElement.bind(this),
-                getSize: this.getSize.bind(this),
-                relayDraggableUpdateToTargets: this.relayDraggableUpdateToTargets.bind(this),
-                relayDraggableRemovalToTargets: this.relayDraggableRemovalToTargets.bind(this)
-            };
-        }
-    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
             var _this2 = this;
@@ -25189,19 +23969,47 @@ var DragSnapContext = function (_React$Component) {
             });
         }
     }, {
-        key: 'updateSizeMeasurement',
-        value: function updateSizeMeasurement() {
-            this.size = {
-                width: this.container.clientWidth,
-                height: this.container.clientHeight
-            };
-        }
-    }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
-            this.styleInjector.remove(this.styleNode);
+            StyleInjector.remove(this.styleNode);
             this.windowSizeMonitor.unsubscribeToResizeEnd(this.resizeEndSubscription);
             this.snapTargets = [];
+        }
+    }, {
+        key: 'onDragStateUpdate',
+        value: function onDragStateUpdate(update) {
+            switch (update) {
+                case 'grab':
+                    this.grabbedCount += 1;
+                    break;
+                case 'start':
+                    this.grabbedCount -= 1;
+                    this.draggedCount += 1;
+                    break;
+                case 'cancel':
+                    this.grabbedCount -= 1;
+                    break;
+                case 'ending':
+                    this.draggedCount -= 1;
+                    this.releasedCount += 1;
+                    break;
+                case 'resume':
+                    this.draggedCount += 1;
+                    this.releasedCount -= 1;
+                    break;
+                case 'ended':
+                    this.releasedCount -= 1;
+                    break;
+                default:
+                    break;
+            }
+
+            this.props.onChange({
+                grabbedCount: this.grabbedCount,
+                draggedCount: this.draggedCount,
+                releasedCount: this.releasedCount,
+                totalCount: this.grabbedCount + this.draggedCount + this.releasedCount
+            });
         }
     }, {
         key: 'getDragContainerDOMElement',
@@ -25212,6 +24020,14 @@ var DragSnapContext = function (_React$Component) {
         key: 'getSize',
         value: function getSize() {
             return this.size;
+        }
+    }, {
+        key: 'updateSizeMeasurement',
+        value: function updateSizeMeasurement() {
+            this.size = {
+                width: this.container.clientWidth,
+                height: this.container.clientHeight
+            };
         }
     }, {
         key: 'registerAsSnapTarget',
@@ -25260,12 +24076,13 @@ var DragSnapContext = function (_React$Component) {
     }, {
         key: 'snap',
         value: function snap(firstSnapTargetId, hasEscaped, dragState, draggableDescriptor) {
-            var isInSnappingArea = false; //When true it doesn't necessarily mean it will snap (if target allows easyEscape)
+            // When true it doesn't necessarily mean it will snap (if target allows easyEscape)
+            var isInSnappingArea = false;
             var snapping = null;
             var allowsEasyEscape = false;
             var hasEscapedNow = void 0;
             var maxPriority = SnapPriorities.lowestPriority;
-            var _firstSnapTargetId = firstSnapTargetId;
+            var newFirstSnapTargetId = firstSnapTargetId;
 
             this.snapTargets.forEach(function (target) {
                 target.continuousUpdateIfEnabled();
@@ -25275,7 +24092,7 @@ var DragSnapContext = function (_React$Component) {
                     var priority = target.getSnapPriority(dragState, draggableDescriptor);
 
                     if (priority <= maxPriority) {
-                        //Smaller number means higher priority
+                        // Smaller number means higher priority
                         maxPriority = priority;
                         snapping = target.getSnapping(dragState, draggableDescriptor);
                         allowsEasyEscape = target.allowsEasyEscape(draggableDescriptor);
@@ -25287,9 +24104,10 @@ var DragSnapContext = function (_React$Component) {
 
             if (snapping) {
                 var isStillFirstSnapTarget = !firstSnapTargetId || firstSnapTargetId === snapping.snapTargetId;
-                _firstSnapTargetId = _firstSnapTargetId || (snapping ? snapping.snapTargetId : null);
+                newFirstSnapTargetId = newFirstSnapTargetId || (snapping ? snapping.snapTargetId : null);
 
-                //If easyEscape is enabled for the snapTarget, and it is still in its realm, disable the snapping
+                // If easyEscape is enabled for the snapTarget, and it is still in its realm,
+                // disable the snapping
                 if (snapping && !hasEscapedNow && allowsEasyEscape && isStillFirstSnapTarget) {
                     snapping = null;
                 } else {
@@ -25304,7 +24122,7 @@ var DragSnapContext = function (_React$Component) {
                 isSnapping: !!snapping,
                 hasEscaped: hasEscapedNow,
                 snapTargetId: snapping ? snapping.snapTargetId : null,
-                firstSnapTargetId: _firstSnapTargetId
+                firstSnapTargetId: newFirstSnapTargetId
             };
         }
     }, {
@@ -25318,174 +24136,1390 @@ var DragSnapContext = function (_React$Component) {
             return transform(this.inverseContainerMatrix, matrix);
         }
     }, {
-        key: 'onDragStateUpdate',
-        value: function onDragStateUpdate(update) {
-            switch (update) {
-                case 'grab':
-                    this.grabbedCount++;
-                    break;
-                case 'start':
-                    this.grabbedCount--;
-                    this.draggedCount++;
-                    break;
-                case 'cancel':
-                    this.grabbedCount--;
-                    break;
-                case 'ending':
-                    this.draggedCount--;
-                    this.releasedCount++;
-                    break;
-                case 'resume':
-                    this.draggedCount++;
-                    this.releasedCount--;
-                    break;
-                case 'ended':
-                    this.releasedCount--;
-                    break;
-                default:
-                    break;
-            }
-
-            this.props.onChange({
-                grabbedCount: this.grabbedCount,
-                draggedCount: this.draggedCount,
-                releasedCount: this.releasedCount,
-                totalCount: this.grabbedCount + this.draggedCount + this.releasedCount
-            });
-        }
-    }, {
         key: 'render',
         value: function render() {
             var _this3 = this;
 
             return react.createElement(
-                'div',
+                MainContext.Provider,
                 {
-                    style: { position: 'relative', width: '100%', height: '100%', display: 'inline-block' },
-                    ref: function ref(container) {
-                        return _this3.container = container;
+                    value: {
+                        snap: this.boundSnap,
+                        windowToContext: this.boundWindowToContext,
+                        contextToWindow: this.boundContextToWindow,
+                        onDragStateUpdate: this.boundOnDragStateUpdate,
+                        relayDropEvent: this.boundRelayDropEvent,
+                        registerAsSnapTarget: this.boundRegisterAsSnapTarget,
+                        unregisterAsSnapTarget: this.boundUnregisterAsSnapTarget,
+                        getDragContainerDOMElement: this.boundGetDragContainerDOMElement,
+                        getSize: this.boundGetSize,
+                        relayDraggableUpdateToTargets: this.boundRelayDraggableUpdateToTargets,
+                        relayDraggableRemovalToTargets: this.boundRelayDraggableRemovalToTargets
                     }
                 },
-                this.props.children
+                react.createElement(
+                    'div',
+                    {
+                        style: {
+                            position: 'relative', width: '100%', height: '100%', display: 'inline-block'
+                        },
+                        ref: function ref(container) {
+                            return _this3.container = container;
+                        }
+                    },
+                    this.props.children
+                )
             );
         }
     }]);
     return DragSnapContext;
 }(react.Component);
 
-DragSnapContext.childContextTypes = {
-    snap: propTypes.func,
-    windowToContext: propTypes.func,
-    contextToWindow: propTypes.func,
-    onDragStateUpdate: propTypes.func,
-    relayDropEvent: propTypes.func,
-    relayDraggableUpdateToTargets: propTypes.func,
-    relayDraggableRemovalToTargets: propTypes.func,
-    getDragContainerDOMElement: propTypes.func,
-    getSize: propTypes.func,
-    registerAsSnapTarget: propTypes.func,
-    unregisterAsSnapTarget: propTypes.func
-};
-
 DragSnapContext.propTypes = {
-    onChange: propTypes.func
+    onChange: propTypes.func,
+    /* eslint-disable react/require-default-props */
+    children: CustomPropTypes.children
+    /* eslint-enable react/require-default-props */
 };
 
 DragSnapContext.defaultProps = {
     onChange: function onChange() {}
 };
 
+var INACTIVE = DRAG_STATES.INACTIVE;
+var GRABBED = DRAG_STATES.GRABBED;
+var DRAGGED = DRAG_STATES.DRAGGED;
+var RELEASED = DRAG_STATES.RELEASED;
+
+
+var initialState = {
+    dragState: INACTIVE, // Either INACTIVE, GRABBED, DRAGGED, or RELEASED
+    isSnapping: false, // If this draggable is currently snapping to a snapTarget
+    isPositionSnapped: null, // If it's position is currently controlled by a snapTarget. Initially unknown
+    isSnappingBack: false, // If it is currently snapping back to its initial position (after a drop)
+    snapTargetId: null, // The id of the snapTarget it is currently snapping to. Null when not snapping
+    customSnapProps: {}, // The customSnapProps as defined by the snapTarget currently snapped to
+    flipGrabbedFlag: false, // Used to postpone dragState sent to wrapped component one frame, when dragged
+    velocity: null, // The velocity (pixels/ms) by which the draggable is currently being dragged
+    baseMatrix: null, // The draggable's position in window coordinate system prior to dragging
+    matrix: null, // The draggable's current position in window coordinate system
+    hasEscaped: false, // If the draggable has escaped its first snapTarget in a new drag
+    firstSnapTargetId: null, // Id of the first snapTarget to which draggable snapped in current drag session
+    touchOffset: null // Local coordinates of where the draggable has been grabbed
+};
+
+var draggableContext = react.createContext();
+
+function configure() {
+    var customConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var collect = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : draggableCollectors.allProps;
+
+    var config = normalizeDraggableConfig(customConfig);
+    var dragModeAttribute = getDragModeAttribute(config.mode);
+
+    return function makeDraggable(WrappedComponent) {
+        var helpers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { DOMElementHelper: DOMElementHelper, PointerTracker: PointerTracker };
+
+        var Draggable = function (_React$Component) {
+            inherits(Draggable, _React$Component);
+
+            function Draggable(props) {
+                classCallCheck(this, Draggable);
+
+                var _this = possibleConstructorReturn(this, (Draggable.__proto__ || Object.getPrototypeOf(Draggable)).call(this, props));
+
+                _this.state = initialState;
+                _this.id = guidUtils.createGuid();
+                _this.DOMElementHelper = new helpers.DOMElementHelper();
+                _this.pointerTracker = new helpers.PointerTracker(_this.dragStartHandler.bind(_this), _this.dragMoveHandler.bind(_this), _this.dragEndHandler.bind(_this));
+
+                // Convert to class based, if functional. Functional components can't have refs since. We need refs
+                var ClassBasedWrappedComponent = makeClassBasedComponent(WrappedComponent);
+                _this.statePublishingWrappedComponent = asStatePublisher(ClassBasedWrappedComponent);
+                _this.stateSubscribingWrappedComponent = asStateSubscriber(ClassBasedWrappedComponent);
+                _this.stateChangeHandler = function () {};
+                _this.boundStartPointerTracker = _this.startTracker.bind(_this);
+                _this.boundRestAfterReleaseHandler = _this.restAfterReleaseHandler.bind(_this);
+
+                _this.boundSetStateHandler = _this.setStateChangeHandler.bind(_this);
+                _this.boundUnsetStateHandler = _this.unsetStateChangeHandler.bind(_this);
+                _this.boundPublishState = _this.publishState.bind(_this);
+                return _this;
+            }
+
+            createClass(Draggable, [{
+                key: 'componentDidMount',
+                value: function componentDidMount() {
+                    this.DOMElement = reactDom.findDOMNode(this.el);
+                    this.DOMElement.addEventListener('mousedown', this.boundStartPointerTracker, { passive: true });
+                    this.DOMElement.addEventListener('touchstart', this.boundStartPointerTracker, { passive: true });
+                }
+            }, {
+                key: 'componentWillUpdate',
+                value: function componentWillUpdate(nextProps, _ref) {
+                    var nextDragState = _ref.dragState;
+                    var dragState = this.state.dragState;
+
+
+                    if (dragState !== DRAGGED && nextDragState === DRAGGED) {
+                        this.DOMElement.setAttribute(dragModeAttribute, true);
+                    }
+
+                    if (dragState !== INACTIVE && nextDragState === INACTIVE) {
+                        this.DOMElement.removeAttribute(dragModeAttribute);
+                    }
+                }
+            }, {
+                key: 'componentDidUpdate',
+                value: function componentDidUpdate() {
+                    var _this2 = this;
+
+                    if (this.state.flipGrabbedFlag) {
+                        // Postpone till after next DOM update after clone is mounted (to support css transition
+                        // triggered by change of the grabbed property)
+                        requestAnimationFrame(function () {
+                            return _this2.setState({ flipGrabbedFlag: false });
+                        });
+                    }
+                }
+            }, {
+                key: 'componentWillUnmount',
+                value: function componentWillUnmount() {
+                    this.DOMElement.removeEventListener('mousedown', this.boundStartPointerTracker);
+                    this.DOMElement.removeEventListener('touchstart', this.boundStartPointerTracker);
+                    this.pointerTracker.destroy();
+
+                    if (this.state.dragState !== INACTIVE) {
+                        if (this.state.dragState !== RELEASED) {
+                            this.props.dragSnapContext.onDragStateUpdate('ending');
+                        }
+
+                        this.props.dragSnapContext.relayDraggableRemovalToTargets(this.id);
+                        this.props.dragSnapContext.onDragStateUpdate('ended');
+                    }
+                }
+            }, {
+                key: 'getSnapping',
+                value: function getSnapping(dragState, cursorPosition, velocity) {
+                    var state = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.state;
+
+                    var elementDragPosition = subtractPoints(cursorPosition, state.touchOffset);
+                    var draggedMatrix = overrideTranslation(state.baseMatrix, elementDragPosition);
+
+                    return this.props.dragSnapContext.snap(state.firstSnapTargetId, state.hasEscaped, dragState, this.getDraggableDescriptor(dragState, draggedMatrix, cursorPosition, velocity, state.snapTargetId));
+                }
+            }, {
+                key: 'getDraggableDescriptor',
+                value: function getDraggableDescriptor(dragState, matrix, cursorPosition, velocity, snapTargetId) {
+                    var _qrDecompose = qrDecompose(matrix),
+                        scaleX = _qrDecompose.scaleX,
+                        scaleY = _qrDecompose.scaleY;
+
+                    return {
+                        id: this.id,
+                        dragData: this.props.dragData,
+                        DOMElementHelper: this.DOMElementHelper,
+                        scaledSize: {
+                            width: this.DOMElementHelper.getSize().width * scaleX,
+                            height: this.DOMElementHelper.getSize().height * scaleY
+                        },
+                        dragState: dragState,
+                        velocity: velocity,
+                        cursorPosition: cursorPosition,
+                        matrix: matrix,
+                        snapTargetId: snapTargetId
+                    };
+                }
+            }, {
+                key: 'getInitialDragState',
+                value: function getInitialDragState(globalTouchOffset) {
+                    var dragState = GRABBED;
+                    var baseMatrix = getTransformationMatrix(this.DOMElement);
+                    var touchOffset = subtractPoints(globalTouchOffset, applyToPoint(baseMatrix, getOrigo()));
+
+                    return {
+                        dragState: dragState,
+                        baseMatrix: baseMatrix,
+                        touchOffset: touchOffset,
+                        hasEscaped: false,
+                        firstSnapTargetId: null,
+                        flipGrabbedFlag: true,
+                        isSnappingBack: false,
+                        isPositionSnapped: null // Unclear if this is true or false at this point. Initialize to null
+                    };
+                }
+            }, {
+                key: 'setInactive',
+                value: function setInactive() {
+                    this.setState({
+                        dragState: INACTIVE, isSnappingBack: false, customSnapProps: {}, velocity: getOrigo()
+                    });
+                    // this.setState(initialState);
+                }
+            }, {
+                key: 'setStateChangeHandler',
+                value: function setStateChangeHandler(handler) {
+                    this.stateChangeHandler = handler;
+                }
+            }, {
+                key: 'publishState',
+                value: function publishState(state) {
+                    this.stateChangeHandler(state);
+                }
+            }, {
+                key: 'unsetStateChangeHandler',
+                value: function unsetStateChangeHandler() {
+                    this.stateChangeHandler = function () {};
+                }
+            }, {
+                key: 'restAfterReleaseHandler',
+                value: function restAfterReleaseHandler() {
+                    this.setInactive();
+                    var _state = this.state,
+                        snapTargetId = _state.snapTargetId,
+                        matrix = _state.matrix;
+
+
+                    if (snapTargetId) {
+                        var draggableDescriptor = this.getDraggableDescriptor(INACTIVE, matrix);
+                        this.props.dragSnapContext.relayDropEvent(snapTargetId, 'complete', draggableDescriptor);
+                    }
+
+                    this.props.dragSnapContext.relayDraggableRemovalToTargets(this.id);
+                    this.props.dragSnapContext.onDragStateUpdate('ended');
+                }
+            }, {
+                key: 'dragEndHandler',
+                value: function dragEndHandler(_ref2) {
+                    var position = _ref2.position,
+                        velocity = _ref2.velocity;
+
+                    if (this.state.dragState === GRABBED) {
+                        this.setInactive();
+                        this.props.dragSnapContext.onDragStateUpdate('cancel');
+                        return;
+                    }
+
+                    var dragState = RELEASED;
+                    var _state2 = this.state,
+                        baseMatrix = _state2.baseMatrix,
+                        priorMatrix = _state2.matrix;
+
+                    var snapping = this.getSnapping(dragState, position, velocity);
+                    var matrix = snapping.matrix;
+
+                    var isSnappingBack = false;
+
+                    if (snapping.isSnapping) {
+                        var draggableDescriptor = this.getDraggableDescriptor(dragState, priorMatrix, position, velocity, snapping.snapTargetId);
+                        this.props.dragSnapContext.relayDropEvent(snapping.snapTargetId, 'start', draggableDescriptor, snapping.matrix);
+                    } else if (this.props.snapBack) {
+                        matrix = baseMatrix;
+                        isSnappingBack = true;
+                    }
+
+                    this.setState(_extends({}, snapping, { matrix: matrix, velocity: velocity, isSnappingBack: isSnappingBack, dragState: dragState
+                    }));
+
+                    this.props.dragSnapContext.relayDraggableUpdateToTargets(this.getDraggableDescriptor(dragState, matrix, position, velocity, snapping.snapTargetId));
+
+                    this.props.dragSnapContext.onDragStateUpdate('ending');
+                }
+            }, {
+                key: 'dragMoveHandler',
+                value: function dragMoveHandler(_ref3) {
+                    var position = _ref3.position,
+                        velocity = _ref3.velocity;
+
+                    if (this.state.dragState === GRABBED) {
+                        this.props.dragSnapContext.onDragStateUpdate('start');
+                    }
+
+                    var dragState = DRAGGED;
+                    var snapping = this.getSnapping(dragState, position, velocity);
+
+                    this.setState(_extends({ dragState: dragState, velocity: velocity }, snapping));
+
+                    this.props.dragSnapContext.relayDraggableUpdateToTargets(this.getDraggableDescriptor(dragState, snapping.matrix, position, velocity, snapping.snapTargetId));
+                }
+            }, {
+                key: 'startTracker',
+                value: function startTracker(e) {
+                    if (this.state.dragState === INACTIVE) {
+                        this.pointerTracker.track(e);
+                    }
+                }
+            }, {
+                key: 'startDrag',
+                value: function startDrag(position, velocity) {
+                    this.props.dragSnapContext.onDragStateUpdate('grab');
+                    this.DOMElementHelper.updateElement(this.DOMElement);
+                    var startState = this.getInitialDragState(position);
+                    var snapping = this.getSnapping(startState.dragState, position, velocity, startState);
+
+                    this.setState(_extends({}, startState, snapping, { velocity: velocity }));
+
+                    this.props.dragSnapContext.relayDraggableUpdateToTargets(this.getDraggableDescriptor(startState.dragState, snapping.matrix, position, velocity, snapping.snapTargetId));
+                }
+            }, {
+                key: 'resumeDrag',
+                value: function resumeDrag(position, velocity) {
+                    var dragState = DRAGGED;
+                    var priorMatrix = this.state.matrix;
+
+
+                    var newState = _extends({}, this.state, {
+                        dragState: dragState,
+                        isSnappingBack: false,
+                        touchOffset: subtractPoints(position, applyToPoint(priorMatrix, getOrigo()))
+                    });
+
+                    var snapping = this.getSnapping(dragState, position, velocity, newState);
+
+                    this.setState(_extends({}, newState, snapping, { velocity: velocity }));
+
+                    this.props.dragSnapContext.onDragStateUpdate('resume');
+                    this.props.dragSnapContext.relayDraggableUpdateToTargets(this.getDraggableDescriptor(dragState, snapping.matrix, position, velocity, snapping.snapTargetId));
+
+                    if (snapping.snapTargetId) {
+                        this.props.dragSnapContext.relayDropEvent(snapping.snapTargetId, 'cancel', this.getDraggableDescriptor(dragState, snapping.matrix));
+                    }
+                }
+            }, {
+                key: 'dragStartHandler',
+                value: function dragStartHandler(_ref4) {
+                    var position = _ref4.position,
+                        velocity = _ref4.velocity;
+
+                    if (this.props.draggingDisabled) {
+                        return;
+                    }
+
+                    if (this.state.dragState === INACTIVE) {
+                        this.startDrag(position, velocity);
+                    } else {
+                        this.resumeDrag(position, velocity);
+                    }
+                }
+            }, {
+                key: 'render',
+                value: function render() {
+                    var _this3 = this;
+
+                    var _state3 = this.state,
+                        dragState = _state3.dragState,
+                        velocity = _state3.velocity,
+                        isSnapping = _state3.isSnapping,
+                        snapTargetId = _state3.snapTargetId,
+                        isPositionSnapped = _state3.isPositionSnapped,
+                        isSnappingBack = _state3.isSnappingBack,
+                        customSnapProps = _state3.customSnapProps,
+                        flipGrabbedFlag = _state3.flipGrabbedFlag,
+                        matrix = _state3.matrix;
+
+                    var snapProps = { isSnapping: isSnapping, isSnappingBack: isSnappingBack, customSnapProps: customSnapProps };
+                    var applyState = dragState === GRABBED && flipGrabbedFlag ? INACTIVE : dragState;
+
+                    // Matrix is in window coordinates, but draggables will be rendered in the context, so must transform
+                    var contextTransform = matrix ? qrDecompose(this.props.dragSnapContext.windowToContext(matrix)) : undefined;
+
+                    return react.createElement(
+                        draggableContext.Provider,
+                        {
+                            value: {
+                                publishState: this.boundPublishState,
+                                subscribeToState: this.boundSetStateHandler,
+                                unsubscribeToState: this.boundUnsetStateHandler
+                            }
+                        },
+                        react.createElement(
+                            SpringRenderer,
+                            {
+                                transform: contextTransform,
+                                snapTargetId: snapTargetId,
+                                isPositionSnapped: isPositionSnapped,
+                                isSnappingBack: isSnappingBack,
+                                onRestAfterRelease: this.boundRestAfterReleaseHandler,
+                                isActive: dragState !== INACTIVE,
+                                isReleased: dragState === RELEASED,
+                                springConfig: {
+                                    stiffness: config.stiffness,
+                                    damping: config.damping
+                                },
+                                sticky: config.sticky
+                            },
+                            function (transform, dragDisplacement) {
+                                var dragProps = collect({
+                                    dragState: applyState,
+                                    dragVelocity: velocity, // TODO: CAN IT BE DETERMINED BASED ON THE DRAG DISPLACEMENT??
+                                    dragDisplacement: dragDisplacement
+                                });
+
+                                return [react.createElement(_this3.statePublishingWrappedComponent, _extends({
+                                    ref: function ref(el) {
+                                        return _this3.el = el;
+                                    }
+                                }, _this3.props, snapProps, dragProps, {
+                                    isDragClone: false,
+                                    key: 'static-version'
+                                })), dragState !== INACTIVE ? reactDom.createPortal(react.createElement(
+                                    SpringRendererApplier,
+                                    {
+                                        draggableCenterInBorderBoxCoordinates: _this3.DOMElementHelper.getCenterInBorderBoxCoordinates(),
+                                        contextSize: _this3.props.dragSnapContext.getSize(),
+                                        transform: transform,
+                                        onRegrab: function onRegrab(e) {
+                                            return _this3.pointerTracker.track(e);
+                                        },
+                                        isVisible: [DRAGGED, RELEASED].includes(dragState),
+                                        key: 'dragged-version'
+                                    },
+                                    react.createElement(
+                                        StyleEnforcer,
+                                        { DOMElementHelper: _this3.DOMElementHelper },
+                                        react.createElement(_this3.stateSubscribingWrappedComponent, _extends({}, _this3.props, snapProps, dragProps, {
+                                            isDragClone: true
+                                        }))
+                                    )
+                                ), _this3.props.dragSnapContext.getDragContainerDOMElement()) : null];
+                            }
+                        )
+                    );
+                }
+            }]);
+            return Draggable;
+        }(react.Component);
+
+        Draggable.propTypes = {
+            draggingDisabled: propTypes.bool,
+            /* eslint-disable-next-line react/forbid-prop-types, react/require-default-props */
+            dragData: propTypes.any,
+            snapBack: propTypes.bool,
+            /* eslint-disable-next-line react/forbid-prop-types */
+            dragSnapContext: propTypes.object.isRequired
+        };
+
+        Draggable.defaultProps = {
+            draggingDisabled: false,
+            snapBack: true
+        };
+
+        // Injecting context as a prop so it can be accessed outside the render function in the draggable
+        var DraggableWithContext = function DraggableWithContext(props) {
+            return react.createElement(
+                MainContext.Consumer,
+                null,
+                function (context) {
+                    return react.createElement(Draggable, _extends({ dragSnapContext: context }, props));
+                }
+            );
+        };
+
+        DraggableWithContext.displayName = 'makeDraggable(' + reactUtils.getComponentDisplayName(WrappedComponent) + ')';
+
+        return DraggableWithContext;
+    };
+}
+
+var createSnapMatrix = function createSnapMatrix(snapTargetMatrix, snapTransform, snapTargetDOMElementHelper, draggableDOMElementHelper) {
+    // Extract properties from snapTarget's matrix so we can add then (independently) with the equivalent values
+    // from the snapTransform. After this addition has been done, we will convert back to matrix form
+    var _qrDecompose = qrDecompose(snapTargetMatrix),
+        skewX = _qrDecompose.skewX,
+        rotate = _qrDecompose.rotate,
+        scaleX = _qrDecompose.scaleX,
+        scaleY = _qrDecompose.scaleY;
+
+    var snapTargetScaledSize = snapTargetDOMElementHelper.getScaledSize(scaleX, scaleY);
+    var currentScaleX = draggableDOMElementHelper.getSize().width / snapTargetScaledSize.width;
+    var currentScaleY = draggableDOMElementHelper.getSize().height / snapTargetScaledSize.height;
+
+    var scalingMatrix = scale(snapTransform.scaleX / currentScaleX, snapTransform.scaleY / currentScaleY);
+
+    var rotationMatrix = rotateDEG(snapTransform.rotate + rotate);
+
+    // The snapTransform's scaling will impact that translation and skew (but leave rotation unaffected)
+    var snapTransformScalingMatrix = scale(snapTransform.scaleX, snapTransform.scaleY);
+
+    var skewMatrix = skew(skewX + snapTransform.skewX, snapTransform.skewY);
+    // Create a translation matrix taking the snap transform's scaling (in x and y directions) into account.
+    var localTranslationMatrix = translate(snapTransform.x / scaleX, snapTransform.y / scaleY);
+    // Extract the translation part and create a translation only matrix
+    var translationMatrix = translationOnly(transformMultiple(snapTargetMatrix, localTranslationMatrix, snapTransformScalingMatrix));
+
+    // Merge all matrices together into one and return
+    return transformMultiple(translationMatrix, rotationMatrix, scalingMatrix, skewMatrix);
+};
+
+var isPercentage = function isPercentage(value) {
+    return typeof value === 'string' && value.slice(-1) === '%';
+};
+
+function getFirstDefinedValue() {
+    var firstDefinedValue = void 0;
+
+    for (var _len = arguments.length, values = Array(_len), _key = 0; _key < _len; _key++) {
+        values[_key] = arguments[_key];
+    }
+
+    values.some(function (value) {
+        if (!isNullOrUndefined(value)) {
+            firstDefinedValue = value;
+            return true;
+        }
+
+        return false;
+    });
+
+    return firstDefinedValue;
+}
+
+var TRANSFORM_PROPS = ['x', 'y', 'rotate', 'scaleX', 'scaleY', 'skewX', 'skewY'];
+
+/*
+* Accepts a (partial or complete) transform, and returns an equivalent, completed transform in a normalized format.
+* If the given transform was incomplete, default values will be use for the omitted properties.
+*
+* The normalized transform format is an object with the following properties:
+*
+* - x: number             (default: 0)
+* - y: number             (default: 0)
+* - scaleX: number        (default: ratio betweens draggable's width and snapTarget's width)
+* - scaleY: number        (default: ratio betweens draggable's height and snapTarget's height)
+* - rotate: number        (default: 0)
+* - skewX: number         (default: 0)
+* - skewY: number         (default: 0)
+* - customSnapProps: any  (default: {})
+*
+* Valid input:
+* The input transform can have any number of the properties listed below specified. In addition note that:
+* - translateX can be used as an alias for x and translateY can be used as an alias for y
+* - x and y (and translateX and translateY) can be percentages encoded as string, e.g. '50%'.
+*   The percentage is based on the width/height of the snapTarget
+* - scale can be used to set scaleX and scaleY to the same value in one go
+*/
+function normalizeTransform(inputTransform, draggableScaledSize, snapTargetScaledSize) {
+    var normalizedTransform = {};
+    normalizedTransform.x = getFirstDefinedValue(inputTransform.x, inputTransform.translateX, 0);
+    normalizedTransform.y = getFirstDefinedValue(inputTransform.y, inputTransform.translateY, 0);
+    normalizedTransform.rotate = getFirstDefinedValue(inputTransform.rotate, 0);
+    normalizedTransform.scaleX = getFirstDefinedValue(inputTransform.scaleX, inputTransform.scale, draggableScaledSize.width / snapTargetScaledSize.width);
+    normalizedTransform.scaleY = getFirstDefinedValue(inputTransform.scaleY, inputTransform.scale, draggableScaledSize.height / snapTargetScaledSize.height);
+    normalizedTransform.skewX = getFirstDefinedValue(inputTransform.skewX, 0);
+    normalizedTransform.skewY = getFirstDefinedValue(inputTransform.skewY, 0);
+    normalizedTransform.customSnapProps = getFirstDefinedValue(inputTransform.customSnapProps, {});
+
+    normalizedTransform.x = isPercentage(normalizedTransform.x) ? parseFloat(normalizedTransform.x) / 100 * snapTargetScaledSize.width : normalizedTransform.x;
+
+    normalizedTransform.y = isPercentage(normalizedTransform.y) ? parseFloat(normalizedTransform.y) / 100 * snapTargetScaledSize.height : normalizedTransform.y;
+
+    TRANSFORM_PROPS.forEach(function (p) {
+        invariant_1$2(isNumber(normalizedTransform[p]), 'Invalid property ' + p + ' in transform ' + inputTransform + ': ' + inputTransform[p]);
+    });
+
+    return normalizedTransform;
+}
+
+var arrayUtils = {
+    toArray: function toArray(val) {
+        return isArray(val) ? val : [val];
+    }
+};
+
+var isPercentageString = function isPercentageString(value) {
+    return typeof value === 'string' && value.slice(-1) === '%';
+};
+
+var parsePercentageString = function parsePercentageString(value) {
+    var percentage = parseFloat(value);
+
+    if (Number.isNaN(percentage)) {
+        throw new Error('invalid-percentage');
+    }
+
+    return percentage;
+};
+
+var always = function always() {
+    return true;
+};
+var never = function never() {
+    return false;
+};
+
+var isCenterOverTarget = function isCenterOverTarget(_ref, _ref2) {
+    var transform = _ref.transform;
+    var width = _ref2.width,
+        height = _ref2.height;
+    var x = transform.x,
+        y = transform.y;
+
+    return x > -width / 2 && x < width / 2 && y > -height / 2 && y < height / 2;
+};
+
+var isCenterWithinRadius = function isCenterWithinRadius(radius, hysteresisRadius) {
+    return function (_ref3, _ref4) {
+        var transform = _ref3.transform,
+            isSnappingToThisTarget = _ref3.isSnappingToThisTarget;
+        var width = _ref4.width,
+            height = _ref4.height;
+        var x = transform.x,
+            y = transform.y;
+
+        var radiusToApply = isSnappingToThisTarget && hysteresisRadius ? hysteresisRadius : radius;
+
+        if (isPercentageString(radiusToApply)) {
+            var diagonal = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
+            var percentage = parsePercentageString(radiusToApply);
+
+            radiusToApply = diagonal / 2 / 100 * percentage;
+        }
+
+        return distance$1({ x: x, y: y }) < radiusToApply;
+    };
+};
+
+var isNoOtherDraggableSnapping = function isNoOtherDraggableSnapping(_ref5, _, _ref6) {
+    var id = _ref5.id;
+    var draggedItems = _ref6.draggedItems;
+    return !draggedItems.filter(function (d) {
+        return d.id !== id;
+    }).some(function (d) {
+        return d.isSnappingToThisTarget;
+    });
+};
+
+/*
+ * Usually a target doesn't need to worry about whether or not the draggable is snapping to another target.
+ * It is only possible to for draggables to snap to one target at a time, and if multiple targets want the same
+ * draggable to snap simultaneously, the conflict is resolved based on the targets' snap priorities. The following snap
+ * criteria function allows a target to be 'polite', so that it doesn't take over a draggable that is already
+ * (was in previous 'frame') snapping to another target with a lower snap priority.
+ */
+var draggableIsNotSnappingToOtherTarget = function draggableIsNotSnappingToOtherTarget(_ref7) {
+    var isSnappingToOtherTarget = _ref7.isSnappingToOtherTarget;
+    return !isSnappingToOtherTarget;
+};
+
+var isDragDataProp = function isDragDataProp(prop, value) {
+    return function (_ref8) {
+        var dragData = _ref8.dragData;
+        return arrayUtils.toArray(value).indexOf(dragData[prop]) > -1;
+    };
+};
+
+var SnapCriteria = {
+    always: always,
+    never: never,
+    isCenterOverTarget: isCenterOverTarget,
+    isCenterWithinRadius: isCenterWithinRadius,
+    isDragDataProp: isDragDataProp,
+    isNoOtherDraggableSnapping: isNoOtherDraggableSnapping,
+    draggableIsNotSnappingToOtherTarget: draggableIsNotSnappingToOtherTarget
+};
+
+var noSnapping = function noSnapping(_ref) {
+    var transform = _ref.transform;
+    return transform;
+};
+
+var snapAllButScale = function snapAllButScale(_ref2) {
+    var transform = _ref2.transform;
+    return {
+        x: 0,
+        y: 0,
+        scaleX: transform.scaleX,
+        scaleY: transform.scaleY,
+        skewX: 0,
+        skewY: 0,
+        rotate: 0
+    };
+};
+
+var snapAll = function snapAll() {
+    return { scale: 1 };
+};
+var snapPosition = function snapPosition(_ref3) {
+    var transform = _ref3.transform;
+    return _extends({}, transform, { x: 0, y: 0 });
+};
+var snapRotation = function snapRotation(_ref4) {
+    var transform = _ref4.transform;
+    return _extends({}, transform, { rotate: 0 });
+};
+var snapScale = function snapScale(_ref5) {
+    var transform = _ref5.transform;
+    return _extends({}, transform, { scale: 1 });
+};
+var snapPositionAndRotation = function snapPositionAndRotation(_ref6) {
+    var transform = _ref6.transform;
+    return _extends({}, transform, { x: 0, y: 0, rotate: 0
+    });
+};
+var snapPositionAndScale = function snapPositionAndScale(_ref7) {
+    var transform = _ref7.transform;
+    return _extends({}, transform, { x: 0, y: 0, scale: 1
+    });
+};
+var snapScaleAndRotation = function snapScaleAndRotation(_ref8) {
+    var transform = _ref8.transform;
+    return _extends({}, transform, { scale: 1, rotate: 0 });
+};
+
+var snapProportionally = function snapProportionally(denominator) {
+    var innerRadius = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    return function (draggable) {
+        var transform = draggable.transform;
+        var x = transform.x,
+            y = transform.y,
+            scaleX = transform.scaleX,
+            scaleY = transform.scaleY,
+            skewX = transform.skewX,
+            skewY = transform.skewY,
+            rotate = transform.rotate;
+
+        var dist = distance$1({ x: x, y: y });
+
+        if (dist < innerRadius) {
+            return snapAll(draggable);
+        }
+        return {
+            x: x * dist / denominator,
+            y: y * dist / denominator,
+            scaleX: scaleX + (1 - scaleX) * (1 - dist / denominator),
+            scaleY: scaleY + (1 - scaleY) * (1 - dist / denominator),
+            skewX: skewX * dist / denominator,
+            skewY: skewY * dist / denominator,
+            rotate: rotate * dist / denominator
+        };
+    };
+};
+
+var snapRotationProportionally = function snapRotationProportionally(denominator) {
+    var innerRadius = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    return function (draggable) {
+        var transform = draggable.transform;
+
+        var dist = distance$1(transform);
+
+        return dist < innerRadius ? snapAllButScale(draggable) : _extends({}, transform, { rotate: transform.rotate * dist / denominator });
+    };
+};
+
+var snapScaleProportionally = function snapScaleProportionally(denominator) {
+    var innerRadius = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    return function (draggable) {
+        var transform = draggable.transform;
+        var x = transform.x,
+            y = transform.y,
+            scaleX = transform.scaleX,
+            scaleY = transform.scaleY;
+
+        var dist = distance$1({ x: x, y: y });
+
+        return dist < innerRadius ? snapAll(draggable) : _extends({}, draggable.transform, {
+            scaleX: scaleX + (1 - scaleX) * (1 - dist / denominator),
+            scaleY: scaleY + (1 - scaleY) * (1 - dist / denominator)
+        });
+    };
+};
+
+var snapScaleAndRotationProportionally = function snapScaleAndRotationProportionally(denominator) {
+    var innerRadius = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    return function (draggable) {
+        var transform = draggable.transform;
+        var x = transform.x,
+            y = transform.y,
+            scaleX = transform.scaleX,
+            scaleY = transform.scaleY,
+            rotate = transform.rotate;
+
+        var dist = distance$1({ x: x, y: y });
+
+        return dist < innerRadius ? snapAll(draggable) : _extends({}, draggable.transform, {
+            scaleX: scaleX + (1 - scaleX) * (1 - dist / denominator),
+            scaleY: scaleY + (1 - scaleY) * (1 - dist / denominator),
+            rotate: rotate * dist / denominator
+        });
+    };
+};
+
+var withCustomSnapProps = function withCustomSnapProps(_snapTransform, _customSnapProps) {
+    return function () {
+        var snapTransform = isFunction(_snapTransform) ? _snapTransform.apply(undefined, arguments) : _snapTransform;
+        var customSnapProps = isFunction(_customSnapProps) ? _customSnapProps.apply(undefined, arguments) : _customSnapProps;
+        return _extends({}, snapTransform, { customSnapProps: customSnapProps });
+    };
+};
+
+var SnapTransformers = {
+    snapAllButScale: snapAllButScale,
+    snapAll: snapAll,
+    noSnapping: noSnapping,
+    snapPosition: snapPosition,
+    snapRotation: snapRotation,
+    snapScale: snapScale,
+    snapPositionAndRotation: snapPositionAndRotation,
+    snapPositionAndScale: snapPositionAndScale,
+    snapScaleAndRotation: snapScaleAndRotation,
+    snapProportionally: snapProportionally,
+    snapRotationProportionally: snapRotationProportionally,
+    snapScaleProportionally: snapScaleProportionally,
+    snapScaleAndRotationProportionally: snapScaleAndRotationProportionally,
+    withCustomSnapProps: withCustomSnapProps
+};
+
+var defaultConfig$1 = {
+    snapCriteria: SnapCriteria.isCenterWithinRadius('150%'),
+    snapTransform: SnapTransformers.snapAllButScale
+};
+
+var normalizeSnapTargetConfig = function normalizeSnapTargetConfig() {
+    var customConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    var config = _extends({}, defaultConfig$1, customConfig);
+    config.dragSnapCriteria = config.dragSnapCriteria || config.snapCriteria;
+    config.releaseSnapCriteria = config.releaseSnapCriteria || config.snapCriteria;
+    config.dragSnapTransform = config.dragSnapTransform || config.snapTransform;
+    config.releaseSnapTransform = config.releaseSnapTransform || config.snapTransform;
+
+    /* eslint-disable max-len */
+    invariant_1$2(isFunction(config.dragSnapCriteria) || isArray(config.dragSnapCriteria) && config.dragSnapCriteria.every(isFunction), 'Invalid property \'dragSnapCriteria\' in snapTarget config. Must be a function or an array of functions. Was: ' + config.dragSnapCriteria);
+
+    invariant_1$2(isFunction(config.releaseSnapCriteria) || isArray(config.releaseSnapCriteria) && config.releaseSnapCriteria.every(isFunction), 'Invalid property \'releaseSnapCriteria\' in snapTarget config. Must be a function or an array of functions. Was: ' + config.releaseSnapCriteria);
+
+    invariant_1$2(isFunction(config.dragSnapTransform) || isObject$1(config.dragSnapTransform), 'Invalid property \'dragSnapTransform\' in snapTarget config. Must be a function or an object. Was: ' + config.dragSnapTransform);
+
+    invariant_1$2(isFunction(config.releaseSnapTransform) || isObject$1(config.releaseSnapTransform), 'Invalid property \'releaseSnapTransform\' in snapTarget config. Must be a function or an object. Was: ' + config.releaseSnapTransform);
+    /* eslint-enable max-len */
+
+    return config;
+};
+
+var noProps$1 = function noProps() {};
+
+var extractStaticProps = function extractStaticProps(draggableDescriptor) {
+    return {
+        id: draggableDescriptor.id,
+        dragData: draggableDescriptor.dragData
+    };
+};
+
+var extractLowFrequencyProps = function extractLowFrequencyProps(draggableDescriptor) {
+    return {
+        dragState: draggableDescriptor.dragState,
+        isSnappingToThisTarget: draggableDescriptor.isSnappingToThisTarget,
+        isSnappingToOtherTarget: draggableDescriptor.isSnappingToOtherTarget
+    };
+};
+
+var staticProps = function staticProps(draggableDescriptors) {
+    return draggableDescriptors.map(extractStaticProps);
+};
+
+var staticAndLowFrequencyProps$1 = function staticAndLowFrequencyProps(draggableDescriptors) {
+    return draggableDescriptors.map(function (draggableDescriptor) {
+        return _extends({}, extractStaticProps(draggableDescriptor), extractLowFrequencyProps(draggableDescriptor));
+    });
+};
+
+var allProps$1 = function allProps(draggableDescriptors) {
+    return draggableDescriptors;
+};
+
+var SnapTargetCollectors = {
+    noProps: noProps$1,
+    staticProps: staticProps,
+    staticAndLowFrequencyProps: staticAndLowFrequencyProps$1,
+    allProps: allProps$1
+};
+
+var sort = {
+    byId: function byId(_ref, _ref2) {
+        var a = _ref.id;
+        var b = _ref2.id;
+        return a > b ? -1 : 1;
+    }
+};
+
+var SnapTargetContext = react.createContext({});
+
+var SnapTargetPropTypes = {
+    snapPriority: propTypes.oneOfType([propTypes.number, propTypes.func]),
+    /* eslint-disable react/require-default-props */
+    dragSnapPriority: propTypes.oneOfType([propTypes.number, propTypes.func]),
+    releaseSnapPriority: propTypes.oneOfType([propTypes.number, propTypes.func]),
+    externalTransformation: CustomPropTypes.transform,
+    /* eslint-enable react/require-default-props */
+    onDropStart: propTypes.func,
+    onDropComplete: propTypes.func,
+    onDropCancel: propTypes.func,
+    easyEscape: propTypes.oneOfType([propTypes.bool, propTypes.func]),
+    continuousUpdate: propTypes.bool,
+    /* eslint-disable-next-line react/forbid-prop-types */
+    dragSnapContext: propTypes.object.isRequired
+};
+
+var LIBRARY_PROPS = Object.keys(SnapTargetPropTypes);
+
+function configure$1() {
+    var customConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var collect = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : SnapTargetCollectors.staticAndLowFrequencyProps;
+
+    var config = normalizeSnapTargetConfig(customConfig);
+
+    return function makeSnapTarget(WrappedComponent) {
+        var SnapTarget = function (_React$Component) {
+            inherits(SnapTarget, _React$Component);
+
+            function SnapTarget(props) {
+                classCallCheck(this, SnapTarget);
+
+                var _this = possibleConstructorReturn(this, (SnapTarget.__proto__ || Object.getPrototypeOf(SnapTarget)).call(this, props));
+
+                _this.draggedItems = [];
+                _this.baseExternalTransformation = null;
+                _this.internalTransformation = null;
+                _this.matrix = null;
+                _this.size = null;
+                _this.DOMElementHelper = new DOMElementHelper();
+
+                _this.state = {
+                    collectedDragProps: _this.collectDragProps().collectedDragProps
+                };
+
+                // Convert to class based component, if functional.
+                // Functional components can't have refs since. We need refs
+                _this.ClassBasedWrappedComponent = makeClassBasedComponent(WrappedComponent);
+                _this.id = guidUtils.createGuid();
+
+                _this.boundSetInternalTransformation = _this.setInternalTransformation.bind(_this);
+                return _this;
+            }
+
+            createClass(SnapTarget, [{
+                key: 'componentDidMount',
+                value: function componentDidMount() {
+                    this.DOMElementHelper.updateElement(reactDom.findDOMNode(this.el));
+
+                    if (this.props.dragSnapContext.registerAsSnapTarget) {
+                        this.props.dragSnapContext.registerAsSnapTarget(this.id, this);
+                    } else {
+                        throw new Error('Not in a drag and snap context!');
+                    }
+                }
+            }, {
+                key: 'componentWillUnmount',
+                value: function componentWillUnmount() {
+                    this.props.dragSnapContext.unregisterAsSnapTarget(this.id);
+                }
+            }, {
+                key: 'onDropEvent',
+                value: function onDropEvent(type, draggableDescriptor, globalSnapMatrix) {
+                    var snapTargetSpecificDraggableDescriptor = this.makeSnapTargetSpecific(draggableDescriptor);
+
+                    switch (type) {
+                        case 'start':
+                            this.props.onDropStart(snapTargetSpecificDraggableDescriptor, this.getSelfDescriptor(), qrDecompose(globalSnapMatrix)); // TODO: FIGURE OUT IF THIS SHOULD INFACT BE GLOABEL? PROBABLY NOT!!!
+                            break;
+                        case 'complete':
+                            this.props.onDropComplete(snapTargetSpecificDraggableDescriptor, this.getSelfDescriptor());
+                            break;
+                        case 'cancel':
+                            this.props.onDropCancel(snapTargetSpecificDraggableDescriptor, this.getSelfDescriptor());
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }, {
+                key: 'getMatrix',
+                value: function getMatrix() {
+                    if (!this.matrix) {
+                        this.matrix = getTransformationMatrix(this.DOMElementHelper.getElement());
+                        this.baseExternalTransformation = this.props.externalTransformation;
+                    }
+
+                    var externalDelta = this.props.externalTransformation ? deltaMatrix(this.baseExternalTransformation, this.props.externalTransformation) : identity();
+
+                    var internalDelta = this.internalTransformation ? deltaMatrix({
+                        x: 0, y: 0, rotate: 0, skewX: 0, scale: 1
+                    }, this.internalTransformation) : identity();
+
+                    return transformMultiple(this.matrix, externalDelta, internalDelta);
+                }
+            }, {
+                key: 'getSize',
+                value: function getSize() {
+                    // If size is queried before first render, just report 0 size
+                    return this.DOMElementHelper.getSizeOrDefault({ width: 0, height: 0 });
+                }
+            }, {
+                key: 'getScaledSize',
+                value: function getScaledSize() {
+                    var size = this.getSize();
+
+                    var _qrDecompose = qrDecompose(this.getMatrix()),
+                        scaleX = _qrDecompose.scaleX,
+                        scaleY = _qrDecompose.scaleY;
+
+                    return {
+                        width: size.width * scaleX,
+                        height: size.height * scaleY
+                    };
+                }
+            }, {
+                key: 'getProps',
+                value: function getProps() {
+                    var collectedDragProps = this.state.collectedDragProps;
+
+
+                    return isArray(collectedDragProps) ? _extends({}, shallowCloneExcluding(this.props, LIBRARY_PROPS), { draggedItems: collectedDragProps }) : _extends({}, shallowCloneExcluding(this.props, LIBRARY_PROPS), collectedDragProps);
+                }
+            }, {
+                key: 'getSelfDescriptor',
+                value: function getSelfDescriptor() {
+                    return _extends({}, this.getSize(), { props: this.getProps() });
+                }
+            }, {
+                key: 'getParams',
+                value: function getParams(draggableDescriptor) {
+                    return [this.makeSnapTargetSpecific(draggableDescriptor), this.getSelfDescriptor(), { draggedItems: this.draggedItems }]; // TODO: SHOULD WE SOMEHOW INJECT THE draggableToTarget and targetToDraggable matrices here?
+                }
+            }, {
+                key: 'getSnapPriority',
+                value: function getSnapPriority(dragState, draggableDescriptor) {
+                    var _props = this.props,
+                        releaseSnapPriority = _props.releaseSnapPriority,
+                        dragSnapPriority = _props.dragSnapPriority,
+                        commonPriority = _props.snapPriority;
+
+                    var snapPriority = (dragState === DRAG_STATES.RELEASED ? releaseSnapPriority : dragSnapPriority) || commonPriority;
+                    var params = this.getParams(draggableDescriptor);
+                    var priority = isFunction(snapPriority) ? snapPriority.apply(undefined, toConsumableArray(params)) : snapPriority;
+
+                    invariant_1$2(isNumber(priority), 'snapPriority must be a number or a function that returns a number.');
+                    invariant_1$2(priority >= 1, 'SnapPriority should be 1 (highest priority) or larger. Was ' + priority);
+
+                    return priority;
+                }
+            }, {
+                key: 'getSnapping',
+                value: function getSnapping(dragState, draggableDescriptor) {
+                    var transform = dragState === DRAG_STATES.RELEASED ? config.releaseSnapTransform : config.dragSnapTransform;
+                    var params = this.getParams(draggableDescriptor);
+                    var snapTransform = isFunction(transform) ? transform.apply(undefined, toConsumableArray(params)) : transform;
+
+                    var normalizedSnapTransform = normalizeTransform(snapTransform, draggableDescriptor.scaledSize, this.getScaledSize());
+
+                    var snapMatrix = createSnapMatrix(this.getMatrix(), normalizedSnapTransform, this.DOMElementHelper, draggableDescriptor.DOMElementHelper);
+
+                    var _transformPosition = transformPosition(this.getMatrix(), extractTranslation(draggableDescriptor.matrix)),
+                        x = _transformPosition.x,
+                        y = _transformPosition.y;
+
+                    var isPositionSnapped = x !== normalizedSnapTransform.x || y !== normalizedSnapTransform.y;
+
+                    return {
+                        matrix: snapMatrix,
+                        customSnapProps: normalizedSnapTransform.customSnapProps,
+                        isPositionSnapped: isPositionSnapped,
+                        snapTargetId: this.id
+                    };
+                }
+            }, {
+                key: 'getId',
+                value: function getId() {
+                    return this.id;
+                }
+            }, {
+                key: 'setInternalTransformation',
+                value: function setInternalTransformation(internalTransformation) {
+                    this.internalTransformation = internalTransformation;
+                }
+            }, {
+                key: 'updateItem',
+                value: function updateItem(draggableDescriptor) {
+                    var localDragStateDescriptor = this.makeSnapTargetSpecific(draggableDescriptor);
+                    this.draggedItems = this.draggedItems.filter(function (p) {
+                        return p.id !== draggableDescriptor.id;
+                    }).concat(localDragStateDescriptor);
+                    this.updateDragProps();
+                }
+            }, {
+                key: 'removeItem',
+                value: function removeItem(id) {
+                    this.draggedItems = this.draggedItems.filter(function (d) {
+                        return d.id !== id;
+                    });
+                    this.updateDragProps();
+                }
+            }, {
+                key: 'updateDragProps',
+                value: function updateDragProps() {
+                    var _collectDragProps = this.collectDragProps(this.state.collectedDragProps),
+                        collectedDragProps = _collectDragProps.collectedDragProps,
+                        hasChanged = _collectDragProps.hasChanged;
+
+                    if (hasChanged) {
+                        this.setState({ collectedDragProps: collectedDragProps });
+                    }
+                }
+            }, {
+                key: 'allowsEasyEscape',
+                value: function allowsEasyEscape(draggableDescriptor) {
+                    var easyEscape = this.props.easyEscape;
+
+                    var params = this.getParams(draggableDescriptor);
+                    return isFunction(easyEscape) ? easyEscape.apply(undefined, toConsumableArray(params)) : easyEscape;
+                }
+            }, {
+                key: 'collectDragProps',
+                value: function collectDragProps(cur) {
+                    var items = this.draggedItems || [];
+                    items.sort(sort.byId);
+
+                    var next = collect(items, _extends({}, this.getSize(), {
+                        props: shallowCloneExcluding(this.props, LIBRARY_PROPS)
+                    }));
+
+                    invariant_1$2(isObject$1(next) || isArray(next) && next.length === items.length, 'collect function must return an object or an array of objects equal to the number of dragged items');
+
+                    var hasChanged = isNullOrUndefined(cur) || isObject$1(next) && !shallowEqual$1(cur, next) || isArray(next) && (cur.length !== next.length || next.some(function (o, i) {
+                        return !shallowEqual$1(o, cur[i]);
+                    }));
+
+                    return {
+                        hasChanged: hasChanged,
+                        collectedDragProps: next
+                    };
+                }
+            }, {
+                key: 'isSnapCriteriaMet',
+                value: function isSnapCriteriaMet(dragState, draggableDescriptor) {
+                    var criteria = arrayUtils.toArray(dragState === DRAG_STATES.RELEASED ? config.releaseSnapCriteria : config.dragSnapCriteria);
+                    var params = this.getParams(draggableDescriptor);
+                    return criteria.every(function (criterium) {
+                        return criterium.apply(undefined, toConsumableArray(params));
+                    });
+                }
+
+                // Converts the descriptor, velocity and cursor point from the global (window) coordinate system,
+                // to the local coordinate system of the snap taget.
+
+            }, {
+                key: 'makeSnapTargetSpecific',
+                value: function makeSnapTargetSpecific(_ref) {
+                    var id = _ref.id,
+                        dragState = _ref.dragState,
+                        dragData = _ref.dragData,
+                        matrix = _ref.matrix,
+                        scaledSize = _ref.scaledSize,
+                        velocity = _ref.velocity,
+                        cursorPosition = _ref.cursorPosition,
+                        snapTargetId = _ref.snapTargetId;
+
+                    var _qrDecompose2 = qrDecompose(matrix),
+                        x = _qrDecompose2.x,
+                        y = _qrDecompose2.y,
+                        rotate = _qrDecompose2.rotate,
+                        skewX = _qrDecompose2.skewX,
+                        skewY = _qrDecompose2.skewY;
+
+                    var localPosition = transformPosition(this.getMatrix(), { x: x, y: y });
+                    var localRotation = transformRotation(this.getMatrix(), rotate);
+                    var localScale = transformScale(this.getScaledSize(), scaledSize);
+                    var localSkew = transformSkew(this.getMatrix(), { x: skewX, y: skewY });
+                    var isSnappingToThisTarget = this.id === snapTargetId;
+                    var isSnappingToOtherTarget = !isNullOrUndefined(snapTargetId) && !isSnappingToThisTarget;
+
+                    var localTransform = _extends({
+                        rotate: localRotation
+                    }, localPosition, localScale, localSkew);
+
+                    return {
+                        id: id,
+                        dragState: dragState,
+                        dragData: dragData,
+                        transform: localTransform,
+                        distance: distance$1({ x: localTransform.x, y: localTransform.y }),
+                        velocity: velocity ? transformVelocity(this.getMatrix(), velocity) : null,
+                        cursorPosition: cursorPosition ? transformPosition(this.getMatrix(), cursorPosition) : null,
+                        isSnappingToThisTarget: isSnappingToThisTarget,
+                        isSnappingToOtherTarget: isSnappingToOtherTarget
+                    };
+                }
+            }, {
+                key: 'continuousUpdateIfEnabled',
+                value: function continuousUpdateIfEnabled() {
+                    if (this.props.continuousUpdate) {
+                        this.update();
+                    }
+                }
+            }, {
+                key: 'update',
+                value: function update() {
+                    this.matrix = null; // Invalidate the matrix, so it will be recalculated next time it is needed
+                    this.DOMElementHelper.refresh();
+                }
+            }, {
+                key: 'render',
+                value: function render() {
+                    var _this2 = this;
+
+                    return react.createElement(
+                        SnapTargetContext.Provider,
+                        {
+                            value: {
+                                setInternalTransformation: this.boundSetInternalTransformation
+                            }
+                        },
+                        react.createElement(this.ClassBasedWrappedComponent, _extends({}, this.getProps(), { ref: function ref(el) {
+                                return _this2.el = el;
+                            } }))
+                    );
+                }
+            }]);
+            return SnapTarget;
+        }(react.Component);
+
+        SnapTarget.propTypes = SnapTargetPropTypes;
+
+        SnapTarget.defaultProps = {
+            onDropStart: function onDropStart() {},
+            onDropComplete: function onDropComplete() {},
+            onDropCancel: function onDropCancel() {},
+            easyEscape: false,
+            continuousUpdate: false,
+            snapPriority: SnapPriorities.distanceBasedWithOffset(100)
+        };
+
+        // Injecting context as a prop so it can be accessed outside the render function in the snapTarget
+        var SnapTargetWithContext = function SnapTargetWithContext(props) {
+            return react.createElement(
+                MainContext.Consumer,
+                null,
+                function (context) {
+                    return react.createElement(
+                        SnapTargetContext.Provider,
+                        null,
+                        react.createElement(SnapTarget, _extends({ dragSnapContext: context }, props))
+                    );
+                }
+            );
+        };
+
+        SnapTargetWithContext.displayName = 'makeSnapTarget(' + reactUtils.getComponentDisplayName(WrappedComponent) + ')';
+
+        return SnapTargetWithContext;
+    };
+}
+
 var transformProps = ['x', 'y', 'scaleX', 'scaleY', 'scale', 'skewX', 'skewY', 'rotate'];
 var defaultTransform = {
-	x: 0,
-	y: 0,
-	scale: 1,
-	skewX: 0,
-	skewY: 0,
-	rotate: 0
+    x: 0,
+    y: 0,
+    scale: 1,
+    skewX: 0,
+    skewY: 0,
+    rotate: 0
 };
 
 var InternalSnapTargetTransform = function (_React$Component) {
-	inherits(InternalSnapTargetTransform, _React$Component);
+    inherits(InternalSnapTargetTransform, _React$Component);
 
-	function InternalSnapTargetTransform(props) {
-		classCallCheck(this, InternalSnapTargetTransform);
+    function InternalSnapTargetTransform(props) {
+        classCallCheck(this, InternalSnapTargetTransform);
 
-		var _this = possibleConstructorReturn(this, (InternalSnapTargetTransform.__proto__ || Object.getPrototypeOf(InternalSnapTargetTransform)).call(this, props));
+        var _this = possibleConstructorReturn(this, (InternalSnapTargetTransform.__proto__ || Object.getPrototypeOf(InternalSnapTargetTransform)).call(this, props));
 
-		_this.transform = defaultTransform;
-		return _this;
-	}
+        _this.transform = defaultTransform;
+        return _this;
+    }
 
-	createClass(InternalSnapTargetTransform, [{
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(newProps) {
-			var _this2 = this;
-
-			if (transformProps.some(function (prop) {
-				return _this2.transform[prop] !== newProps[prop];
-			})) {
-				this.context.setInternalTransformation(shallowClone(newProps));
-				this.transform = shallowClone(newProps);
-			}
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var _props = this.props,
-			    children = _props.children,
-			    x = _props.x,
-			    y = _props.y,
-			    scale = _props.scale,
-			    scaleX = _props.scaleX,
-			    scaleY = _props.scaleY,
-			    rotate = _props.rotate,
-			    skewX = _props.skewX,
-			    skewY = _props.skewY;
+    /* eslint-disable camelcase */
 
 
-			var _scaleX = typeof scaleX !== 'undefined' ? 'scaleX(' + scaleX + ')' : '';
-			var _scaleY = typeof scaleY !== 'undefined' ? 'scaleY(' + scaleY + ')' : '';
+    createClass(InternalSnapTargetTransform, [{
+        key: 'UNSAFE_componentWillReceiveProps',
+        value: function UNSAFE_componentWillReceiveProps(newProps) {
+            var _this2 = this;
 
-			//Wrapped in extra (non moving) div to ensure that getBoundingClientRect isn't impacted by the transform
-			return react.createElement(
-				'div',
-				null,
-				react.createElement(
-					'div',
-					{
-						style: {
-							transformOrigin: '50% 50%',
-							transform: '\n\t\t\t\t\t\t\ttranslate3d(' + x + 'px, ' + y + 'px, 0)\n\t\t\t\t\t\t\tscale(' + scale + ')\n\t\t\t\t\t\t\t' + _scaleX + '\n\t\t\t\t\t\t\t' + _scaleY + '\n\t\t\t\t\t\t\trotate(' + rotate + 'deg)\n\t\t\t\t\t\t\tskewX(' + skewX + 'deg)\n\t\t\t\t\t\t\tskewY(' + skewY + 'deg)\n\t\t\t\t\t\t'
-						}
-					},
-					children
-				)
-			);
-		}
-	}]);
-	return InternalSnapTargetTransform;
+            /* eslint-enable camelcase */
+            if (transformProps.some(function (prop) {
+                return _this2.transform[prop] !== newProps[prop];
+            })) {
+                this.props.context.setInternalTransformation(shallowClone(newProps));
+                this.transform = shallowClone(newProps);
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                children = _props.children,
+                x = _props.x,
+                y = _props.y,
+                scale = _props.scale,
+                scaleX = _props.scaleX,
+                scaleY = _props.scaleY,
+                rotate = _props.rotate,
+                skewX = _props.skewX,
+                skewY = _props.skewY;
+
+
+            var scaleXToApply = typeof scaleX !== 'undefined' ? 'scaleX(' + scaleX + ')' : '';
+            var scaleYToApply = typeof scaleY !== 'undefined' ? 'scaleY(' + scaleY + ')' : '';
+
+            // Wrapped in extra (non moving) div to ensure that getBoundingClientRect isn't
+            // impacted by the transform
+            return react.createElement(
+                'div',
+                null,
+                react.createElement(
+                    'div',
+                    {
+                        style: {
+                            transformOrigin: '50% 50%',
+                            transform: '\n                            translate3d(' + x + 'px, ' + y + 'px, 0)\n                            scale(' + scale + ')\n                            ' + scaleXToApply + '\n                            ' + scaleYToApply + '\n                            rotate(' + rotate + 'deg)\n                            skewX(' + skewX + 'deg)\n                            skewY(' + skewY + 'deg)\n                        '
+                        }
+                    },
+                    children
+                )
+            );
+        }
+    }]);
+    return InternalSnapTargetTransform;
 }(react.Component);
 
-InternalSnapTargetTransform.contextTypes = {
-	setInternalTransformation: propTypes.func.isRequired
-};
-
 InternalSnapTargetTransform.propTypes = {
-	x: propTypes.number,
-	y: propTypes.number,
-	scale: propTypes.number,
-	scaleX: propTypes.number,
-	scaleY: propTypes.number,
-	rotate: propTypes.number,
-	skewX: propTypes.number,
-	skewY: propTypes.number
+    x: propTypes.number,
+    y: propTypes.number,
+    scale: propTypes.number,
+    /* eslint-disable react/require-default-props */
+    scaleX: propTypes.number,
+    scaleY: propTypes.number,
+    /* eslint-enable react/require-default-props */
+    rotate: propTypes.number,
+    skewX: propTypes.number,
+    skewY: propTypes.number,
+    children: propTypes.oneOfType([propTypes.arrayOf(propTypes.node), propTypes.node]).isRequired,
+    context: propTypes.object.isRequired
 };
 
 InternalSnapTargetTransform.defaultProps = defaultTransform;
 
-//These match the presets from react-motion
-//TODO: ADD A FEW MORE. MAYBE A MUST MORE WOBBLE, AND A *VERY* STIFF
+var InternalSnapTargetTransformWithContext = function InternalSnapTargetTransformWithContext(props) {
+    return react.createElement(
+        SnapTargetContext.Consumer,
+        null,
+        function (context) {
+            return react.createElement(InternalSnapTargetTransform, _extends({ context: context }, props));
+        }
+    );
+};
+
+// These match the presets from react-motion
 
 // This proxy imports and reexports the react-drag-and-snap-libraries exports. All demos load the exports through
 // this proxy. Makes it easier to switch between having the demos use a production version of the library of the
@@ -25494,27 +25528,29 @@ InternalSnapTargetTransform.defaultProps = defaultTransform;
 var DraggableSquare = configure()(Square);
 
 var config1 = {
-	dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
-	dragSnapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.snapProportionally(200, 10), { borderRadius: 100 }),
-	releaseSnapCriteria: SnapCriteria.never
+    dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
+    dragSnapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.snapProportionally(200, 10), { borderRadius: 100 }),
+    releaseSnapCriteria: SnapCriteria.never
 };
 
 var config2 = {
-	releaseSnapCriteria: SnapCriteria.never
+    releaseSnapCriteria: SnapCriteria.never
 };
 
 var config3 = {
-	dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
-	dragSnapTransform: SnapTransformers.snapProportionally(200, 10),
-	releaseSnapCriteria: SnapCriteria.never
+    dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
+    dragSnapTransform: SnapTransformers.snapProportionally(200, 10),
+    releaseSnapCriteria: SnapCriteria.never
 };
 
-//const additions = {rotate: 25, skewX: 65, skewY: 0, x: 10, y: 10, width: 100, height: 160, scaleX: .4, scaleY: 1.6};
-var additions = { rotate: 0, skewX: 0, skewY: 20, x: 10, y: 10, scaleX: 1, scaleY: 1 };
+// const additions = {rotate: 25, skewX: 65, skewY: 0, x: 10, y: 10, width: 100, height: 160, scaleX: .4, scaleY: 1.6};
+var additions = {
+    rotate: 0, skewX: 0, skewY: 20, x: 10, y: 10, scaleX: 1, scaleY: 1
+};
 var config4 = {
-	dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
-	dragSnapTransform: additions,
-	releaseSnapCriteria: SnapCriteria.never
+    dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
+    dragSnapTransform: additions,
+    releaseSnapCriteria: SnapCriteria.never
 };
 
 var SnapTargetType1 = configure$1(config1, SnapTargetCollectors.allProps)(Target);
@@ -25523,290 +25559,221 @@ var SnapTargetType3 = configure$1(config3, SnapTargetCollectors.allProps)(Target
 var SnapTargetType4 = configure$1(config4, SnapTargetCollectors.allProps)(Target);
 
 var Container = function (_React$Component) {
-	inherits(Container, _React$Component);
+    inherits(Container, _React$Component);
 
-	function Container() {
-		classCallCheck(this, Container);
-		return possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).apply(this, arguments));
-	}
+    function Container() {
+        classCallCheck(this, Container);
+        return possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).apply(this, arguments));
+    }
 
-	createClass(Container, [{
-		key: 'render',
-		value: function render() {
-			var _this2 = this;
+    createClass(Container, [{
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
 
-			return react.createElement(
-				'div',
-				{
-					style: {
-						width: '100%',
-						height: '100%'
-					}
-				},
-				react.createElement(
-					'div',
-					{
-						style: {
-							position: 'absolute',
-							width: '100%',
-							height: '100%',
-							margin: '20px',
-							transform: 'rotate(0deg) scale(1)'
-						}
-					},
-					react.createElement(
-						DragSnapContext,
-						null,
-						react.createElement(DraggableSquare, null),
-						react.createElement(
-							'div',
-							{
-								style: {
-									position: 'absolute',
-									transform: 'translate(300px, 100px) skewX(-65deg) rotate(40deg)'
-								}
-							},
-							react.createElement(SnapTargetType1, { ref: function ref(el) {
-									return _this2.target1 = el;
-								} })
-						),
-						react.createElement(
-							'div',
-							{
-								style: {
-									position: 'absolute',
-									transform: 'translate(650px, 350px) rotate(35deg) scale(1.5) skewY(30deg)'
-								}
-							},
-							react.createElement(SnapTargetType2, { ref: function ref(el) {
-									return _this2.target2 = el;
-								} })
-						),
-						react.createElement(
-							'div',
-							{
-								style: {
-									position: 'absolute',
-									transform: 'translate(900px, 100px) skew(50deg)'
-								}
-							},
-							react.createElement(SnapTargetType3, { ref: function ref(el) {
-									return _this2.target3 = el;
-								} })
-						),
-						react.createElement(
-							'div',
-							{
-								style: {
-									position: 'absolute',
-									transform: 'translate(50px, 300px)'
-								}
-							},
-							react.createElement(
-								SnapTargetType4,
-								{ ref: function ref(el) {
-										return _this2.target4 = el;
-									} },
-								react.createElement('div', {
-									style: {
-										transform: 'translate(calc(' + additions.x + 'px - 50%), calc(' + additions.y + 'px - 50%)) rotate(' + additions.rotate + 'deg) skewX(' + additions.skewX + 'deg) skewY(' + additions.skewY + 'deg) scaleX(' + additions.scaleX + ') scaleY(' + additions.scaleY + ')',
-										display: 'inline-block',
-										position: 'absolute',
-										top: '50%',
-										left: '50%',
-										width: '250px',
-										height: '100px',
-										outline: '2px dotted gray'
-									},
-									ref: function ref(el) {
-										return _this2.inner = el;
-									}
-								})
-							)
-						)
-					)
-				)
-			);
-		}
-	}]);
-	return Container;
+            return react.createElement(
+                'div',
+                {
+                    style: {
+                        width: '100%',
+                        height: '100%'
+                    }
+                },
+                react.createElement(
+                    'div',
+                    {
+                        style: {
+                            position: 'absolute',
+                            width: '100%',
+                            height: '100%',
+                            margin: '20px',
+                            transform: 'rotate(0deg) scale(1)'
+                        }
+                    },
+                    react.createElement(
+                        DragSnapContext,
+                        null,
+                        react.createElement(DraggableSquare, null),
+                        react.createElement(
+                            'div',
+                            {
+                                style: {
+                                    position: 'absolute',
+                                    transform: 'translate(300px, 100px) skewX(-65deg) rotate(40deg)'
+                                }
+                            },
+                            react.createElement(SnapTargetType1, { ref: function ref(el) {
+                                    return _this2.target1 = el;
+                                } })
+                        ),
+                        react.createElement(
+                            'div',
+                            {
+                                style: {
+                                    position: 'absolute',
+                                    transform: 'translate(650px, 350px) rotate(35deg) scale(1.5) skewY(30deg)'
+                                }
+                            },
+                            react.createElement(SnapTargetType2, { ref: function ref(el) {
+                                    return _this2.target2 = el;
+                                } })
+                        ),
+                        react.createElement(
+                            'div',
+                            {
+                                style: {
+                                    position: 'absolute',
+                                    transform: 'translate(900px, 100px) skew(50deg)'
+                                }
+                            },
+                            react.createElement(SnapTargetType3, { ref: function ref(el) {
+                                    return _this2.target3 = el;
+                                } })
+                        ),
+                        react.createElement(
+                            'div',
+                            {
+                                style: {
+                                    position: 'absolute',
+                                    transform: 'translate(50px, 300px)'
+                                }
+                            },
+                            react.createElement(
+                                SnapTargetType4,
+                                { ref: function ref(el) {
+                                        return _this2.target4 = el;
+                                    } },
+                                react.createElement('div', {
+                                    style: {
+                                        transform: 'translate(calc(' + additions.x + 'px - 50%), calc(' + additions.y + 'px - 50%)) rotate(' + additions.rotate + 'deg) skewX(' + additions.skewX + 'deg) skewY(' + additions.skewY + 'deg) scaleX(' + additions.scaleX + ') scaleY(' + additions.scaleY + ')',
+                                        display: 'inline-block',
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        width: '250px',
+                                        height: '100px',
+                                        outline: '2px dotted gray'
+                                    },
+                                    ref: function ref(el) {
+                                        return _this2.inner = el;
+                                    }
+                                })
+                            )
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+    return Container;
 }(react.Component);
 
-/*
-import React, { Component } from 'react';
-import Square from './square';
-import Target from './target';
-import makeDraggable from './lib/make-draggable';
-import makeSnapTarget from './lib/make-snap-target';
-import DragSnapContext from './lib/drag-snap-context';
-import Criteria from './lib/defaults/default-snap-criteria';
-import {snapProportionally} from './lib/defaults/default-snap-transfomers';
-
-const DraggableSquare = makeDraggable()(Square);
-
-const config = {
-	snapCriteria: [
-		Criteria.isCenterWithinRadius(200),
-		Criteria.isDragDataProp('type', 'square')
-	],
-	snapTransform: snapProportionally(200, 10)
-};
-
-const SnapTarget = makeSnapTarget(config)(Target);
-
-class Container extends Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			counter: 0
-		};
-
-		setInterval(() => {
-			this.setState({counter: this.state.counter + 1})
-		}, 1000);
-	}
-
-	render() {
-		return (
-			<DragSnapContext>
-				<div style={{left: '200px', top: '100px', position: 'absolute', transform: 'scaleY(1.8) scaleX(0.6) rotate(15deg) ', transformOrigin: '50% 50%'}}>
-					<div style={{position: 'absolute', transform: 'scaleY(1.3) translateX(50px) rotate(2deg)', width: '400px', height: '350px', transformOrigin: '0% 50%'}}>
-						<div style={{display: 'inline-block', left: '110px', top: '50px', position: 'absolute', transform: 'skewX(0deg)  scaleX(0.8) translateX(-50px) rotate(0deg)', width: '400px', height: '300px'}}>
-							<DraggableSquare
-								counter={this.state.counter}
-								dragData={{type: 'square'}}
-								snapBack={true}
-							/>
-						</div>
-					</div>
-				</div>
-				<div
-					style={{
-						position: 'absolute',
-						left: '600px',
-						top: '200px',
-						transform: 'translate(50px, 150px) rotate(35deg) scale(1.5) skewY(30deg)'
-					}}
-				>
-					<SnapTarget
-						onDrop={(dragData) => console.log('This was dropped on me: ', dragData)}
-					/>
-				</div>
-			</DragSnapContext>
-		);
-	}
-}
-
-export default Container;
-*/
-
 var Avatar = function Avatar(_ref) {
-	var dragState = _ref.dragState,
-	    isTrapped = _ref.isTrapped,
-	    id = _ref.id,
-	    onClick = _ref.onClick;
-	return react.createElement('div', {
-		onClick: onClick,
-		className: 'avatar',
-		style: {
-			transform: 'scale(' + (dragState === 'dragged' || isTrapped ? .75 : 1) + ')',
-			backgroundImage: 'url(\'https://randomuser.me/api/portraits/women/' + id + '.jpg\')'
-		}
-	});
+    var dragState = _ref.dragState,
+        isTrapped = _ref.isTrapped,
+        id = _ref.id,
+        onClick = _ref.onClick;
+    return react.createElement('div', {
+        onClick: onClick,
+        className: 'avatar',
+        style: {
+            transform: 'scale(' + (dragState === 'dragged' || isTrapped ? 0.75 : 1) + ')',
+            backgroundImage: 'url(\'https://randomuser.me/api/portraits/women/' + id + '.jpg\')'
+        }
+    });
 };
 
-//{stiffness: 180, damping: 12} (wobbly gives a pretty nice effect, although more wobbly that fb)
-//{stiffness: 120, damping: 14} (gentle) is also alright...
-var config$1 = { stiffness: 120, damping: 14 }; //{stiffness: 170, damping: 14};
+// {stiffness: 180, damping: 12} (wobbly gives a pretty nice effect, although more wobbly that fb)
+// {stiffness: 120, damping: 14} (gentle) is also alright...
+var config$1 = { stiffness: 120, damping: 14 }; // {stiffness: 170, damping: 14};
 
 var DraggableAvatar = configure(config$1)(Avatar);
 
 var AvatarContainer = function AvatarContainer(_ref) {
-	var x = _ref.x,
-	    y = _ref.y,
-	    z = _ref.z,
-	    scale = _ref.scale,
-	    children = _ref.children,
-	    rotation = _ref.rotation,
-	    diameter = _ref.diameter;
-	return react.createElement(
-		'div',
-		{
-			className: 'avatar-container',
-			style: {
-				lineHeight: 0,
-				left: x - diameter / 2 + 'px',
-				top: y - diameter / 2 + 'px',
-				zIndex: z,
-				transform: 'rotate(' + rotation + 'deg) scale(' + scale + ')'
-			}
-		},
-		children
-	);
+    var x = _ref.x,
+        y = _ref.y,
+        z = _ref.z,
+        scale = _ref.scale,
+        children = _ref.children,
+        rotation = _ref.rotation,
+        diameter = _ref.diameter;
+    return react.createElement(
+        'div',
+        {
+            className: 'avatar-container',
+            style: {
+                lineHeight: 0,
+                left: x - diameter / 2 + 'px',
+                top: y - diameter / 2 + 'px',
+                zIndex: z,
+                transform: 'rotate(' + rotation + 'deg) scale(' + scale + ')'
+            }
+        },
+        children
+    );
 };
 
 AvatarContainer.propTypes = {
-	x: propTypes.number.isRequired,
-	y: propTypes.number.isRequired,
-	z: propTypes.number.isRequired,
-	scale: propTypes.number.isRequired,
-	children: propTypes.element.isRequired,
-	diameter: propTypes.number.isRequired
+    x: propTypes.number.isRequired,
+    y: propTypes.number.isRequired,
+    z: propTypes.number.isRequired,
+    scale: propTypes.number.isRequired,
+    children: propTypes.element.isRequired,
+    diameter: propTypes.number.isRequired
 };
 
 var isNumber$1 = function isNumber(n) {
-	return !isNaN(parseFloat(n)) && isFinite(n);
+    return !isNaN(parseFloat(n)) && isFinite(n);
 };
 
 var handleMissingProp$1 = function handleMissingProp(isRequired, propName, componentName) {
-	if (isRequired) {
-		return new Error('Missing required property ' + propName + ' in ' + componentName);
-	}
+    if (isRequired) {
+        return new Error('Missing required property ' + propName + ' in ' + componentName);
+    }
 
-	return null;
+    return null;
 };
 
 var createPoint2DPropType = function createPoint2DPropType(isRequired) {
-	return function (props, propName, componentName) {
-		var prop = props[propName];
-		var type = typeof prop === 'undefined' ? 'undefined' : _typeof(prop);
+    return function (props, propName, componentName) {
+        var prop = props[propName];
+        var type = typeof prop === 'undefined' ? 'undefined' : _typeof(prop);
 
-		if (prop === null) {
-			return handleMissingProp$1(isRequired, propName, componentName);
-		}
+        if (prop === null) {
+            return handleMissingProp$1(isRequired, propName, componentName);
+        }
 
-		if (type !== 'object') {
-			return new Error(propName + ' in ' + componentName + ' must be an object. Was of type ' + type);
-		}
+        if (type !== 'object') {
+            return new Error(propName + ' in ' + componentName + ' must be an object. Was of type ' + type);
+        }
 
-		if (!isNumber$1(prop.x) || !isNumber$1(prop.y)) {
-			return new Error(propName + ' in ' + componentName + ' must be an object with a numeric \'x\' and \'y\' property. Was ' + prop);
-		}
+        if (!isNumber$1(prop.x) || !isNumber$1(prop.y)) {
+            return new Error(propName + ' in ' + componentName + ' must be an object with a numeric \'x\' and \'y\' property. Was ' + prop);
+        }
 
-		return null;
-	};
+        return null;
+    };
 };
 
 var createSpringConfigPropType$1 = function createSpringConfigPropType(isRequired) {
-	return function (props, propName, componentName) {
-		var prop = props[propName];
-		var type = typeof prop === 'undefined' ? 'undefined' : _typeof(prop);
+    return function (props, propName, componentName) {
+        var prop = props[propName];
+        var type = typeof prop === 'undefined' ? 'undefined' : _typeof(prop);
 
-		if (type === 'undefined') {
-			return handleMissingProp$1(isRequired, propName, componentName);
-		}
+        if (type === 'undefined') {
+            return handleMissingProp$1(isRequired, propName, componentName);
+        }
 
-		if (type !== 'object') {
-			return new Error(propName + ' in ' + componentName + ' must be an object. Was of type ' + type);
-		}
+        if (type !== 'object') {
+            return new Error(propName + ' in ' + componentName + ' must be an object. Was of type ' + type);
+        }
 
-		if (!isNumber$1(prop.stiffness) || !isNumber$1(prop.damping)) {
-			return new Error(propName + ' in ' + componentName + ' must be an object with positive numeric \'stiffness\' and \'damping\' properties. Was ' + prop);
-		}
+        if (!isNumber$1(prop.stiffness) || !isNumber$1(prop.damping)) {
+            return new Error(propName + ' in ' + componentName + ' must be an object with positive numeric \'stiffness\' and \'damping\' properties. Was ' + prop);
+        }
 
-		return null;
-	};
+        return null;
+    };
 };
 
 var point2D = createPoint2DPropType(false);
@@ -25815,237 +25782,232 @@ point2D.isRequired = createPoint2DPropType(true);
 var springConfig$1 = createSpringConfigPropType$1(false);
 springConfig$1.isRequired = createSpringConfigPropType$1(true);
 
-var CustomPropTypes$1 = { point2D: point2D, springConfig: springConfig$1 };
+var CustomPropTypes$2 = { point2D: point2D, springConfig: springConfig$1 };
 
 var getOrigo$1 = function getOrigo() {
-	return { x: 0, y: 0 };
+    return { x: 0, y: 0 };
 };
 
 var distance$2 = function distance(p1) {
-	var p2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getOrigo$1();
-	return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+    var p2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getOrigo$1();
+    return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 };
 
 var scalePoint$1 = function scalePoint(point, scalar) {
-	return {
-		x: point.x * scalar,
-		y: point.y * scalar
-	};
+    return {
+        x: point.x * scalar,
+        y: point.y * scalar
+    };
 };
 
 var addPoints$1 = function addPoints(p1, p2) {
-	return {
-		x: p1.x + p2.x,
-		y: p1.y + p2.y
-	};
+    return {
+        x: p1.x + p2.x,
+        y: p1.y + p2.y
+    };
 };
 
 var extractPoint = function extractPoint(o) {
-	return {
-		x: o.x,
-		y: o.y
-	};
+    return {
+        x: o.x,
+        y: o.y
+    };
 };
 
 var arePointsDifferent = function arePointsDifferent(p1, p2) {
-	return p1.x !== p2.x || p1.y !== p2.y;
+    return p1.x !== p2.x || p1.y !== p2.y;
 };
 
 var byDistance = function byDistance(a, b) {
-	return distance$2(a) - distance$2(b);
+    return distance$2(a) - distance$2(b);
 };
 
-var sort = function sort(array, comparator) {
-	var newArray = array.slice(0);
-	newArray.sort(comparator);
-	return newArray;
-};
-
-var extend$1 = function extend() {
-  for (var _len = arguments.length, objects = Array(_len), _key = 0; _key < _len; _key++) {
-    objects[_key] = arguments[_key];
-  }
-
-  return Object.assign.apply(Object, [{}].concat(objects));
+var sort$2 = function sort(array, comparator) {
+    var newArray = array.slice(0);
+    newArray.sort(comparator);
+    return newArray;
 };
 
 var TRANSFORM_PROPS$1 = ['x', 'y', 'scale', 'scaleX', 'scaleY', 'rotate', 'skewX', 'skewY'];
 
 var AnimatedTransform = function AnimatedTransform(props) {
-	var style = {};
+    var style = {};
 
-	TRANSFORM_PROPS$1.forEach(function (prop) {
-		if (typeof props[prop] !== 'undefined') {
-			style[prop] = reactMotion_4(props[prop], props.springConfig);
-		}
-	});
+    TRANSFORM_PROPS$1.forEach(function (prop) {
+        if (typeof props[prop] !== 'undefined') {
+            style[prop] = reactMotion_4(props[prop], props.springConfig);
+        }
+    });
 
-	return react.createElement(
-		reactMotion_1,
-		{
-			style: style,
-			onRest: props.onRest
-		},
-		function (_ref) {
-			var x = _ref.x,
-			    y = _ref.y,
-			    scale = _ref.scale,
-			    scaleX = _ref.scaleX,
-			    scaleY = _ref.scaleY,
-			    rotate = _ref.rotate,
-			    skewX = _ref.skewX,
-			    skewY = _ref.skewY;
+    return react.createElement(
+        reactMotion_1,
+        {
+            style: style,
+            onRest: props.onRest
+        },
+        function (_ref) {
+            var x = _ref.x,
+                y = _ref.y,
+                scale = _ref.scale,
+                scaleX = _ref.scaleX,
+                scaleY = _ref.scaleY,
+                rotate = _ref.rotate,
+                skewX = _ref.skewX,
+                skewY = _ref.skewY;
 
-			var transforms = ['translateZ(0)'];
-			if (typeof x !== "undefined") transforms.push('translateX(' + x + 'px)');
-			if (typeof y !== "undefined") transforms.push('translateY(' + y + 'px)');
-			if (typeof scale !== "undefined") transforms.push('scale(' + scale + ')');
-			if (typeof scaleX !== "undefined") transforms.push('scaleX(' + scaleX + ')');
-			if (typeof scaleY !== "undefined") transforms.push('scaleY(' + scaleY + ')');
-			if (typeof rotate !== "undefined") transforms.push('rotate(' + rotate + 'deg)');
-			if (typeof skewX !== "undefined") transforms.push('skewX(' + skewX + 'deg)');
-			if (typeof skewY !== "undefined") transforms.push('skewY(' + skewY + 'deg)');
+            var transforms = ['translateZ(0)'];
+            if (typeof x !== 'undefined') transforms.push('translateX(' + x + 'px)');
+            if (typeof y !== 'undefined') transforms.push('translateY(' + y + 'px)');
+            if (typeof scale !== 'undefined') transforms.push('scale(' + scale + ')');
+            if (typeof scaleX !== 'undefined') transforms.push('scaleX(' + scaleX + ')');
+            if (typeof scaleY !== 'undefined') transforms.push('scaleY(' + scaleY + ')');
+            if (typeof rotate !== 'undefined') transforms.push('rotate(' + rotate + 'deg)');
+            if (typeof skewX !== 'undefined') transforms.push('skewX(' + skewX + 'deg)');
+            if (typeof skewY !== 'undefined') transforms.push('skewY(' + skewY + 'deg)');
 
-			return react.createElement(
-				'div',
-				{
-					className: props.className,
-					style: {
-						transformOrigin: '50% 50%',
-						transform: transforms.join(' ')
-					} },
-				typeof props.children === 'function' ? props.children({ x: x, y: y, scale: scale, scaleX: scaleX, scaleY: scaleY, rotate: rotate, skewX: skewX, skewY: skewY }) : props.children
-			);
-		}
-	);
+            return react.createElement(
+                'div',
+                {
+                    className: props.className,
+                    style: {
+                        transformOrigin: '50% 50%',
+                        transform: transforms.join(' ')
+                    }
+                },
+                typeof props.children === 'function' ? props.children({
+                    x: x, y: y, scale: scale, scaleX: scaleX, scaleY: scaleY, rotate: rotate, skewX: skewX, skewY: skewY
+                }) : props.children
+            );
+        }
+    );
 };
 
 AnimatedTransform.propTypes = {
-	springConfig: propTypes.shape({
-		damping: propTypes.number.isRequired,
-		stiffness: propTypes.number.isRequired
-	})
+    springConfig: propTypes.shape({
+        damping: propTypes.number.isRequired,
+        stiffness: propTypes.number.isRequired
+    })
 };
 
 AnimatedTransform.defaultProps = {
-	springConfig: reactMotion_5.stiff
+    springConfig: reactMotion_5.stiff
 };
 
 var Trap = function (_React$Component) {
-	inherits(Trap, _React$Component);
+    inherits(Trap, _React$Component);
 
-	function Trap(props) {
-		classCallCheck(this, Trap);
+    function Trap(props) {
+        classCallCheck(this, Trap);
 
-		var _this = possibleConstructorReturn(this, (Trap.__proto__ || Object.getPrototypeOf(Trap)).call(this, props));
+        var _this = possibleConstructorReturn(this, (Trap.__proto__ || Object.getPrototypeOf(Trap)).call(this, props));
 
-		_this.state = {
-			trappedUserPosition: getOrigo$1()
-		};
-		return _this;
-	}
+        _this.state = {
+            trappedUserPosition: getOrigo$1()
+        };
+        return _this;
+    }
 
-	createClass(Trap, [{
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(_ref) {
-			var _this2 = this;
+    createClass(Trap, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(_ref) {
+            var _this2 = this;
 
-			var trappedUserPosition = _ref.trappedUserPosition;
+            var trappedUserPosition = _ref.trappedUserPosition;
 
-			if (arePointsDifferent(trappedUserPosition, this.props.trappedUserPosition)) {
-				this.setState({ trappedUserPosition: extend$1(trappedUserPosition) }, function () {
-					return _this2.setState({ trappedUserPosition: getOrigo$1() });
-				});
-			}
-		}
-	}, {
-		key: 'getPosition',
-		value: function getPosition(basePosition) {
-			var _props = this.props,
-			    draggedItems = _props.draggedItems,
-			    trappedUser = _props.trappedUser;
+            if (arePointsDifferent(trappedUserPosition, this.props.trappedUserPosition)) {
+                this.setState({ trappedUserPosition: _extends({}, trappedUserPosition) }, function () {
+                    return _this2.setState({ trappedUserPosition: getOrigo$1() });
+                });
+            }
+        }
+    }, {
+        key: 'getPosition',
+        value: function getPosition(basePosition) {
+            var _props = this.props,
+                draggedItems = _props.draggedItems,
+                trappedUser = _props.trappedUser;
 
-			var snappedItem = draggedItems.find(function (d) {
-				return d.isSnappingToThisTarget;
-			});
-			var offset = getOrigo$1();
+            var snappedItem = draggedItems.find(function (d) {
+                return d.isSnappingToThisTarget;
+            });
+            var offset = getOrigo$1();
 
-			if (snappedItem) {
-				offset = snappedItem.cursorPosition;
-			} else if (draggedItems.length) {
-				offset = scalePoint$1(extractPoint(sort(draggedItems, byDistance)[0].transform), .15);
-			}
+            if (snappedItem) {
+                offset = snappedItem.cursorPosition;
+            } else if (draggedItems.length) {
+                offset = scalePoint$1(extractPoint(sort$2(draggedItems, byDistance)[0].transform), 0.15);
+            }
 
-			return trappedUser ? basePosition : addPoints$1(offset, basePosition);
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var trappedUserPosition = this.state.trappedUserPosition;
-			var _props2 = this.props,
-			    draggedItems = _props2.draggedItems,
-			    trappedUser = _props2.trappedUser,
-			    onKillUser = _props2.onKillUser,
-			    show = _props2.show;
+            return trappedUser ? basePosition : addPoints$1(offset, basePosition);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var trappedUserPosition = this.state.trappedUserPosition;
+            var _props2 = this.props,
+                draggedItems = _props2.draggedItems,
+                trappedUser = _props2.trappedUser,
+                onKillUser = _props2.onKillUser,
+                show = _props2.show;
 
-			var basePosition = {
-				x: 0,
-				y: show ? -20 : 200
-			};
+            var basePosition = {
+                x: 0,
+                y: show ? -20 : 200
+            };
 
-			var _getPosition = this.getPosition(basePosition),
-			    x = _getPosition.x,
-			    y = _getPosition.y;
+            var _getPosition = this.getPosition(basePosition),
+                x = _getPosition.x,
+                y = _getPosition.y;
 
-			var scale = draggedItems.some(function (d) {
-				return d.isSnappingToThisTarget;
-			}) || trappedUser ? 1.3 : 1;
+            var scale = draggedItems.some(function (d) {
+                return d.isSnappingToThisTarget;
+            }) || trappedUser ? 1.3 : 1;
 
-			return react.createElement(
-				reactMotion_1,
-				{
-					style: {
-						x: reactMotion_4(x, { stiffness: 120, damping: 14 }),
-						y: reactMotion_4(y, { stiffness: 120, damping: 14 }),
-						scale: reactMotion_4(scale, reactMotion_5.wobbly)
-					},
-					onRest: onKillUser
-				},
-				function (_ref2) {
-					var x = _ref2.x,
-					    y = _ref2.y,
-					    scale = _ref2.scale;
-					return react.createElement(
-						InternalSnapTargetTransform,
-						{ x: x, y: y },
-						react.createElement(
-							'div',
-							{ className: 'trap' },
-							trappedUser ? react.createElement(
-								AnimatedTransform,
-								{ x: trappedUserPosition.x, y: trappedUserPosition.y },
-								react.createElement(Avatar, { id: trappedUser.id, isTrapped: true })
-							) : null,
-							react.createElement('div', { className: 'trap-background', style: { transform: 'scale(' + scale + ')' } })
-						)
-					);
-				}
-			);
-		}
-	}]);
-	return Trap;
+            return react.createElement(
+                reactMotion_1,
+                {
+                    style: {
+                        x: reactMotion_4(x, { stiffness: 120, damping: 14 }),
+                        y: reactMotion_4(y, { stiffness: 120, damping: 14 }),
+                        scale: reactMotion_4(scale, reactMotion_5.wobbly)
+                    },
+                    onRest: onKillUser
+                },
+                function (_ref2) {
+                    var x = _ref2.x,
+                        y = _ref2.y,
+                        scale = _ref2.scale;
+                    return react.createElement(
+                        InternalSnapTargetTransformWithContext,
+                        { x: x, y: y },
+                        react.createElement(
+                            'div',
+                            { className: 'trap' },
+                            trappedUser ? react.createElement(
+                                AnimatedTransform,
+                                { x: trappedUserPosition.x, y: trappedUserPosition.y },
+                                react.createElement(Avatar, { id: trappedUser.id, isTrapped: true })
+                            ) : null,
+                            react.createElement('div', { className: 'trap-background', style: { transform: 'scale(' + scale + ')' } })
+                        )
+                    );
+                }
+            );
+        }
+    }]);
+    return Trap;
 }(react.Component);
 
 Trap.propTypes = {
-	draggedItems: propTypes.array.isRequired,
-	onKillUser: propTypes.func.isRequired,
-	show: propTypes.bool.isRequired,
-	trappedUser: propTypes.object,
-	trappedUserPosition: CustomPropTypes$1.point2D
+    draggedItems: propTypes.array.isRequired,
+    onKillUser: propTypes.func.isRequired,
+    show: propTypes.bool.isRequired,
+    trappedUser: propTypes.object,
+    trappedUserPosition: CustomPropTypes$2.point2D
 };
 
 var snapConfig = {
-	snapCriteria: [SnapCriteria.isCenterWithinRadius('250%'), SnapCriteria.isNoOtherDraggableSnapping]
+    snapCriteria: [SnapCriteria.isCenterWithinRadius('250%'), SnapCriteria.isNoOtherDraggableSnapping]
 };
 
 var collect = SnapTargetCollectors.allProps;
@@ -26071,199 +26033,200 @@ var clamp = function clamp(num, min, max) {
 };
 
 var clampedPercentage = function clampedPercentage(fraction) {
-	return clamp(fraction * 100, -50, 50) + '%';
+    return clamp(fraction * 100, -50, 50) + '%';
 };
 
 var EDGES = {
-	top: {
-		rotation: -180,
-		x: function x(_ref, _ref2) {
-			var _x = _ref.x;
-			var width = _ref2.width;
-			return clampedPercentage(_x / width);
-		},
-		y: function y() {
-			return '-50%';
-		},
-		distToPoint: function distToPoint(_ref3, _ref4) {
-			var y = _ref3.y;
-			var height = _ref4.height;
-			return Math.abs(-height / 2 - y);
-		}
-	},
-	bottom: {
-		rotation: 0,
-		x: function x(_ref5, _ref6) {
-			var _x2 = _ref5.x;
-			var width = _ref6.width;
-			return clampedPercentage(_x2 / width);
-		},
-		y: function y() {
-			return '50%';
-		},
-		distToPoint: function distToPoint(_ref7, _ref8) {
-			var y = _ref7.y;
-			var height = _ref8.height;
-			return Math.abs(height / 2 - y);
-		}
-	},
-	left: {
-		rotation: 90,
-		x: function x() {
-			return '-50%';
-		},
-		y: function y(_ref9, _ref10) {
-			var _y = _ref9.y;
-			var height = _ref10.height;
-			return clampedPercentage(_y / height);
-		},
-		distToPoint: function distToPoint(_ref11, _ref12) {
-			var x = _ref11.x;
-			var width = _ref12.width;
-			return Math.abs(-width / 2 - x);
-		}
-	},
-	right: {
-		rotation: -90,
-		x: function x() {
-			return '50%';
-		},
-		y: function y(_ref13, _ref14) {
-			var _y2 = _ref13.y;
-			var height = _ref14.height;
-			return clampedPercentage(_y2 / height);
-		},
-		distToPoint: function distToPoint(_ref15, _ref16) {
-			var x = _ref15.x;
-			var width = _ref16.width;
-			return Math.abs(width / 2 - x);
-		}
-	}
+    top: {
+        rotation: -180,
+        x: function x(_ref, _ref2) {
+            var _x = _ref.x;
+            var width = _ref2.width;
+            return clampedPercentage(_x / width);
+        },
+        y: function y() {
+            return '-50%';
+        },
+        distToPoint: function distToPoint(_ref3, _ref4) {
+            var y = _ref3.y;
+            var height = _ref4.height;
+            return Math.abs(-height / 2 - y);
+        }
+    },
+    bottom: {
+        rotation: 0,
+        x: function x(_ref5, _ref6) {
+            var _x2 = _ref5.x;
+            var width = _ref6.width;
+            return clampedPercentage(_x2 / width);
+        },
+        y: function y() {
+            return '50%';
+        },
+        distToPoint: function distToPoint(_ref7, _ref8) {
+            var y = _ref7.y;
+            var height = _ref8.height;
+            return Math.abs(height / 2 - y);
+        }
+    },
+    left: {
+        rotation: 90,
+        x: function x() {
+            return '-50%';
+        },
+        y: function y(_ref9, _ref10) {
+            var _y = _ref9.y;
+            var height = _ref10.height;
+            return clampedPercentage(_y / height);
+        },
+        distToPoint: function distToPoint(_ref11, _ref12) {
+            var x = _ref11.x;
+            var width = _ref12.width;
+            return Math.abs(-width / 2 - x);
+        }
+    },
+    right: {
+        rotation: -90,
+        x: function x() {
+            return '50%';
+        },
+        y: function y(_ref13, _ref14) {
+            var _y2 = _ref13.y;
+            var height = _ref14.height;
+            return clampedPercentage(_y2 / height);
+        },
+        distToPoint: function distToPoint(_ref15, _ref16) {
+            var x = _ref15.x;
+            var width = _ref16.width;
+            return Math.abs(width / 2 - x);
+        }
+    }
 };
 
 var edgesByDistanceToPoint = function edgesByDistanceToPoint(point, container) {
-	return function (e1, e2) {
-		return EDGES[e1].distToPoint(point, container) - EDGES[e2].distToPoint(point, container);
-	};
+    return function (e1, e2) {
+        return EDGES[e1].distToPoint(point, container) - EDGES[e2].distToPoint(point, container);
+    };
 };
 
 var getClosestEdge = function getClosestEdge(point, containerSize) {
-	var edges = Object.keys(EDGES);
-	edges.sort(edgesByDistanceToPoint(point, containerSize));
+    var edges = Object.keys(EDGES);
+    edges.sort(edgesByDistanceToPoint(point, containerSize));
 
-	return {
-		edge: edges[0],
-		distance: EDGES[edges[0]].distToPoint(point, containerSize)
-	};
+    return {
+        edge: edges[0],
+        distance: EDGES[edges[0]].distToPoint(point, containerSize)
+    };
 };
 
 var VELOCITY_MULTIPLIER = 80;
 
 var snapToEdge = function snapToEdge(_ref, _ref2) {
-	var transform = _ref.transform,
-	    velocity = _ref.velocity;
-	var width = _ref2.width,
-	    height = _ref2.height;
-	var x = transform.x,
-	    y = transform.y;
-	var vx = velocity.x,
-	    vy = velocity.y;
+    var transform = _ref.transform,
+        velocity = _ref.velocity;
+    var width = _ref2.width,
+        height = _ref2.height;
+    var x = transform.x,
+        y = transform.y;
+    var vx = velocity.x,
+        vy = velocity.y;
 
 
-	var extrapolatedPoint = {
-		x: clamp(x + vx * VELOCITY_MULTIPLIER, -width / 2, width / 2),
-		y: clamp(y + vy * VELOCITY_MULTIPLIER, -height / 2, height / 2)
-	};
+    var extrapolatedPoint = {
+        x: clamp(x + vx * VELOCITY_MULTIPLIER, -width / 2, width / 2),
+        y: clamp(y + vy * VELOCITY_MULTIPLIER, -height / 2, height / 2)
+    };
 
-	var closestEdge = EDGES[getClosestEdge(extrapolatedPoint, { width: width, height: height }).edge];
+    var closestEdge = EDGES[getClosestEdge(extrapolatedPoint, { width: width, height: height }).edge];
 
-	return {
-		x: closestEdge.x(extrapolatedPoint, { width: width, height: height }),
-		y: closestEdge.y(extrapolatedPoint, { width: width, height: height }),
-		rotate: closestEdge.rotation
-	};
+    return {
+        x: closestEdge.x(extrapolatedPoint, { width: width, height: height }),
+        y: closestEdge.y(extrapolatedPoint, { width: width, height: height }),
+        rotate: closestEdge.rotation
+    };
 };
 
 var snapRotation$1 = function snapRotation(draggableDescriptor, targetSize) {
-	return extend$1(SnapTransformers.noSnapping(draggableDescriptor), { rotate: EDGES[getClosestEdge(draggableDescriptor.transform, targetSize).edge].rotation });
+    return _extends({}, SnapTransformers.noSnapping(draggableDescriptor), {
+        rotate: EDGES[getClosestEdge(draggableDescriptor.transform, targetSize).edge].rotation
+    });
 };
 
 var whenCloseToEdge = function whenCloseToEdge(dist) {
-	return function (_ref, _ref2) {
-		var transform = _ref.transform;
-		var width = _ref2.width,
-		    height = _ref2.height;
-		return getClosestEdge(transform, { width: width, height: height }).distance < dist;
-	};
+    return function (_ref, _ref2) {
+        var transform = _ref.transform;
+        var width = _ref2.width,
+            height = _ref2.height;
+        return getClosestEdge(transform, { width: width, height: height }).distance < dist;
+    };
 };
 
 var Edge = function Edge() {
-	return react.createElement('div', {
-		style: {
-			left: 0,
-			top: 0,
-			right: 0,
-			bottom: 0,
-			position: 'absolute',
-			pointerEvents: 'none'
-		}
-	});
+    return react.createElement('div', {
+        style: {
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            position: 'absolute',
+            pointerEvents: 'none'
+        }
+    });
 };
 
 var snapConfig$1 = {
-	releaseSnapCriteria: SnapCriteria.always,
-	releaseSnapTransform: snapToEdge,
-	dragSnapCriteria: whenCloseToEdge(40),
-	dragSnapTransform: snapRotation$1
+    releaseSnapCriteria: SnapCriteria.always,
+    releaseSnapTransform: snapToEdge,
+    dragSnapCriteria: whenCloseToEdge(40),
+    dragSnapTransform: snapRotation$1
 };
 
 var EdgeSnapTarget = configure$1(snapConfig$1)(Edge);
 
 var ScaleEntry = function ScaleEntry(_ref) {
-	var entries = _ref.entries,
-	    idProp = _ref.idProp,
-	    children = _ref.children,
-	    springConfig = _ref.springConfig,
-	    className = _ref.className;
-
-	return react.createElement(
-		reactMotion_3,
-		{
-			willEnter: function willEnter() {
-				return { scale: 0 };
-			},
-			styles: entries.map(function (entry) {
-				return {
-					key: entry[idProp] + '',
-					data: entry,
-					style: { scale: reactMotion_4(1, springConfig) }
-				};
-			})
-		},
-		function (interpolatedStyles) {
-			return react.createElement(
-				'div',
-				{ className: className },
-				interpolatedStyles.map(function (config) {
-					return children(config.data, config.style.scale);
-				})
-			);
-		}
-	);
+    var entries = _ref.entries,
+        idProp = _ref.idProp,
+        children = _ref.children,
+        springConfig = _ref.springConfig,
+        className = _ref.className;
+    return react.createElement(
+        reactMotion_3,
+        {
+            willEnter: function willEnter() {
+                return { scale: 0 };
+            },
+            styles: entries.map(function (entry) {
+                return {
+                    key: '' + entry[idProp],
+                    data: entry,
+                    style: { scale: reactMotion_4(1, springConfig) }
+                };
+            })
+        },
+        function (interpolatedStyles) {
+            return react.createElement(
+                'div',
+                { className: className },
+                interpolatedStyles.map(function (config) {
+                    return children(config.data, config.style.scale);
+                })
+            );
+        }
+    );
 };
 
 ScaleEntry.propTypes = {
-	idProp: propTypes.oneOfType([propTypes.string, propTypes.number]).isRequired,
-	className: propTypes.string,
-	springConfig: propTypes.shape({
-		damping: propTypes.number.isRequired,
-		stiffness: propTypes.number.isRequired
-	})
+    idProp: propTypes.oneOfType([propTypes.string, propTypes.number]).isRequired,
+    className: propTypes.string,
+    springConfig: propTypes.shape({
+        damping: propTypes.number.isRequired,
+        stiffness: propTypes.number.isRequired
+    })
 };
 
 ScaleEntry.defaultProps = {
-	className: '',
-	springConfig: reactMotion_5.wobbly
+    className: '',
+    springConfig: reactMotion_5.wobbly
 };
 
 function styleInject(css, ref) {
@@ -26300,515 +26263,299 @@ var AVATAR_DIAMETER = 64;
 var MARGIN = 24;
 
 var FloatingHeadsDemo = function (_React$Component) {
-	inherits(FloatingHeadsDemo, _React$Component);
+    inherits(FloatingHeadsDemo, _React$Component);
 
-	function FloatingHeadsDemo(props) {
-		classCallCheck(this, FloatingHeadsDemo);
+    function FloatingHeadsDemo(props) {
+        classCallCheck(this, FloatingHeadsDemo);
 
-		var _this = possibleConstructorReturn(this, (FloatingHeadsDemo.__proto__ || Object.getPrototypeOf(FloatingHeadsDemo)).call(this, props));
+        var _this = possibleConstructorReturn(this, (FloatingHeadsDemo.__proto__ || Object.getPrototypeOf(FloatingHeadsDemo)).call(this, props));
 
-		_this.state = {
-			users: [],
-			trappedUser: null,
-			trappedUserPosition: getOrigo$1(),
-			isDragging: false
-		};
+        _this.state = {
+            users: [],
+            trappedUser: null,
+            trappedUserPosition: getOrigo$1(),
+            isDragging: false
+        };
 
-		_this.boundUpdateSizeMeasurement = _this.updateSizeMeasurement.bind(_this);
-		return _this;
-	}
+        _this.boundUpdateSizeMeasurement = _this.updateSizeMeasurement.bind(_this);
+        return _this;
+    }
 
-	createClass(FloatingHeadsDemo, [{
-		key: 'componentDidMount',
-		value: function componentDidMount() {
-			this.updateSizeMeasurement();
-			window.addEventListener('resize', this.boundUpdateSizeMeasurement);
+    createClass(FloatingHeadsDemo, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.updateSizeMeasurement();
+            window.addEventListener('resize', this.boundUpdateSizeMeasurement);
 
-			this.setState({ users: [{ id: 0, x: 0, y: this.size.height / 2 - MARGIN, z: 0, rotation: 90 }] });
-		}
-	}, {
-		key: 'componentWillUnmount',
-		value: function componentWillUnmount() {
-			window.removeEventListener('resize', this.boundUpdateSizeMeasurement);
-		}
-	}, {
-		key: 'updateSizeMeasurement',
-		value: function updateSizeMeasurement() {
-			this.size = {
-				width: this.container.clientWidth,
-				height: this.container.clientHeight
-			};
-		}
-	}, {
-		key: 'getRotation',
-		value: function getRotation(_ref) {
-			var x = _ref.x,
-			    y = _ref.y;
+            this.setState({
+                users: [{
+                    id: 0, x: 0, y: this.size.height / 2 - MARGIN, z: 0, rotation: 90
+                }]
+            });
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            window.removeEventListener('resize', this.boundUpdateSizeMeasurement);
+        }
+    }, {
+        key: 'updateSizeMeasurement',
+        value: function updateSizeMeasurement() {
+            this.size = {
+                width: this.container.clientWidth,
+                height: this.container.clientHeight
+            };
+        }
+    }, {
+        key: 'getRotation',
+        value: function getRotation(_ref) {
+            var x = _ref.x,
+                y = _ref.y;
 
-			var rotation = EDGES.right.rotation;
-			rotation = x === 0 ? EDGES.left.rotation : rotation;
-			rotation = y === this.size.height - 2 * MARGIN ? EDGES.bottom.rotation : rotation;
-			rotation = y === 0 ? EDGES.top.rotation : rotation;
-			return rotation;
-		}
-	}, {
-		key: 'getNextUserId',
-		value: function getNextUserId() {
-			return { id: max(this.state.users.map(function (u) {
-					return u.id;
-				})) + 1 };
-		}
-	}, {
-		key: 'getNextZIndex',
-		value: function getNextZIndex() {
-			return { z: max(this.state.users.map(function (u) {
-					return u.z;
-				})) + 1 };
-		}
-	}, {
-		key: 'addUser',
-		value: function addUser() {
-			var startPosition = {
-				x: randomlyOneOf(0, this.size.width - 2 * MARGIN),
-				y: randomInRange(0, this.size.height - 2 * MARGIN)
-			};
+            var rotation = EDGES.right.rotation;
+            rotation = x === 0 ? EDGES.left.rotation : rotation;
+            rotation = y === this.size.height - 2 * MARGIN ? EDGES.bottom.rotation : rotation;
+            rotation = y === 0 ? EDGES.top.rotation : rotation;
+            return rotation;
+        }
+    }, {
+        key: 'getNextUserId',
+        value: function getNextUserId() {
+            return { id: max(this.state.users.map(function (u) {
+                    return u.id;
+                })) + 1 };
+        }
+    }, {
+        key: 'getNextZIndex',
+        value: function getNextZIndex() {
+            return { z: max(this.state.users.map(function (u) {
+                    return u.z;
+                })) + 1 };
+        }
+    }, {
+        key: 'addUser',
+        value: function addUser() {
+            var startPosition = {
+                x: randomlyOneOf(0, this.size.width - 2 * MARGIN),
+                y: randomInRange(0, this.size.height - 2 * MARGIN)
+            };
 
-			this.setState({
-				users: [].concat(toConsumableArray(this.state.users), [extend$1(this.getNextUserId(), this.getNextZIndex(), startPosition, { rotation: this.getRotation(startPosition) })])
-			});
-		}
-	}, {
-		key: 'updateUser',
-		value: function updateUser(_ref2, _ref3) {
-			var _this2 = this;
+            this.setState({
+                users: [].concat(toConsumableArray(this.state.users), [_extends({}, this.getNextUserId(), this.getNextZIndex(), startPosition, {
+                    rotation: this.getRotation(startPosition)
+                })])
+            });
+        }
+    }, {
+        key: 'updateUser',
+        value: function updateUser(_ref2, _ref3) {
+            var _this2 = this;
 
-			var dragData = _ref2.dragData,
-			    transform = _ref2.transform;
-			var users = this.state.users;
-			//Convert center based coordinates to coordinate system with origo in upper left corner
+            var dragData = _ref2.dragData,
+                transform = _ref2.transform;
+            var users = this.state.users;
+            // Convert center based coordinates to coordinate system with origo in upper left corner
 
-			var position = {
-				x: transform.x + this.size.width / 2 - MARGIN,
-				y: transform.y + this.size.height / 2 - MARGIN
-			};
+            var position = {
+                x: transform.x + this.size.width / 2 - MARGIN,
+                y: transform.y + this.size.height / 2 - MARGIN
+            };
 
-			this.setState({
-				users: users.map(function (user) {
-					return user.id === dragData.id ? extend$1(user, position, _this2.getNextZIndex(), { rotation: _this2.getRotation(position) }) : user;
-				})
-			});
-		}
-	}, {
-		key: 'trapUser',
-		value: function trapUser(_ref4) {
-			var dragData = _ref4.dragData,
-			    transform = _ref4.transform;
+            this.setState({
+                users: users.map(function (user) {
+                    return user.id === dragData.id ? _extends({}, user, position, _this2.getNextZIndex(), { rotation: _this2.getRotation(position)
+                    }) : user;
+                })
+            });
+        }
+    }, {
+        key: 'trapUser',
+        value: function trapUser(_ref4) {
+            var dragData = _ref4.dragData,
+                transform = _ref4.transform;
 
-			this.setState({
-				users: this.state.users.filter(function (user) {
-					return user.id !== dragData.id;
-				}),
-				trappedUser: this.state.users.find(function (user) {
-					return user.id === dragData.id;
-				}),
-				trappedUserPosition: { x: transform.x, y: transform.y }
-			});
-		}
-	}, {
-		key: 'killUser',
-		value: function killUser() {
-			this.setState({ trappedUser: null, trappedUserPosition: getOrigo$1() });
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var _this3 = this;
+            this.setState({
+                users: this.state.users.filter(function (user) {
+                    return user.id !== dragData.id;
+                }),
+                trappedUser: this.state.users.find(function (user) {
+                    return user.id === dragData.id;
+                }),
+                trappedUserPosition: { x: transform.x, y: transform.y }
+            });
+        }
+    }, {
+        key: 'killUser',
+        value: function killUser() {
+            this.setState({ trappedUser: null, trappedUserPosition: getOrigo$1() });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this3 = this;
 
-			var _state = this.state,
-			    isDragging = _state.isDragging,
-			    trappedUser = _state.trappedUser,
-			    trappedUserPosition = _state.trappedUserPosition,
-			    users = _state.users;
-
-
-			return react.createElement(
-				'div',
-				{ className: 'app-container', ref: function ref(container) {
-						return _this3.container = container;
-					} },
-				react.createElement('div', { className: 'gradient ' + (isDragging ? 'show-gradient' : '') }),
-				react.createElement(
-					'div',
-					{ className: 'margin-container' },
-					react.createElement(
-						DragSnapContext,
-						{
-							onChange: function onChange(_ref5) {
-								var grabbedCount = _ref5.grabbedCount,
-								    draggedCount = _ref5.draggedCount;
-
-								if (grabbedCount || draggedCount) {
-									_this3.setState({ isDragging: true });
-								} else {
-									_this3.setState({ isDragging: false, trappedUser: null });
-								}
-							}
-						},
-						react.createElement(EdgeSnapTarget, {
-							snapPriority: 2,
-							onDropComplete: this.updateUser.bind(this)
-						}),
-						react.createElement(
-							ScaleEntry,
-							{ className: 'avatars', entries: users, idProp: 'id' },
-							function (user, scale) {
-								return react.createElement(
-									AvatarContainer,
-									_extends({}, user, { diameter: AVATAR_DIAMETER, scale: scale, key: user.id }),
-									react.createElement(DraggableAvatar, {
-										dragData: user,
-										id: user.id
-									})
-								);
-							}
-						),
-						react.createElement(
-							'div',
-							{ className: 'trap-container' },
-							react.createElement(TrapTarget, {
-								snapPriority: 1,
-								show: isDragging && !trappedUser,
-								onDropStart: this.trapUser.bind(this),
-								onKillUser: function onKillUser() {
-									return _this3.killUser();
-								},
-								trappedUser: trappedUser,
-								trappedUserPosition: trappedUserPosition
-							})
-						),
-						react.createElement('button', { onClick: function onClick() {
-								return _this3.addUser();
-							}, className: 'add-button' })
-					)
-				)
-			);
-		}
-	}]);
-	return FloatingHeadsDemo;
-}(react.Component);
-
-var Square$1 = function (_React$Component) {
-	inherits(Square, _React$Component);
-
-	function Square() {
-		classCallCheck(this, Square);
-		return possibleConstructorReturn(this, (Square.__proto__ || Object.getPrototypeOf(Square)).apply(this, arguments));
-	}
-
-	createClass(Square, [{
-		key: 'render',
-		value: function render() {
-			var _props = this.props,
-			    _props$borderWidth = _props.borderWidth,
-			    borderWidth = _props$borderWidth === undefined ? 0 : _props$borderWidth,
-			    borderWidth2 = _props.borderWidth2,
-			    _props$isBorderBox = _props.isBorderBox,
-			    isBorderBox = _props$isBorderBox === undefined ? false : _props$isBorderBox,
-			    _props$padding = _props.padding,
-			    padding = _props$padding === undefined ? 0 : _props$padding,
-			    className = _props.className;
+            var _state = this.state,
+                isDragging = _state.isDragging,
+                trappedUser = _state.trappedUser,
+                trappedUserPosition = _state.trappedUserPosition,
+                users = _state.users;
 
 
-			return react.createElement(
-				'div',
-				{
-					style: {
-						display: 'inline-block',
-						border: borderWidth + 'px dashed #333',
-						borderRightWidth: (borderWidth2 || borderWidth) + 'px',
-						borderBottomWidth: (borderWidth2 || borderWidth) + 'px',
-						padding: padding + 'px',
-						boxSizing: isBorderBox ? 'border-box' : 'context-box',
-						opacity: 0.5,
-						background: 'hotpink',
-						width: '250px',
-						height: '100px'
-						//transform: 'scale(1.2)'
-					},
-					className: className
-				},
-				react.createElement(
-					'div',
-					{
-						style: {
-							display: 'block',
-							boxSizing: 'border-box',
-							background: 'orange'
-						}
-					},
-					'BorderWidth: ',
-					borderWidth,
-					', is borderBox: ',
-					isBorderBox ? 'Yes' : 'No'
-				)
-			);
-		}
-	}]);
-	return Square;
-}(react.Component);
+            return react.createElement(
+                'div',
+                { className: 'app-container', ref: function ref(container) {
+                        return _this3.container = container;
+                    } },
+                react.createElement('div', { className: 'gradient ' + (isDragging ? 'show-gradient' : '') }),
+                react.createElement(
+                    'div',
+                    { className: 'margin-container' },
+                    react.createElement(
+                        DragSnapContext,
+                        {
+                            onChange: function onChange(_ref5) {
+                                var grabbedCount = _ref5.grabbedCount,
+                                    draggedCount = _ref5.draggedCount;
 
-var distance$3 = function distance(p1) {
-	var p2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { x: 0., y: 0 };
-
-	return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
-};
-
-var Target$1 = function (_React$Component) {
-	inherits(Target, _React$Component);
-
-	function Target() {
-		classCallCheck(this, Target);
-		return possibleConstructorReturn(this, (Target.__proto__ || Object.getPrototypeOf(Target)).apply(this, arguments));
-	}
-
-	createClass(Target, [{
-		key: 'render',
-		value: function render() {
-			var _props = this.props,
-			    _props$borderWidth = _props.borderWidth,
-			    borderWidth = _props$borderWidth === undefined ? 0 : _props$borderWidth,
-			    borderWidth2 = _props.borderWidth2,
-			    _props$isBorderBox = _props.isBorderBox,
-			    isBorderBox = _props$isBorderBox === undefined ? false : _props$isBorderBox,
-			    _props$padding = _props.padding,
-			    padding = _props$padding === undefined ? 0 : _props$padding;
-			var _props2 = this.props,
-			    draggedItems = _props2.draggedItems,
-			    children = _props2.children;
-
-			var text = draggedItems.length ? 'Dist: ' + distance$3(draggedItems[0].transform) : '';
-
-			return react.createElement(
-				'div',
-				{
-					style: {
-						display: 'inline-block',
-						border: borderWidth + 'px dashed green',
-						borderRightWidth: (borderWidth2 || borderWidth) + 'px',
-						borderBottomWidth: (borderWidth2 || borderWidth) + 'px',
-						padding: padding + 'px',
-						position: 'relative',
-						width: '250px',
-						height: '100px',
-						boxSizing: isBorderBox ? 'border-box' : 'context-box',
-						background: draggedItems.some(function (d) {
-							return d.isSnappingToThisTarget;
-						}) ? 'darkgray' : 'white'
-					}
-				},
-				react.createElement(
-					'div',
-					{
-						style: {
-							display: 'block',
-							boxSizing: 'border-box',
-							background: 'orange'
-						}
-					},
-					children ? children : 'Target ' + text
-				)
-			);
-		}
-	}]);
-	return Target;
-}(react.Component);
-
-var DraggableSquare$1 = configure()(Square$1);
-
-var config$2 = {
-	snapTransform: function snapTransform() {
-		return { scale: .30, x: "-35%", y: "-35%" };
-	},
-	releaseSnapCriteria: SnapCriteria.never
-};
-
-var SnapTarget = configure$1(config$2, SnapTargetCollectors.allProps)(Target$1);
-
-var SimpleDemo = function (_React$Component) {
-	inherits(SimpleDemo, _React$Component);
-
-	function SimpleDemo() {
-		classCallCheck(this, SimpleDemo);
-		return possibleConstructorReturn(this, (SimpleDemo.__proto__ || Object.getPrototypeOf(SimpleDemo)).apply(this, arguments));
-	}
-
-	createClass(SimpleDemo, [{
-		key: 'render',
-		value: function render() {
-			return react.createElement(
-				'div',
-				{
-					style: {
-						position: 'absolute',
-						width: '100%',
-						height: '100%'
-					}
-				},
-				react.createElement(
-					DragSnapContext,
-					null,
-					react.createElement(
-						'div',
-						{ style: { transform: "scale(1.5)", display: 'inline-block' } },
-						react.createElement(DraggableSquare$1, { className: 'd1' })
-					),
-					react.createElement(
-						'div',
-						{ style: { transform: "scale(1.5)", display: 'inline-block' } },
-						react.createElement(DraggableSquare$1, { className: 'd2', borderWidth: 5, padding: 5 })
-					),
-					react.createElement(
-						'div',
-						{ style: { transform: "scale(1.5)", display: 'inline-block' } },
-						react.createElement(DraggableSquare$1, { className: 'd3', isBorderBox: true })
-					),
-					react.createElement(
-						'div',
-						{ style: { transform: "scale(1.5)", display: 'inline-block' } },
-						react.createElement(DraggableSquare$1, { className: 'd4', isBorderBox: true, borderWidth: 5, padding: 5 })
-					),
-					react.createElement(
-						'div',
-						{ style: { transform: "scale(1.5)", display: 'inline-block' } },
-						react.createElement(DraggableSquare$1, { className: 'd5', isBorderBox: false, borderWidth: 5, borderWidth2: 40, padding: 15 })
-					),
-					react.createElement(DraggableSquare$1, { className: 'd6', isBorderBox: true, borderWidth: 5, borderWidth2: 40, padding: 5 }),
-					react.createElement(
-						'div',
-						{
-							style: {
-								position: 'absolute',
-								transform: 'translate(100px, 100px) scale(1) rotate(90deg)'
-							}
-						},
-						react.createElement(SnapTarget, null)
-					),
-					react.createElement(
-						'div',
-						{
-							style: {
-								position: 'absolute',
-								transform: 'translate(400px, 100px)'
-							}
-						},
-						react.createElement(SnapTarget, { isBorderBox: true, padding: 10, borderWidth: 10 })
-					),
-					react.createElement(
-						'div',
-						{
-							style: {
-								position: 'absolute',
-								transform: 'translate(800px, 100px) scale(1.2) skewX(20deg)'
-							}
-						},
-						react.createElement(SnapTarget, { padding: 10, borderWidth: 10, borderWidth2: 30 })
-					)
-				)
-			);
-		}
-	}]);
-	return SimpleDemo;
+                                if (grabbedCount || draggedCount) {
+                                    _this3.setState({ isDragging: true });
+                                } else {
+                                    _this3.setState({ isDragging: false, trappedUser: null });
+                                }
+                            }
+                        },
+                        react.createElement(EdgeSnapTarget, {
+                            snapPriority: 2,
+                            onDropComplete: this.updateUser.bind(this)
+                        }),
+                        react.createElement(
+                            ScaleEntry,
+                            { className: 'avatars', entries: users, idProp: 'id' },
+                            function (user, scale) {
+                                return react.createElement(
+                                    AvatarContainer,
+                                    _extends({}, user, { diameter: AVATAR_DIAMETER, scale: scale, key: user.id }),
+                                    react.createElement(DraggableAvatar, {
+                                        dragData: user,
+                                        id: user.id
+                                    })
+                                );
+                            }
+                        ),
+                        react.createElement(
+                            'div',
+                            { className: 'trap-container' },
+                            react.createElement(TrapTarget, {
+                                snapPriority: 1,
+                                show: isDragging && !trappedUser,
+                                onDropStart: this.trapUser.bind(this),
+                                onKillUser: function onKillUser() {
+                                    return _this3.killUser();
+                                },
+                                trappedUser: trappedUser,
+                                trappedUserPosition: trappedUserPosition
+                            })
+                        ),
+                        react.createElement('button', { onClick: function onClick() {
+                                return _this3.addUser();
+                            }, className: 'add-button' })
+                    )
+                )
+            );
+        }
+    }]);
+    return FloatingHeadsDemo;
 }(react.Component);
 
 var SquareWithTopLevelState = function (_React$Component) {
-	inherits(SquareWithTopLevelState, _React$Component);
+    inherits(SquareWithTopLevelState, _React$Component);
 
-	function SquareWithTopLevelState(props) {
-		classCallCheck(this, SquareWithTopLevelState);
+    function SquareWithTopLevelState(props) {
+        classCallCheck(this, SquareWithTopLevelState);
 
-		var _this = possibleConstructorReturn(this, (SquareWithTopLevelState.__proto__ || Object.getPrototypeOf(SquareWithTopLevelState)).call(this, props));
+        var _this = possibleConstructorReturn(this, (SquareWithTopLevelState.__proto__ || Object.getPrototypeOf(SquareWithTopLevelState)).call(this, props));
 
-		_this.state = {
-			counter: 0
-		};
+        _this.state = {
+            counter: 0
+        };
 
-		_this.interval = setInterval(function () {
-			return _this.setState({ counter: _this.state.counter + 1 });
-		}, 1000);
-		return _this;
-	}
+        _this.interval = setInterval(function () {
+            return _this.setState({ counter: _this.state.counter + 1 });
+        }, 1000);
+        return _this;
+    }
 
-	createClass(SquareWithTopLevelState, [{
-		key: 'componentWillUnmount',
-		value: function componentWillUnmount() {
-			clearInterval(this.interval);
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			return react.createElement(
-				'div',
-				{ className: 'state-square' },
-				this.state.counter
-			);
-		}
-	}]);
-	return SquareWithTopLevelState;
+    createClass(SquareWithTopLevelState, [{
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            clearInterval(this.interval);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return react.createElement(
+                'div',
+                { className: 'state-square' },
+                this.state.counter
+            );
+        }
+    }]);
+    return SquareWithTopLevelState;
 }(react.Component);
 
 var DraggableSquareWithTopLevelState = configure()(SquareWithTopLevelState);
 
 var SubComponent = function (_React$Component) {
-	inherits(SubComponent, _React$Component);
+    inherits(SubComponent, _React$Component);
 
-	function SubComponent(props) {
-		classCallCheck(this, SubComponent);
+    function SubComponent(props) {
+        classCallCheck(this, SubComponent);
 
-		var _this = possibleConstructorReturn(this, (SubComponent.__proto__ || Object.getPrototypeOf(SubComponent)).call(this, props));
+        var _this = possibleConstructorReturn(this, (SubComponent.__proto__ || Object.getPrototypeOf(SubComponent)).call(this, props));
 
-		_this.state = {
-			counter: 0
-		};
+        _this.state = {
+            counter: 0
+        };
 
-		_this.interval = setInterval(function () {
-			return _this.setState({ counter: _this.state.counter + 1 });
-		}, 1000);
-		return _this;
-	}
+        _this.interval = setInterval(function () {
+            return _this.setState({ counter: _this.state.counter + 1 });
+        }, 1000);
+        return _this;
+    }
 
-	createClass(SubComponent, [{
-		key: 'componentWillUnmount',
-		value: function componentWillUnmount() {
-			clearInterval(this.interval);
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			return this.state.counter;
-		}
-	}]);
-	return SubComponent;
+    createClass(SubComponent, [{
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            clearInterval(this.interval);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return this.state.counter;
+        }
+    }]);
+    return SubComponent;
 }(react.Component);
 
 var SquareWithDeepState = function (_React$Component2) {
-	inherits(SquareWithDeepState, _React$Component2);
+    inherits(SquareWithDeepState, _React$Component2);
 
-	function SquareWithDeepState() {
-		classCallCheck(this, SquareWithDeepState);
-		return possibleConstructorReturn(this, (SquareWithDeepState.__proto__ || Object.getPrototypeOf(SquareWithDeepState)).apply(this, arguments));
-	}
+    function SquareWithDeepState() {
+        classCallCheck(this, SquareWithDeepState);
+        return possibleConstructorReturn(this, (SquareWithDeepState.__proto__ || Object.getPrototypeOf(SquareWithDeepState)).apply(this, arguments));
+    }
 
-	createClass(SquareWithDeepState, [{
-		key: 'render',
-		value: function render() {
-			return react.createElement(
-				'div',
-				{ className: 'state-square' },
-				react.createElement(SubComponent, null)
-			);
-		}
-	}]);
-	return SquareWithDeepState;
+    createClass(SquareWithDeepState, [{
+        key: 'render',
+        value: function render() {
+            return react.createElement(
+                'div',
+                { className: 'state-square' },
+                react.createElement(SubComponent, null)
+            );
+        }
+    }]);
+    return SquareWithDeepState;
 }(react.Component);
 
 var DraggableSquareWithDeepState = configure()(SquareWithDeepState);
@@ -26817,173 +26564,169 @@ var css$2 = ".state-demo {\n     color: white;\n }\n\n.row {\n    display: flex;
 styleInject(css$2);
 
 var StateDemo = function (_React$Component) {
-	inherits(StateDemo, _React$Component);
+    inherits(StateDemo, _React$Component);
 
-	function StateDemo() {
-		classCallCheck(this, StateDemo);
-		return possibleConstructorReturn(this, (StateDemo.__proto__ || Object.getPrototypeOf(StateDemo)).apply(this, arguments));
-	}
+    function StateDemo() {
+        classCallCheck(this, StateDemo);
+        return possibleConstructorReturn(this, (StateDemo.__proto__ || Object.getPrototypeOf(StateDemo)).apply(this, arguments));
+    }
 
-	createClass(StateDemo, [{
-		key: 'render',
-		value: function render() {
-			return react.createElement(
-				'div',
-				{ className: 'state-demo' },
-				react.createElement(
-					DragSnapContext,
-					null,
-					react.createElement(
-						'h1',
-						null,
-						'State demo'
-					),
-					react.createElement(
-						'p',
-						null,
-						'Explanation of the demo'
-					),
-					react.createElement(
-						'div',
-						{ className: 'row' },
-						react.createElement(
-							'div',
-							null,
-							react.createElement(
-								'h2',
-								null,
-								'Will work'
-							),
-							react.createElement(DraggableSquareWithTopLevelState, null)
-						),
-						react.createElement(
-							'div',
-							null,
-							react.createElement(
-								'h2',
-								null,
-								'Will not work'
-							),
-							react.createElement(DraggableSquareWithDeepState, null)
-						)
-					)
-				)
-			);
-		}
-	}]);
-	return StateDemo;
+    createClass(StateDemo, [{
+        key: 'render',
+        value: function render() {
+            return react.createElement(
+                'div',
+                { className: 'state-demo' },
+                react.createElement(
+                    DragSnapContext,
+                    null,
+                    react.createElement(
+                        'h1',
+                        null,
+                        'State demo'
+                    ),
+                    react.createElement(
+                        'p',
+                        null,
+                        'Explanation of the demo'
+                    ),
+                    react.createElement(
+                        'div',
+                        { className: 'row' },
+                        react.createElement(
+                            'div',
+                            null,
+                            react.createElement(
+                                'h2',
+                                null,
+                                'Will work'
+                            ),
+                            react.createElement(DraggableSquareWithTopLevelState, null)
+                        ),
+                        react.createElement(
+                            'div',
+                            null,
+                            react.createElement(
+                                'h2',
+                                null,
+                                'Will not work'
+                            ),
+                            react.createElement(DraggableSquareWithDeepState, null)
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+    return StateDemo;
 }(react.Component);
 
 var RULES = {
-	knight: {
-		isLegalMove: function isLegalMove(src, dst) {
-			var dx = Math.abs(src[0] - dst[0]);
-			var dy = Math.abs(src[1] - dst[1]);
+    knight: {
+        isLegalMove: function isLegalMove(src, dst) {
+            var dx = Math.abs(src[0] - dst[0]);
+            var dy = Math.abs(src[1] - dst[1]);
 
-			return dx === 2 && dy === 1 || dx === 1 && dy === 2;
-		}
-	}
+            return dx === 2 && dy === 1 || dx === 1 && dy === 2;
+        }
+    }
 };
 
 var isMoveLegal = function isMoveLegal(_ref, _ref2) {
     var dragData = _ref.dragData;
     var props = _ref2.props;
 
-    if (!props.position) {
-        console.log('The props are: ', props);
-    }
-
     return RULES[dragData.piece].isLegalMove(dragData.position, props.position);
 };
 
-var Square$2 = function (_React$Component) {
-	inherits(Square, _React$Component);
+var Square$1 = function (_React$Component) {
+    inherits(Square, _React$Component);
 
-	function Square() {
-		classCallCheck(this, Square);
-		return possibleConstructorReturn(this, (Square.__proto__ || Object.getPrototypeOf(Square)).apply(this, arguments));
-	}
+    function Square() {
+        classCallCheck(this, Square);
+        return possibleConstructorReturn(this, (Square.__proto__ || Object.getPrototypeOf(Square)).apply(this, arguments));
+    }
 
-	createClass(Square, [{
-		key: 'shouldComponentUpdate',
-		value: function shouldComponentUpdate(nextProps) {
-			return this.props.isCenterOverTarget !== nextProps.isCenterOverTarget || this.props.isLegalMove !== nextProps.isLegalMove || !!this.props.children !== !!nextProps.children;
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var _props = this.props,
-			    position = _props.position,
-			    children = _props.children,
-			    width = _props.width,
-			    height = _props.height,
-			    isCenterOverTarget = _props.isCenterOverTarget,
-			    isLegalMove = _props.isLegalMove;
+    createClass(Square, [{
+        key: 'shouldComponentUpdate',
+        value: function shouldComponentUpdate(nextProps) {
+            return this.props.isCenterOverTarget !== nextProps.isCenterOverTarget || this.props.isLegalMove !== nextProps.isLegalMove || !!this.props.children !== !!nextProps.children;
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                position = _props.position,
+                children = _props.children,
+                width = _props.width,
+                height = _props.height,
+                isCenterOverTarget = _props.isCenterOverTarget,
+                isLegalMove = _props.isLegalMove;
 
 
-			var classes = ['square', isCenterOverTarget ? 'is-over' : '', isLegalMove ? 'legal-move' : '', (position[0] + position[1]) % 2 === 0 ? 'black' : ''];
+            var classes = ['square', isCenterOverTarget ? 'is-over' : '', isLegalMove ? 'legal-move' : '', (position[0] + position[1]) % 2 === 0 ? 'black' : ''];
 
-			return react.createElement(
-				'div',
-				{ className: classes.join(' '), style: { width: width, height: height } },
-				children
-			);
-		}
-	}]);
-	return Square;
+            return react.createElement(
+                'div',
+                { className: classes.join(' '), style: { width: width, height: height } },
+                children
+            );
+        }
+    }]);
+    return Square;
 }(react.Component);
 
-Square$2.propTypes = {
-	position: propTypes.arrayOf(propTypes.number).isRequired,
-	children: propTypes.element,
-	width: propTypes.string.isRequired,
-	height: propTypes.string.isRequired,
-	isCenterOverTarget: propTypes.bool.isRequired,
-	isLegalMove: propTypes.bool.isRequired
+Square$1.propTypes = {
+    position: propTypes.arrayOf(propTypes.number).isRequired,
+    children: propTypes.element,
+    width: propTypes.string.isRequired,
+    height: propTypes.string.isRequired,
+    isCenterOverTarget: propTypes.bool.isRequired,
+    isLegalMove: propTypes.bool.isRequired
 };
 
 var snapConfig$2 = {
-	dragSnapCriteria: SnapCriteria.never,
-	releaseSnapCriteria: [SnapCriteria.isCenterOverTarget, isMoveLegal]
+    dragSnapCriteria: SnapCriteria.never,
+    releaseSnapCriteria: [SnapCriteria.isCenterOverTarget, isMoveLegal]
 };
 
 var customCollector = function customCollector(draggableDescriptor, targetDescriptor) {
-	return {
-		isCenterOverTarget: draggableDescriptor.some(function (draggableDescriptor) {
-			return SnapCriteria.isCenterOverTarget(draggableDescriptor, targetDescriptor);
-		}),
-		isLegalMove: draggableDescriptor.some(function (draggableDescriptor) {
-			return isMoveLegal(draggableDescriptor, targetDescriptor);
-		})
-	};
+    return {
+        isCenterOverTarget: draggableDescriptor.some(function (draggableDescriptor) {
+            return SnapCriteria.isCenterOverTarget(draggableDescriptor, targetDescriptor);
+        }),
+        isLegalMove: draggableDescriptor.some(function (draggableDescriptor) {
+            return isMoveLegal(draggableDescriptor, targetDescriptor);
+        })
+    };
 };
 
-var SquareTarget = configure$1(snapConfig$2, customCollector)(Square$2);
+var SquareTarget = configure$1(snapConfig$2, customCollector)(Square$1);
 
 var Piece = function Piece(_ref) {
-	var piece = _ref.piece,
-	    dragState = _ref.dragState,
-	    dragVelocity = _ref.dragVelocity,
-	    isDragClone = _ref.isDragClone;
+    var piece = _ref.piece,
+        dragState = _ref.dragState,
+        dragVelocity = _ref.dragVelocity,
+        isDragClone = _ref.isDragClone;
 
-	var draggedClass = dragState !== 'inactive' && false ? 'is-dragged' : '';
-	var draggedClass2 = isDragClone ? 'is-clone' : 'is-not-clone';
+    var draggedClass = dragState !== 'inactive' && false ? 'is-dragged' : '';
+    var draggedClass2 = isDragClone ? 'is-clone' : 'is-not-clone';
 
-	return react.createElement('div', { className: 'piece ' + piece + ' ' + draggedClass + ' ' + draggedClass2 });
+    return react.createElement('div', { className: 'piece ' + piece + ' ' + draggedClass + ' ' + draggedClass2 });
 };
 
 Piece.propTypes = {
-	piece: propTypes.oneOf(['knight']).isRequired, //Only knights are supported in this demo
-	dragState: propTypes.oneOf(['grabbed', 'dragged', 'released', 'inactive'])
+    piece: propTypes.oneOf(['knight']).isRequired, // Only knights are supported in this demo
+    dragState: propTypes.oneOf(['grabbed', 'dragged', 'released', 'inactive'])
 };
 
-var config$3 = {
-	stiffness: 600,
-	damping: 30,
-	mode: 'clone'
+var config$2 = {
+    stiffness: 600,
+    damping: 30,
+    mode: 'clone'
 };
 
-var DraggablePiece = configure(config$3)(Piece);
+var DraggablePiece = configure(config$2)(Piece);
 
 var css$4 = "body {\n    background-color: cornflowerblue;\n}\n\n.chess-demo {\n    width: 100%;\n    height: 100%;\n}\n\n.chess-demo .chess-board {\n    width: 100vw;\n    height: 100vw;\n    max-width: 100vh;\n    max-height: 100vh;\n    display: flex;\n    flex-wrap: wrap;\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    transform: translate(-50%,-50%);\n}\n\n.chess-demo .square {\n    display: inline-block;\n    background: white;\n    position: relative;\n}\n\n.chess-demo .knight {\n    display: inline-block;\n    width: 100%;\n    height: 100%;\n}\n\n.chess-demo .knight.is-dragged {\n    background-position: center center;\n    background-repeat: no-repeat;\n    background-size: 50% 50%;\n}\n\n.chess-demo .knight:not(.is-dragged):before {\n    content: '♘';\n    font-size: 5vh;\n    line-height: 5vh;\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    transform: translate(-50%, -50%);\n}\n\n@media all and (orientation: portrait) {\n    .chess-demo .knight:not(.is-dragged):before {\n        font-size: 5vw;\n        line-height: 5vw;\n    }\n}\n\n.chess-demo .black {\n    background: black;\n    color: white;\n}\n\n.chess-demo .is-over:after,\n.chess-demo .legal-move:after {\n    content: '';\n    display: inline-block;\n    width: 100%;\n    height: 100%;\n    opacity: 0.5;\n    position: absolute;\n    left: 0;\n    top: 0;\n}\n\n.chess-demo .legal-move:after {\n    background: lightgreen;\n}\n\n.chess-demo .is-over:after {\n    background: red;\n}\n\n.chess-demo .is-over.legal-move:after {\n    background: green;\n}\n\n.is-clone:before {\n    color: lightgreen;\n    -webkit-text-fill-color: lightgreen;\n}\n\n.is-not-clone:before {\n    color: purple;\n    -webkit-text-fill-color: purple;\n}";
 styleInject(css$4);
@@ -26991,176 +26734,176 @@ styleInject(css$4);
 var ROWS = 8;
 
 var ChessBoard = function (_React$Component) {
-	inherits(ChessBoard, _React$Component);
+    inherits(ChessBoard, _React$Component);
 
-	function ChessBoard(props) {
-		classCallCheck(this, ChessBoard);
+    function ChessBoard(props) {
+        classCallCheck(this, ChessBoard);
 
-		var _this = possibleConstructorReturn(this, (ChessBoard.__proto__ || Object.getPrototypeOf(ChessBoard)).call(this, props));
+        var _this = possibleConstructorReturn(this, (ChessBoard.__proto__ || Object.getPrototypeOf(ChessBoard)).call(this, props));
 
-		_this.state = {
-			knightPosition: [0, 0]
-		};
-		return _this;
-	}
+        _this.state = {
+            knightPosition: [0, 0]
+        };
+        return _this;
+    }
 
-	createClass(ChessBoard, [{
-		key: 'getPieceAtPosition',
-		value: function getPieceAtPosition(_ref) {
-			var _ref2 = slicedToArray(_ref, 2),
-			    x = _ref2[0],
-			    y = _ref2[1];
+    createClass(ChessBoard, [{
+        key: 'getPieceAtPosition',
+        value: function getPieceAtPosition(_ref) {
+            var _ref2 = slicedToArray(_ref, 2),
+                x = _ref2[0],
+                y = _ref2[1];
 
-			var _state$knightPosition = slicedToArray(this.state.knightPosition, 2),
-			    kx = _state$knightPosition[0],
-			    ky = _state$knightPosition[1];
+            var _state$knightPosition = slicedToArray(this.state.knightPosition, 2),
+                kx = _state$knightPosition[0],
+                ky = _state$knightPosition[1];
 
-			return x === kx && y === ky ? 'knight' : null;
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var _this2 = this;
+            return x === kx && y === ky ? 'knight' : null;
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
 
-			return react.createElement(
-				'div',
-				{ className: 'chess-demo' },
-				react.createElement(
-					DragSnapContext,
-					null,
-					react.createElement(
-						'div',
-						{ className: 'chess-board' },
-						Array(Math.pow(ROWS, 2)).fill().map(function (_, i) {
-							var position = [i % ROWS, Math.floor(i / ROWS)];
-							var piece = _this2.getPieceAtPosition(position);
+            return react.createElement(
+                'div',
+                { className: 'chess-demo' },
+                react.createElement(
+                    DragSnapContext,
+                    null,
+                    react.createElement(
+                        'div',
+                        { className: 'chess-board' },
+                        Array(Math.pow(ROWS, 2)).fill().map(function (_, i) {
+                            var position = [i % ROWS, Math.floor(i / ROWS)];
+                            var piece = _this2.getPieceAtPosition(position);
 
-							return react.createElement(
-								SquareTarget,
-								{
-									onDropComplete: function onDropComplete() {
-										return _this2.setState({ knightPosition: position });
-									},
-									width: 100 / ROWS + '%',
-									height: 100 / ROWS + '%',
-									position: position,
-									key: i
-								},
-								piece && react.createElement(DraggablePiece, { piece: piece, dragData: { piece: piece, position: position } })
-							);
-						})
-					)
-				)
-			);
-		}
-	}]);
-	return ChessBoard;
+                            return react.createElement(
+                                SquareTarget,
+                                {
+                                    onDropComplete: function onDropComplete() {
+                                        return _this2.setState({ knightPosition: position });
+                                    },
+                                    width: 100 / ROWS + '%',
+                                    height: 100 / ROWS + '%',
+                                    position: position,
+                                    key: i
+                                },
+                                piece && react.createElement(DraggablePiece, { piece: piece, dragData: { piece: piece, position: position } })
+                            );
+                        })
+                    )
+                )
+            );
+        }
+    }]);
+    return ChessBoard;
 }(react.Component);
 
-var DraggableSquare$2 = configure()(function () {
+var DraggableSquare$1 = configure()(function () {
   return react.createElement('div', { className: 'drag-square' });
 });
 
 var Snapper = function Snapper() {
-	return react.createElement('div', { className: 'snapper' });
+    return react.createElement('div', { className: 'snapper' });
 };
 
 var snapConfig$3 = {
-	snapTransform: SnapTransformers.noSnapping,
-	dragSnapCriteria: SnapCriteria.never,
-	releaseSnapCriteria: SnapCriteria.always
+    snapTransform: SnapTransformers.noSnapping,
+    dragSnapCriteria: SnapCriteria.never,
+    releaseSnapCriteria: SnapCriteria.always
 };
 
-var SnapTarget$1 = configure$1(snapConfig$3)(Snapper);
+var SnapTarget = configure$1(snapConfig$3)(Snapper);
 
 var css$6 = ".drop-test {\n    width: 100%;\n    height: 100%;\n    padding: 50px;\n    box-sizing: border-box;\n    line-height: 0;\n}\n\n.drop-test .square-wrapper {\n    position: absolute;\n    display: inline-block;\n    line-height: 0;\n}\n\n.drop-test .drag-square {\n    display: inline-block;\n    background: white;\n    position: relative;\n    width: 100px;\n    height: 100px;\n}\n\n.drop-test .snapper {\n    left: 0;\n    top: 0;\n    right: 0;\n    bottom: 0;\n    position: absolute;\n    pointer-events: none;\n}";
 styleInject(css$6);
 
 var DropTest = function (_React$Component) {
-	inherits(DropTest, _React$Component);
+    inherits(DropTest, _React$Component);
 
-	function DropTest(props) {
-		classCallCheck(this, DropTest);
+    function DropTest(props) {
+        classCallCheck(this, DropTest);
 
-		var _this = possibleConstructorReturn(this, (DropTest.__proto__ || Object.getPrototypeOf(DropTest)).call(this, props));
+        var _this = possibleConstructorReturn(this, (DropTest.__proto__ || Object.getPrototypeOf(DropTest)).call(this, props));
 
-		_this.state = {
-			x: 0,
-			y: 0
-		};
-		return _this;
-	}
+        _this.state = {
+            x: 0,
+            y: 0
+        };
+        return _this;
+    }
 
-	createClass(DropTest, [{
-		key: 'targetDropHandler',
-		value: function targetDropHandler(_ref, _ref2) {
-			var transform = _ref.transform;
-			var width = _ref2.width,
-			    height = _ref2.height;
+    createClass(DropTest, [{
+        key: 'targetDropHandler',
+        value: function targetDropHandler(_ref, _ref2) {
+            var transform = _ref.transform;
+            var width = _ref2.width,
+                height = _ref2.height;
 
-			var x = transform.x + width / 2 - transform.width / 2;
-			var y = transform.y + height / 2 - transform.height / 2;
+            var x = transform.x + width / 2 - transform.width / 2;
+            var y = transform.y + height / 2 - transform.height / 2;
 
-			this.setState({ x: x, y: y });
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var _state = this.state,
-			    x = _state.x,
-			    y = _state.y;
+            this.setState({ x: x, y: y });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _state = this.state,
+                x = _state.x,
+                y = _state.y;
 
 
-			return react.createElement(
-				'div',
-				{ className: 'drop-test' },
-				react.createElement('div', {
-					id: 'aim1',
-					className: 'drag-square',
-					style: {
-						pointerEvents: 'none',
-						background: 'none',
-						outline: '2px dashed white',
-						transform: 'translate(200px, 100px)',
-						left: 0,
-						top: 0,
-						position: 'absolute'
-					}
-				}),
-				react.createElement(
-					DragSnapContext,
-					null,
-					react.createElement(SnapTarget$1, { onDropComplete: this.targetDropHandler.bind(this) }),
-					react.createElement(
-						'div',
-						{
-							className: 'square-wrapper',
-							style: {
-								left: x + 'px',
-								top: y + 'px',
-								transform: 'translate(-0%,-0%)'
-							}
-						},
-						react.createElement(DraggableSquare$2, null)
-					),
-					react.createElement('div', {
-						id: 'aim',
-						className: 'drag-square',
-						style: {
-							pointerEvents: 'none',
-							background: 'none',
-							outline: '2px dashed gray',
-							transform: 'translate(200px, 100px)',
-							left: 0,
-							top: 0,
-							position: 'absolute'
-						}
-					})
-				)
-			);
-		}
-	}]);
-	return DropTest;
+            return react.createElement(
+                'div',
+                { className: 'drop-test' },
+                react.createElement('div', {
+                    id: 'aim1',
+                    className: 'drag-square',
+                    style: {
+                        pointerEvents: 'none',
+                        background: 'none',
+                        outline: '2px dashed white',
+                        transform: 'translate(200px, 100px)',
+                        left: 0,
+                        top: 0,
+                        position: 'absolute'
+                    }
+                }),
+                react.createElement(
+                    DragSnapContext,
+                    null,
+                    react.createElement(SnapTarget, { onDropComplete: this.targetDropHandler.bind(this) }),
+                    react.createElement(
+                        'div',
+                        {
+                            className: 'square-wrapper',
+                            style: {
+                                left: x + 'px',
+                                top: y + 'px',
+                                transform: 'translate(-0%,-0%)'
+                            }
+                        },
+                        react.createElement(DraggableSquare$1, null)
+                    ),
+                    react.createElement('div', {
+                        id: 'aim',
+                        className: 'drag-square',
+                        style: {
+                            pointerEvents: 'none',
+                            background: 'none',
+                            outline: '2px dashed gray',
+                            transform: 'translate(200px, 100px)',
+                            left: 0,
+                            top: 0,
+                            position: 'absolute'
+                        }
+                    })
+                )
+            );
+        }
+    }]);
+    return DropTest;
 }(react.Component);
 
 var DraggableBall = configure()(function (_ref) {
@@ -27168,11 +26911,11 @@ var DraggableBall = configure()(function (_ref) {
   return react.createElement('div', { className: 'ball', style: { background: isDragClone ? 'blue' : 'red' } });
 });
 
-var config$4 = {
+var config$3 = {
     snapCriteria: SnapCriteria.isCenterWithinRadius('300%')
 };
 
-var Square$3 = function Square(_ref) {
+var Square$2 = function Square(_ref) {
     var hasBall = _ref.hasBall;
     return react.createElement(
         'div',
@@ -27181,7 +26924,7 @@ var Square$3 = function Square(_ref) {
     );
 };
 
-var SquareSnapTarget = configure$1(config$4)(Square$3);
+var SquareSnapTarget = configure$1(config$3)(Square$2);
 
 var css$8 = ".easy-escape-demo {\n    width: 100%;\n    height: 100%;\n}\n\n.easy-escape-demo .target-wrapper {\n    top: 100px;\n    left: 100px;\n    position: absolute;\n    transform: translate(-50%,-50%);\n    display: flex;\n}\n\n.easy-escape-demo .target-wrapper:nth-of-type(2) {\n    left: 200px;\n}\n\n.easy-escape-demo .target-wrapper:nth-of-type(1) {\n    left: 600px;\n}\n\n.easy-escape-demo .square,\n.easy-escape-demo .ball {\n    width: 64px;\n    height: 64px;\n    line-height: 64px;\n    box-sizing: border-box;\n}\n\n.easy-escape-demo .square {\n    outline: 1px solid red;\n}\n\n.easy-escape-demo .ball {\n    border-radius: 100%;\n    background: red;\n}\n\n.easy-escape-demo .ball:before {\n    content: '';\n    font-size: 10px;\n    color: white;\n    text-align: center;\n    display: block;\n}";
 styleInject(css$8);
@@ -27391,7 +27134,7 @@ var Eye = function Eye(_ref) {
     if (draggedItems.some(function (d) {
         return d.dragState === 'dragged';
     })) {
-        //The x and y are in the local coordinate system of the snapTarget (i.e. the eye). Origo is the center of the eye.
+        // The x and y are in the local coordinate system of the snapTarget (i.e. the eye). Origo is the center of the eye.
         var _draggedItems$0$trans = draggedItems[0].transform,
             x = _draggedItems$0$trans.x,
             y = _draggedItems$0$trans.y;
@@ -27422,11 +27165,11 @@ var Eye = function Eye(_ref) {
     );
 };
 
-var config$5 = {
+var config$4 = {
     snapCriteria: SnapCriteria.never
 };
 
-var EyeTarget = configure$1(config$5, SnapTargetCollectors.allProps)(Eye);
+var EyeTarget = configure$1(config$4, SnapTargetCollectors.allProps)(Eye);
 
 var Ball$2 = function Ball() {
   return react.createElement('div', { className: 'ball' });
@@ -27476,12 +27219,12 @@ var EyeDemo = function (_React$Component) {
     return EyeDemo;
 }(react.Component);
 
-var config$6 = {
-	snapCriteria: SnapCriteria.isCenterWithinRadius('400%')
+var config$5 = {
+    snapCriteria: SnapCriteria.isCenterWithinRadius('400%')
 };
 
-var SnapTarget$2 = configure$1(config$6)(function () {
-	return react.createElement('div', { className: 'target' });
+var SnapTarget$1 = configure$1(config$5)(function () {
+    return react.createElement('div', { className: 'target' });
 });
 
 var Ball$3 = function Ball() {
@@ -27552,7 +27295,7 @@ var MovingTargetDemo = function (_React$Component) {
                         className: 'target-wrapper',
                         style: { left: x + 'px' }
                     },
-                    react.createElement(SnapTarget$2, { externalTransformation: { x: x } })
+                    react.createElement(SnapTarget$1, { externalTransformation: { x: x } })
                 )
             );
         }
@@ -27560,101 +27303,7 @@ var MovingTargetDemo = function (_React$Component) {
     return MovingTargetDemo;
 }(react.Component);
 
-var Target$2 = function Target() {
-  return react.createElement('div', { className: 'target' });
-};
-var SnapTarget$3 = configure$1()(Target$2);
-
-var Ball$4 = function Ball() {
-  return react.createElement('div', { className: 'ball' });
-};
-
-var DraggableBall$5 = configure()(Ball$4);
-
-var css$18 = ".target-wrapper {\n    position: absolute;\n    top: 20%;\n}\n\n.ball-wrapper {\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    transform: translate(-50%,-50%);\n}\n\n.target,\n.ball {\n    width: 64px;\n    height: 64px;\n    line-height: 64px;\n    border-radius: 100%;\n    box-sizing: border-box;\n}\n\n.target {\n    border: 1px solid red;\n}\n\n.ball {\n    background: red;\n}\n\n.ball:before {\n    content: 'Drag me!';\n    font-size: 10px;\n    color: white;\n    text-align: center;\n    display: block;\n}";
-styleInject(css$18);
-
-var DELTA$1 = 3;
-
-var MovingTargetDemoSimple = function (_React$Component) {
-    inherits(MovingTargetDemoSimple, _React$Component);
-
-    function MovingTargetDemoSimple(props) {
-        classCallCheck(this, MovingTargetDemoSimple);
-
-        var _this = possibleConstructorReturn(this, (MovingTargetDemoSimple.__proto__ || Object.getPrototypeOf(MovingTargetDemoSimple)).call(this, props));
-
-        _this.state = {
-            x: 0,
-            direction: 1
-        };
-
-        _this.animationId = requestAnimationFrame(_this.animate.bind(_this));
-        return _this;
-    }
-
-    createClass(MovingTargetDemoSimple, [{
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {
-            cancelAnimationFrame(this.animationId);
-        }
-    }, {
-        key: 'animate',
-        value: function animate() {
-            var _state = this.state,
-                x = _state.x,
-                direction = _state.direction;
-
-            var nextX = x + direction * DELTA$1;
-
-            if (nextX > 0 && nextX < window.innerWidth) {
-                this.setState({ x: nextX });
-            } else {
-                this.setState({ direction: direction * -1 });
-            }
-
-            this.animationId = requestAnimationFrame(this.animate.bind(this));
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var x = this.state.x;
-
-
-            return react.createElement(
-                DragSnapContext,
-                null,
-                react.createElement(
-                    'div',
-                    { className: 'ball-wrapper' },
-                    react.createElement(DraggableBall$5, null)
-                ),
-                react.createElement(
-                    'div',
-                    {
-                        className: 'target-wrapper',
-                        style: { left: x + 'px' }
-                    },
-                    react.createElement(SnapTarget$3, { continuousUpdate: true })
-                )
-            );
-        }
-    }]);
-    return MovingTargetDemoSimple;
-}(react.Component);
-
-/*
-const distance = (p1, p2 = {x: 0, y: 0}) => (
-	Math.sqrt((p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y))
-);*/
-/*
-TODO: MAKE SURE THAT IT REMEMBERS IF IT IS/WAS SNAPPING. MAKE SURE THAT
-EVERYTHING IS TRANSFERED AS CUSTOM PROPS. NO NUMBERS IN HERE!! 
-
-ALSO MAKE SURE THAT IT ONLY SNAPS TO/FROM SHAPE OR COLOR. AT LEAST DON'T
-MIX IT UP.
-*/
-var Ball$5 = function Ball(_ref) {
+var Ball$4 = function Ball(_ref) {
     var customSnapProps = _ref.customSnapProps;
     var radius = customSnapProps.radius,
         gray = customSnapProps.gray;
@@ -27679,11 +27328,11 @@ var Ball$5 = function Ball(_ref) {
 const config = {
     stiffness: 4,
     damping: 5
-};*/
+}; */
 
-var DraggableBall$6 = configure()(Ball$5);
+var DraggableBall$5 = configure()(Ball$4);
 
-var Square$4 = function Square() {
+var Square$3 = function Square() {
     return react.createElement('div', { className: 'square' });
 };
 var Round$1 = function Round() {
@@ -27716,13 +27365,13 @@ var roundConfigProportional = {
     })
 };
 
-var SquareTargetDefault = configure$1(squareConfigDefault)(Square$4);
+var SquareTargetDefault = configure$1(squareConfigDefault)(Square$3);
 var RoundTargetDefault = configure$1(roundConfigDefault)(Round$1);
-var SquareTargetProportional = configure$1(squareConfigProportional)(Square$4);
+var SquareTargetProportional = configure$1(squareConfigProportional)(Square$3);
 var RoundTargetProportional = configure$1(roundConfigProportional)(Round$1);
 
-var css$20 = ".custom-property-demo {\n    width: 100%;\n    height: 100%;\n}\n\n.custom-property-demo .target-wrapper {\n    top: 10%;\n    left: 10%;\n    position: absolute;\n    transform: translate(-50%,-50%);\n}\n\n.custom-property-demo .target-wrapper:nth-of-type(2) {\n    left: 90%;\n}\n\n.custom-property-demo .target-wrapper:nth-of-type(3) {\n    top: 90%;\n}\n\n.custom-property-demo .target-wrapper:nth-of-type(4) {\n    top: 90%;\n    left: 90%;\n}\n\n.custom-property-demo .ball-wrapper {\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    transform: translate(-50%,-50%);\n}\n\n.custom-property-demo .square,\n.custom-property-demo .circle,\n.custom-property-demo .ball {\n    width: 64px;\n    height: 64px;\n    line-height: 64px;\n    box-sizing: border-box;\n}\n\n.custom-property-demo .circle,\n.custom-property-demo .ball {\n    border-radius: 100%;\n}\n\n.custom-property-demo .square {\n    border: 2px solid red;\n    filter: grayscale(1);\n}\n\n.custom-property-demo .circle {\n    border: 1px solid red;\n}\n\n.custom-property-demo .ball {\n    background: red;\n}\n\n.custom-property-demo .ball:before {\n    content: 'Drag me!';\n    font-size: 10px;\n    color: white;\n    text-align: center;\n    display: block;\n}";
-styleInject(css$20);
+var css$18 = ".custom-property-demo {\n    width: 100%;\n    height: 100%;\n}\n\n.custom-property-demo .target-wrapper {\n    top: 10%;\n    left: 10%;\n    position: absolute;\n    transform: translate(-50%,-50%);\n}\n\n.custom-property-demo .target-wrapper:nth-of-type(2) {\n    left: 90%;\n}\n\n.custom-property-demo .target-wrapper:nth-of-type(3) {\n    top: 90%;\n}\n\n.custom-property-demo .target-wrapper:nth-of-type(4) {\n    top: 90%;\n    left: 90%;\n}\n\n.custom-property-demo .ball-wrapper {\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    transform: translate(-50%,-50%);\n}\n\n.custom-property-demo .square,\n.custom-property-demo .circle,\n.custom-property-demo .ball {\n    width: 64px;\n    height: 64px;\n    line-height: 64px;\n    box-sizing: border-box;\n}\n\n.custom-property-demo .circle,\n.custom-property-demo .ball {\n    border-radius: 100%;\n}\n\n.custom-property-demo .square {\n    border: 2px solid red;\n    filter: grayscale(1);\n}\n\n.custom-property-demo .circle {\n    border: 1px solid red;\n}\n\n.custom-property-demo .ball {\n    background: red;\n}\n\n.custom-property-demo .ball:before {\n    content: 'Drag me!';\n    font-size: 10px;\n    color: white;\n    text-align: center;\n    display: block;\n}";
+styleInject(css$18);
 
 var CustomPropertyDemo = function (_React$Component) {
     inherits(CustomPropertyDemo, _React$Component);
@@ -27764,7 +27413,7 @@ var CustomPropertyDemo = function (_React$Component) {
                     react.createElement(
                         'div',
                         { className: 'ball-wrapper' },
-                        react.createElement(DraggableBall$6, null)
+                        react.createElement(DraggableBall$5, null)
                     )
                 )
             );
@@ -27773,459 +27422,49 @@ var CustomPropertyDemo = function (_React$Component) {
     return CustomPropertyDemo;
 }(react.Component);
 
-//const STIFF_CONFIG = {damping: 30, stiffness: 300}; //TODO: CAN THIS BE FIXED?? OR SHOULD IT DEPEND ON THE STIFFNESS/DAMPING OF THE DRAGGABLE??
-//{stiffness: 180, damping: 12} (wobbly gives a pretty nice effect, although more wobbly that fb)
-//{stiffness: 120, damping: 14} (gentle) is also alright...q
-var STIFF_CONFIG = { stiffness: 120, damping: 14 };
-
-/*
- * The smoothSpringEnabler makes it possible to transition from a mode where x and y of the draggable has been applied in a
- * raw fashion, to a spring based animation. This is needed when a draggable has the sticky prop set to true (default value)
- * and is released at which point it should animate (spring animation) to its release snap position.
- * 
- *  Without the SmootSpringEnabler this transition from sticky movement (sticking to the cursor/finger without any spring
- *  effect) to spring animation will cause the draggable to abrubtly jump backwards when released (since the spring position
- *  is trailing the 'raw' position). To mitigate this, the smootSpringEnabler adds and offset to the spring-based position.
- *  However, in order to ensure that the draggable doesn't overshoot its final target position, this offset must be gradually
- *  phased out while draggable finishes its animation. 
-*/
-
-var SmoothSpringEnabler = function (_React$Component) {
-	inherits(SmoothSpringEnabler, _React$Component);
-
-	function SmoothSpringEnabler(props) {
-		classCallCheck(this, SmoothSpringEnabler);
-
-		var _this = possibleConstructorReturn(this, (SmoothSpringEnabler.__proto__ || Object.getPrototypeOf(SmoothSpringEnabler)).call(this, props));
-
-		_this.state = {
-			isEnablingSpring: false
-		};
-		return _this;
-	}
-
-	createClass(SmoothSpringEnabler, [{
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(nextProps) {
-			if (!this.props.isSpringEnabled && nextProps.isSpringEnabled) {
-				//console.log('GOT IT AS A PROP HERE AND X DIFF IS: ', (nextProps.x - nextProps.xSpring));
-				this.setState({ isEnablingSpring: true });
-			}
-
-			if (this.props.isSpringEnabled && !nextProps.isSpringEnabled) {
-				this.setState({ isEnablingSpring: false });
-			}
-		}
-	}, {
-		key: 'restHandler',
-		value: function restHandler() {
-			this.setState({ isEnablingSpring: false });
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var _props = this.props,
-			    x = _props.x,
-			    xSpring = _props.xSpring,
-			    y = _props.y,
-			    ySpring = _props.ySpring,
-			    children = _props.children;
-			var isEnablingSpring = this.state.isEnablingSpring;
-			//console.log('Diff is: ', (x - xSpring), ' but is enabling is: ', isEnablingSpring);
-
-			return react.createElement(
-				reactMotion_1,
-				{
-					style: {
-						deltaX: isEnablingSpring ? reactMotion_4(0, STIFF_CONFIG) : x - xSpring,
-						deltaY: isEnablingSpring ? reactMotion_4(0, STIFF_CONFIG) : y - ySpring
-					},
-					onRest: this.restHandler.bind(this)
-				},
-				function (_ref) {
-					var deltaX = _ref.deltaX,
-					    deltaY = _ref.deltaY;
-
-					var _x = isEnablingSpring ? xSpring + deltaX : xSpring;
-					var _y = isEnablingSpring ? ySpring + deltaY : ySpring;
-
-					/*if(isEnablingSpring) {
-     	console.log('The deltaXx is: ', deltaX);
-     }*/
-
-					return children({ xSpring: _x, ySpring: _y, isEnablingSpring: isEnablingSpring });
-				}
-			);
-		}
-	}]);
-	return SmoothSpringEnabler;
-}(react.Component);
-
-SmoothSpringEnabler.propTypes = {
-	isSpringEnabled: propTypes.bool.isRequired,
-	x: propTypes.number.isRequired,
-	y: propTypes.number.isRequired,
-	xSpring: propTypes.number.isRequired,
-	ySpring: propTypes.number.isRequired,
-	children: propTypes.func.isRequired
-};
-
-var SpringRenderer$1 = function (_React$Component) {
-	inherits(SpringRenderer, _React$Component);
-
-	function SpringRenderer() {
-		classCallCheck(this, SpringRenderer);
-		return possibleConstructorReturn(this, (SpringRenderer.__proto__ || Object.getPrototypeOf(SpringRenderer)).apply(this, arguments));
-	}
-
-	createClass(SpringRenderer, [{
-		key: 'render',
-		value: function render() {
-			var _props = this.props,
-			    x = _props.x,
-			    y = _props.y,
-			    children = _props.children,
-			    springConfig = _props.springConfig,
-			    ignoreSticky = _props.ignoreSticky,
-			    sticky = _props.sticky;
-
-			var isSpringEnabled = !sticky || ignoreSticky;
-
-			return react.createElement(
-				reactMotion_1,
-				{
-					style: {
-						xSpring: reactMotion_4(x, springConfig),
-						ySpring: reactMotion_4(y, springConfig)
-					}
-				},
-				function (_ref) {
-					var xSpring = _ref.xSpring,
-					    ySpring = _ref.ySpring;
-					return react.createElement(
-						SmoothSpringEnabler,
-						{
-							isSpringEnabled: isSpringEnabled,
-							x: x,
-							y: y,
-							xSpring: xSpring,
-							ySpring: ySpring
-						},
-						function (_ref2) {
-							var xSpring = _ref2.xSpring,
-							    ySpring = _ref2.ySpring,
-							    isEnablingSpring = _ref2.isEnablingSpring;
-
-							var useSpring = isSpringEnabled || isEnablingSpring;
-							var _x = useSpring ? xSpring : x;
-							var _y = useSpring ? ySpring : y;
-
-							return react.createElement(
-								'div',
-								{
-									style: {
-										display: 'inline-block',
-										transformOrigin: '50% 50%',
-										transform: 'translate3d(' + _x + 'px,' + _y + 'px, 0)',
-										position: 'absolute',
-										left: 0,
-										top: 0
-									}
-								},
-								children
-							);
-						}
-					);
-				}
-			);
-		}
-	}]);
-	return SpringRenderer;
-}(react.Component);
-
-SpringRenderer$1.propTypes = {
-	x: propTypes.number.isRequired,
-	y: propTypes.number.isRequired,
-	children: propTypes.node.isRequired,
-	ignoreSticky: propTypes.bool.isRequired,
-	springConfig: propTypes.shape({
-		stiffness: propTypes.number.isRequired,
-		damping: propTypes.number.isRequired
-	}).isRequired,
-	sticky: propTypes.bool.isRequired
-};
-
-var DELTA$2 = 20;
-var SPRING_CONFIG = { stiffness: 800, damping: 100 };
-
-//THIS SEEMS TO WORK FINE, EXCEPT WHEN THE SYSTEM IS OVERDAMPED!!
-function getRestTime() {
-	var t = 10 / SPRING_CONFIG.damping * 1000;
-
-	if (Math.pow(SPRING_CONFIG.damping, 2) > 4 * SPRING_CONFIG.stiffness) {
-		console.log('It is overdamped!!! ');
-	}
-
-	return t;
-}
-
-var SpringEnablerTest = function (_React$Component) {
-	inherits(SpringEnablerTest, _React$Component);
-
-	function SpringEnablerTest(props) {
-		classCallCheck(this, SpringEnablerTest);
-
-		var _this = possibleConstructorReturn(this, (SpringEnablerTest.__proto__ || Object.getPrototypeOf(SpringEnablerTest)).call(this, props));
-
-		_this.state = {
-			x: 0,
-			y: 20,
-			ignoreSticky: false,
-			isAtRest: false
-		};
-
-		_this.animationId = requestAnimationFrame(_this.animate.bind(_this));
-		return _this;
-	}
-
-	createClass(SpringEnablerTest, [{
-		key: 'componentWillUnmount',
-		value: function componentWillUnmount() {
-			cancelAnimationFrame(this.animationId);
-		}
-	}, {
-		key: 'animate',
-		value: function animate() {
-			var _this2 = this;
-
-			var x = this.state.x;
-
-
-			if (x < 300) {
-				this.setState({ x: x + DELTA$2 });
-				DELTA$2++;
-				this.animationId = requestAnimationFrame(this.animate.bind(this));
-			} else {
-				this.setState({ x: x + 10, ignoreSticky: true });
-				setTimeout(function () {
-					return _this2.setState({ isAtRest: true });
-				}, getRestTime());
-			}
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			return react.createElement(
-				'div',
-				{ className: 'spring-enabler-test' },
-				react.createElement(
-					SpringRenderer$1,
-					{
-						x: this.state.x,
-						y: this.state.y,
-						ignoreSticky: this.state.ignoreSticky,
-						springConfig: SPRING_CONFIG,
-						sticky: true
-					},
-					react.createElement('div', { style: { width: '50px', height: '50px', display: 'inline-block', background: this.state.isAtRest ? 'green' : 'red' } })
-				)
-			);
-		}
-	}]);
-	return SpringEnablerTest;
-}(react.Component);
-
-/*
-				<SpringRenderer
-					x={this.state.x}
-					y={this.state.y}
-					ignoreSticky={this.state.ignoreSticky}
-					springConfig={SPRING_CONFIG}
-					sticky={false}
-				>
-					<div style={{width: '50px', height: '50px', display: 'inline-block', background: this.state.isAtRest ? 'green' : 'red', opacity: 0.3}}/>
-				</SpringRenderer>*/
-
-var Overlap = function (_React$Component) {
-    inherits(Overlap, _React$Component);
-
-    function Overlap(props) {
-        classCallCheck(this, Overlap);
-
-        var _this = possibleConstructorReturn(this, (Overlap.__proto__ || Object.getPrototypeOf(Overlap)).call(this, props));
-
-        _this.state = {
-            inverseMatrix: null
-        };
-        return _this;
-    }
-
-    createClass(Overlap, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.setState({
-                inverseMatrix: inverse(getTransformationMatrix(this.green))
-            });
-        }
-    }, {
-        key: 'renderBoxes',
-        value: function renderBoxes(matrix) {
-            var _this2 = this;
-
-            var transform = '';
-
-            if (matrix) {
-                var _qrDecompose = qrDecompose(matrix),
-                    x = _qrDecompose.x,
-                    y = _qrDecompose.y,
-                    scaleX = _qrDecompose.scaleX,
-                    scaleY = _qrDecompose.scaleY,
-                    rotate = _qrDecompose.rotate,
-                    skewX = _qrDecompose.skewX;
-
-                transform = '' + 'translate3d(calc(' + x + 'px),calc(' + y + 'px), 0) ' + 'rotate(' + rotate + 'deg) ' + 'scaleX(' + scaleX + ') ' + 'scaleY(' + scaleY + ') ' + 'skewX(' + skewX + 'deg) ' + '';
-            }
-
-            return [react.createElement(
-                'div',
-                {
-                    style: {
-                        position: 'absolute',
-                        left: transform ? '200px' : 0,
-                        top: transform ? '200px' : 0,
-                        transform: transform
-                    },
-                    key: '1'
-                },
-                react.createElement(
-                    'div',
-                    {
-                        style: {
-                            position: 'absolute',
-                            left: 0,
-                            top: 0,
-                            transform: 'translate(350px, 100px) rotate(30deg) scaleX(1.1) skewX(15deg)'
-                        }
-                    },
-                    react.createElement('div', {
-                        style: {
-                            width: '200px',
-                            height: '100px',
-                            background: 'red',
-                            display: 'inline-block'
-                        },
-                        ref: function ref(el) {
-                            return _this2.red = el;
-                        }
-                    })
-                )
-            ), react.createElement(
-                'div',
-                {
-                    style: {
-                        position: 'absolute',
-                        left: transform ? '200px' : 0,
-                        top: transform ? '200px' : 0,
-                        transform: transform
-                    },
-                    key: '2'
-                },
-                react.createElement(
-                    'div',
-                    {
-                        style: {
-                            position: 'absolute',
-                            left: 0,
-                            top: 0,
-                            transform: 'translate(400px, 100px) rotate(-45deg) scaleX(1.3) skewX(-35deg)'
-                        }
-                    },
-                    react.createElement('div', {
-                        style: {
-                            width: '250px',
-                            height: '80px',
-                            background: 'green',
-                            display: 'inline-block'
-                        },
-                        ref: function ref(el) {
-                            return _this2.green = el;
-                        }
-                    })
-                )
-            )];
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return react.createElement(
-                'div',
-                { className: 'overlap' },
-                this.renderBoxes(),
-                this.state.inverseMatrix ? this.renderBoxes(this.state.inverseMatrix) : null
-            );
-        }
-    }]);
-    return Overlap;
-}(react.Component);
-
-/*
-Strategy is:
-1. Take the targetWidth and targetHeight and transform it by the targets own transformatrix matrix (the four corners)
-2. Then transform all four points by the inverse of the other matrix.
-3. Then compare the output points with the targetWidth and targetHeight of the other element
-
-4. Do the same the other way around
-
-Consider making a draggableToTarget(point) => point  and targetToDraggable(point) => point
-
-Alternative is to provide the raw matrices...
-
-
-*/
-
 var TransitionElement = function TransitionElement(_ref) {
   var dragState = _ref.dragState;
   return react.createElement('div', { className: 'transition-element ' + dragState });
 };
 var DraggableTransitionElement = configure()(TransitionElement);
 
-var css$22 = ".transition-element-wrapper {\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    transform: translate(-50%,-50%);\n}\n\n.transition-element {\n    width: 64px;\n    height: 64px;\n    line-height: 64px;\n    border-radius: 100%;\n    box-sizing: border-box;\n    background-color: red;\n    transition: background-color 3s linear;\n}\n\n.transition-element:not(.inactive):not(.released) {\n    background: blue;\n}";
-styleInject(css$22);
+var css$20 = ".transition-element-wrapper {\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    transform: translate(-50%,-50%);\n}\n\n.transition-element {\n    width: 64px;\n    height: 64px;\n    line-height: 64px;\n    border-radius: 100%;\n    box-sizing: border-box;\n    background-color: red;\n    transition: background-color 3s linear;\n}\n\n.transition-element:not(.inactive):not(.released) {\n    background: blue;\n}";
+styleInject(css$20);
 
 var CSSTransitionDemo = function (_React$Component) {
-	inherits(CSSTransitionDemo, _React$Component);
+    inherits(CSSTransitionDemo, _React$Component);
 
-	function CSSTransitionDemo() {
-		classCallCheck(this, CSSTransitionDemo);
-		return possibleConstructorReturn(this, (CSSTransitionDemo.__proto__ || Object.getPrototypeOf(CSSTransitionDemo)).apply(this, arguments));
-	}
+    function CSSTransitionDemo() {
+        classCallCheck(this, CSSTransitionDemo);
+        return possibleConstructorReturn(this, (CSSTransitionDemo.__proto__ || Object.getPrototypeOf(CSSTransitionDemo)).apply(this, arguments));
+    }
 
-	createClass(CSSTransitionDemo, [{
-		key: 'render',
-		value: function render() {
-			return react.createElement(
-				DragSnapContext,
-				null,
-				react.createElement(
-					'div',
-					{ className: 'transition-element-wrapper' },
-					react.createElement(DraggableTransitionElement, null)
-				)
-			);
-		}
-	}]);
-	return CSSTransitionDemo;
+    createClass(CSSTransitionDemo, [{
+        key: 'render',
+        value: function render() {
+            return react.createElement(
+                DragSnapContext,
+                null,
+                react.createElement(
+                    'div',
+                    { className: 'transition-element-wrapper' },
+                    react.createElement(DraggableTransitionElement, null)
+                )
+            );
+        }
+    }]);
+    return CSSTransitionDemo;
 }(react.Component);
 
-var css$24 = ".self-transform-demo {\n    width: 100%;\n    height: 100%;\n}\n\n.self-transform-demo .self-transform-ball {\n    background: content-box linear-gradient(0deg,#ccB5C2, #ccB5C2), linear-gradient(0deg,#C5CF8B, #C5CF8B);\n    display: inline-block;\n    /*margin: 8px 8px 4px 4px;*/\n    transform: translate(50px, 50px) skewX(10deg) skewY(15deg);\n    border: 4px dashed black;\n    /*border-right-width: 2px;*/\n    padding: 8px;\n    padding: 16px 16px 2px 2px;\n    opacity: 0.6;\n    color: white;\n    font-size: 10px;\n    text-align: center;\n    -webkit-font-smoothing: antialiased;\n}\n\n.self-transform-demo .self-transform-ball.content-box {\n    box-sizing: content-box;\n    width: 40px/*128px*/;\n    height: 38px/*128px*/;\n}\n\n.self-transform-demo .self-transform-ball.border-box {\n    box-sizing: border-box;\n    width: 64px;\n    height: 64px;\n}\n\n.self-transform-demo .self-transform-ball.content-box:before {\n    content: 'Drag me! (Content box)';\n}\n\n.self-transform-demo .self-transform-ball.border-box:before {\n    content: 'Drag me! (Border box)';\n}\n\n.self-transform-demo .self-transform-target {\n    transform: rotate(-45deg) skewX(-5deg) skewY(-5deg);;\n    /*outline: 1px dashed black;*/\n    display: inline-block;\n    position: absolute;\n    left: 0;\n    top: 0;\n    background: content-box linear-gradient(0deg,#8EB5C2, #8EB5C2), linear-gradient(0deg,#C5CF8B, #C5CF8B);\n    color: white;\n    padding: 32px 32px 8px 8px;\n}\n\n.self-transform-demo .self-transform-target.border-box {\n    box-sizing: border-box;\n    width: 128px;\n    height: 128px;\n}\n\n.self-transform-demo .self-transform-target.border-box:before {\n    content: \"Border box\";\n}\n\n.self-transform-demo .self-transform-target.content-box {\n    box-sizing: content-box;\n    width: 64px;\n    height: 64px;\n}\n\n.self-transform-demo .self-transform-target.content-box:before {\n    content: \"Content box\";\n}";
-styleInject(css$24);
+var css$22 = ".self-transform-demo {\n    width: 100%;\n    height: 100%;\n}\n\n.self-transform-demo .self-transform-ball {\n    background: content-box linear-gradient(0deg,#ccB5C2, #ccB5C2), linear-gradient(0deg,#C5CF8B, #C5CF8B);\n    display: inline-block;\n    /*margin: 8px 8px 4px 4px;*/\n    transform: translate(50px, 50px) skewX(10deg) skewY(15deg);\n    border: 4px dashed black;\n    /*border-right-width: 2px;*/\n    padding: 8px;\n    padding: 16px 16px 2px 2px;\n    opacity: 0.6;\n    color: white;\n    font-size: 10px;\n    text-align: center;\n    -webkit-font-smoothing: antialiased;\n}\n\n.self-transform-demo .self-transform-ball.content-box {\n    box-sizing: content-box;\n    width: 40px/*128px*/;\n    height: 38px/*128px*/;\n}\n\n.self-transform-demo .self-transform-ball.border-box {\n    box-sizing: border-box;\n    width: 64px;\n    height: 64px;\n}\n\n.self-transform-demo .self-transform-ball.content-box:before {\n    content: 'Drag me! (Content box)';\n}\n\n.self-transform-demo .self-transform-ball.border-box:before {\n    content: 'Drag me! (Border box)';\n}\n\n.self-transform-demo .self-transform-target {\n    transform: rotate(-45deg) skewX(-5deg) skewY(-5deg);;\n    /*outline: 1px dashed black;*/\n    display: inline-block;\n    position: absolute;\n    left: 0;\n    top: 0;\n    background: content-box linear-gradient(0deg,#8EB5C2, #8EB5C2), linear-gradient(0deg,#C5CF8B, #C5CF8B);\n    color: white;\n    padding: 32px 32px 8px 8px;\n}\n\n.self-transform-demo .self-transform-target.border-box {\n    box-sizing: border-box;\n    width: 128px;\n    height: 128px;\n}\n\n.self-transform-demo .self-transform-target.border-box:before {\n    content: \"Border box\";\n}\n\n.self-transform-demo .self-transform-target.content-box {\n    box-sizing: content-box;\n    width: 64px;\n    height: 64px;\n}\n\n.self-transform-demo .self-transform-target.content-box:before {\n    content: \"Content box\";\n}";
+styleInject(css$22);
 
-var DraggableBall$7 = configure()(function (_ref) {
+var DraggableBall$6 = configure()(function (_ref) {
     var _ref$className = _ref.className,
         className = _ref$className === undefined ? '' : _ref$className;
     return react.createElement('div', { className: 'self-transform-ball ' + className });
 });
-var SnapTarget$4 = configure$1({ snapCriteria: SnapCriteria.isCenterWithinRadius('100%'), snapTransform: { scale: 1 } })(function (_ref2) {
+var SnapTarget$2 = configure$1({ snapCriteria: SnapCriteria.isCenterWithinRadius('100%'), snapTransform: { scale: 1 } })(function (_ref2) {
     var _ref2$className = _ref2.className,
         className = _ref2$className === undefined ? '' : _ref2$className;
     return react.createElement('div', { className: 'self-transform-target ' + className });
@@ -28248,17 +27487,17 @@ var SelfTransformDemo = function (_React$Component) {
                 react.createElement(
                     DragSnapContext,
                     null,
-                    react.createElement(DraggableBall$7, { className: 'content-box' }),
-                    react.createElement(DraggableBall$7, { className: 'border-box' }),
+                    react.createElement(DraggableBall$6, { className: 'content-box' }),
+                    react.createElement(DraggableBall$6, { className: 'border-box' }),
                     react.createElement(
                         'div',
                         { style: { transform: 'translate(200px, 100px)' } },
-                        react.createElement(SnapTarget$4, { className: 'content-box' })
+                        react.createElement(SnapTarget$2, { className: 'content-box' })
                     ),
                     react.createElement(
                         'div',
                         { style: { transform: 'translate(400px, 100px)' } },
-                        react.createElement(SnapTarget$4, { className: 'border-box' })
+                        react.createElement(SnapTarget$2, { className: 'border-box' })
                     )
                 )
             );
@@ -28267,13 +27506,1910 @@ var SelfTransformDemo = function (_React$Component) {
     return SelfTransformDemo;
 }(react.Component);
 
-function toArray$2(val) {
+var Deck = "7bec1e14874663e1.svg";
+
+var global$1$1 = (typeof global$1 !== "undefined" ? global$1 :
+            typeof self !== "undefined" ? self :
+            typeof window !== "undefined" ? window : {});
+
+// shim for using process in browser
+// based off https://github.com/defunctzombie/node-process/blob/master/browser.js
+
+function defaultSetTimout$1() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout$1 () {
+    throw new Error('clearTimeout has not been defined');
+}
+var cachedSetTimeout$1 = defaultSetTimout$1;
+var cachedClearTimeout$1 = defaultClearTimeout$1;
+if (typeof global$1$1.setTimeout === 'function') {
+    cachedSetTimeout$1 = setTimeout;
+}
+if (typeof global$1$1.clearTimeout === 'function') {
+    cachedClearTimeout$1 = clearTimeout;
+}
+
+function runTimeout$1(fun) {
+    if (cachedSetTimeout$1 === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout$1 === defaultSetTimout$1 || !cachedSetTimeout$1) && setTimeout) {
+        cachedSetTimeout$1 = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout$1(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout$1.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout$1.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout$1(marker) {
+    if (cachedClearTimeout$1 === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout$1 === defaultClearTimeout$1 || !cachedClearTimeout$1) && clearTimeout) {
+        cachedClearTimeout$1 = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout$1(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout$1.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout$1.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue$2 = [];
+var draining$1 = false;
+var currentQueue$1;
+var queueIndex$1 = -1;
+
+function cleanUpNextTick$1() {
+    if (!draining$1 || !currentQueue$1) {
+        return;
+    }
+    draining$1 = false;
+    if (currentQueue$1.length) {
+        queue$2 = currentQueue$1.concat(queue$2);
+    } else {
+        queueIndex$1 = -1;
+    }
+    if (queue$2.length) {
+        drainQueue$1();
+    }
+}
+
+function drainQueue$1() {
+    if (draining$1) {
+        return;
+    }
+    var timeout = runTimeout$1(cleanUpNextTick$1);
+    draining$1 = true;
+
+    var len = queue$2.length;
+    while(len) {
+        currentQueue$1 = queue$2;
+        queue$2 = [];
+        while (++queueIndex$1 < len) {
+            if (currentQueue$1) {
+                currentQueue$1[queueIndex$1].run();
+            }
+        }
+        queueIndex$1 = -1;
+        len = queue$2.length;
+    }
+    currentQueue$1 = null;
+    draining$1 = false;
+    runClearTimeout$1(timeout);
+}
+function nextTick$1(fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue$2.push(new Item$1(fun, args));
+    if (queue$2.length === 1 && !draining$1) {
+        runTimeout$1(drainQueue$1);
+    }
+}
+// v8 likes predictible objects
+function Item$1(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item$1.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+var title$1 = 'browser';
+var platform$1 = 'browser';
+var browser$1 = true;
+var env$1 = {};
+var argv$1 = [];
+var version$1 = ''; // empty string to avoid regexp issues
+var versions$1 = {};
+var release$1 = {};
+var config$6 = {};
+
+function noop$1() {}
+
+var on$1 = noop$1;
+var addListener$1 = noop$1;
+var once$1 = noop$1;
+var off$1 = noop$1;
+var removeListener$1 = noop$1;
+var removeAllListeners$1 = noop$1;
+var emit$1 = noop$1;
+
+function binding$1(name) {
+    throw new Error('process.binding is not supported');
+}
+
+function cwd$1 () { return '/' }
+function chdir$1 (dir) {
+    throw new Error('process.chdir is not supported');
+}
+function umask$1() { return 0; }
+
+// from https://github.com/kumavis/browser-process-hrtime/blob/master/index.js
+var performance$2 = global$1$1.performance || {};
+var performanceNow$5 =
+  performance$2.now        ||
+  performance$2.mozNow     ||
+  performance$2.msNow      ||
+  performance$2.oNow       ||
+  performance$2.webkitNow  ||
+  function(){ return (new Date()).getTime() };
+
+// generate timestamp or delta
+// see http://nodejs.org/api/process.html#process_process_hrtime
+function hrtime$1(previousTimestamp){
+  var clocktime = performanceNow$5.call(performance$2)*1e-3;
+  var seconds = Math.floor(clocktime);
+  var nanoseconds = Math.floor((clocktime%1)*1e9);
+  if (previousTimestamp) {
+    seconds = seconds - previousTimestamp[0];
+    nanoseconds = nanoseconds - previousTimestamp[1];
+    if (nanoseconds<0) {
+      seconds--;
+      nanoseconds += 1e9;
+    }
+  }
+  return [seconds,nanoseconds]
+}
+
+var startTime$1 = new Date();
+function uptime$1() {
+  var currentTime = new Date();
+  var dif = currentTime - startTime$1;
+  return dif / 1000;
+}
+
+var process$1 = {
+  nextTick: nextTick$1,
+  title: title$1,
+  browser: browser$1,
+  env: env$1,
+  argv: argv$1,
+  version: version$1,
+  versions: versions$1,
+  on: on$1,
+  addListener: addListener$1,
+  once: once$1,
+  off: off$1,
+  removeListener: removeListener$1,
+  removeAllListeners: removeAllListeners$1,
+  emit: emit$1,
+  binding: binding$1,
+  cwd: cwd$1,
+  chdir: chdir$1,
+  umask: umask$1,
+  hrtime: hrtime$1,
+  platform: platform$1,
+  release: release$1,
+  config: config$6,
+  uptime: uptime$1
+};
+
+function createCommonjsModule$1(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+"use strict";
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ */
+
+function makeEmptyFunction$1(arg) {
+  return function () {
+    return arg;
+  };
+}
+
+/**
+ * This function accepts and discards inputs; it has no side effects. This is
+ * primarily useful idiomatically for overridable function endpoints which
+ * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+ */
+var emptyFunction$2 = function emptyFunction() {};
+
+emptyFunction$2.thatReturns = makeEmptyFunction$1;
+emptyFunction$2.thatReturnsFalse = makeEmptyFunction$1(false);
+emptyFunction$2.thatReturnsTrue = makeEmptyFunction$1(true);
+emptyFunction$2.thatReturnsNull = makeEmptyFunction$1(null);
+emptyFunction$2.thatReturnsThis = function () {
+  return this;
+};
+emptyFunction$2.thatReturnsArgument = function (arg) {
+  return arg;
+};
+
+var emptyFunction_1$2 = emptyFunction$2;
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+'use strict';
+
+/**
+ * Use invariant() to assert state which your program assumes to be true.
+ *
+ * Provide sprintf-style format (only %s is supported) and arguments
+ * to provide information about what broke and what you were
+ * expecting.
+ *
+ * The invariant message will be stripped in production, but the invariant
+ * will remain to ensure logic does not differ in production.
+ */
+
+var validateFormat$1 = function validateFormat(format) {};
+
+if (process$1.env.NODE_ENV !== 'production') {
+  validateFormat$1 = function validateFormat(format) {
+    if (format === undefined) {
+      throw new Error('invariant requires an error message argument');
+    }
+  };
+}
+
+function invariant$5(condition, format, a, b, c, d, e, f) {
+  validateFormat$1(format);
+
+  if (!condition) {
+    var error;
+    if (format === undefined) {
+      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+    } else {
+      var args = [a, b, c, d, e, f];
+      var argIndex = 0;
+      error = new Error(format.replace(/%s/g, function () {
+        return args[argIndex++];
+      }));
+      error.name = 'Invariant Violation';
+    }
+
+    error.framesToPop = 1; // we don't care about invariant's own frame
+    throw error;
+  }
+}
+
+var invariant_1$3 = invariant$5;
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+'use strict';
+
+
+
+/**
+ * Similar to invariant but only logs a warning if the condition is not met.
+ * This can be used to log issues in development environments in critical
+ * paths. Removing the logging code for production environments will keep the
+ * same logic and follow the same code paths.
+ */
+
+var warning$3 = emptyFunction_1$2;
+
+if (process$1.env.NODE_ENV !== 'production') {
+  var printWarning$1 = function printWarning(format) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    var argIndex = 0;
+    var message = 'Warning: ' + format.replace(/%s/g, function () {
+      return args[argIndex++];
+    });
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+
+  warning$3 = function warning(condition, format) {
+    if (format === undefined) {
+      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+
+    if (format.indexOf('Failed Composite propType: ') === 0) {
+      return; // Ignore CompositeComponent proptype check.
+    }
+
+    if (!condition) {
+      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        args[_key2 - 2] = arguments[_key2];
+      }
+
+      printWarning$1.apply(undefined, [format].concat(args));
+    }
+  };
+}
+
+var warning_1$2 = warning$3;
+
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+'use strict';
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols$1 = Object.getOwnPropertySymbols;
+var hasOwnProperty$2 = Object.prototype.hasOwnProperty;
+var propIsEnumerable$1 = Object.prototype.propertyIsEnumerable;
+
+function toObject$1(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative$1() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+var objectAssign$2 = shouldUseNative$1() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject$1(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty$2.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols$1) {
+			symbols = getOwnPropertySymbols$1(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable$1.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+'use strict';
+
+var ReactPropTypesSecret$3 = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+var ReactPropTypesSecret_1$2 = ReactPropTypesSecret$3;
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+'use strict';
+
+if (process$1.env.NODE_ENV !== 'production') {
+  var invariant$1$1 = invariant_1$3;
+  var warning$1$1 = warning_1$2;
+  var ReactPropTypesSecret$1$1 = ReactPropTypesSecret_1$2;
+  var loggedTypeFailures$1 = {};
+}
+
+/**
+ * Assert that the values match with the type specs.
+ * Error messages are memorized and will only be shown once.
+ *
+ * @param {object} typeSpecs Map of name to a ReactPropType
+ * @param {object} values Runtime values that need to be type-checked
+ * @param {string} location e.g. "prop", "context", "child context"
+ * @param {string} componentName Name of the component for error messages.
+ * @param {?Function} getStack Returns the component stack.
+ * @private
+ */
+function checkPropTypes$2(typeSpecs, values, location, componentName, getStack) {
+  if (process$1.env.NODE_ENV !== 'production') {
+    for (var typeSpecName in typeSpecs) {
+      if (typeSpecs.hasOwnProperty(typeSpecName)) {
+        var error;
+        // Prop type validation may throw. In case they do, we don't want to
+        // fail the render phase where it didn't fail before. So we log it.
+        // After these have been cleaned up, we'll let them throw.
+        try {
+          // This is intentionally an invariant that gets caught. It's the same
+          // behavior as without this statement except with a better message.
+          invariant$1$1(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, typeof typeSpecs[typeSpecName]);
+          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$1$1);
+        } catch (ex) {
+          error = ex;
+        }
+        warning$1$1(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
+        if (error instanceof Error && !(error.message in loggedTypeFailures$1)) {
+          // Only monitor this failure once because there tends to be a lot of the
+          // same error.
+          loggedTypeFailures$1[error.message] = true;
+
+          var stack = getStack ? getStack() : '';
+
+          warning$1$1(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
+        }
+      }
+    }
+  }
+}
+
+var checkPropTypes_1$2 = checkPropTypes$2;
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+'use strict';
+
+
+
+
+
+
+
+
+
+var factoryWithTypeCheckers$2 = function(isValidElement, throwOnDirectAccess) {
+  /* global Symbol */
+  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+  /**
+   * Returns the iterator method function contained on the iterable object.
+   *
+   * Be sure to invoke the function with the iterable as context:
+   *
+   *     var iteratorFn = getIteratorFn(myIterable);
+   *     if (iteratorFn) {
+   *       var iterator = iteratorFn.call(myIterable);
+   *       ...
+   *     }
+   *
+   * @param {?object} maybeIterable
+   * @return {?function}
+   */
+  function getIteratorFn(maybeIterable) {
+    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+    if (typeof iteratorFn === 'function') {
+      return iteratorFn;
+    }
+  }
+
+  /**
+   * Collection of methods that allow declaration and validation of props that are
+   * supplied to React components. Example usage:
+   *
+   *   var Props = require('ReactPropTypes');
+   *   var MyArticle = React.createClass({
+   *     propTypes: {
+   *       // An optional string prop named "description".
+   *       description: Props.string,
+   *
+   *       // A required enum prop named "category".
+   *       category: Props.oneOf(['News','Photos']).isRequired,
+   *
+   *       // A prop named "dialog" that requires an instance of Dialog.
+   *       dialog: Props.instanceOf(Dialog).isRequired
+   *     },
+   *     render: function() { ... }
+   *   });
+   *
+   * A more formal specification of how these methods are used:
+   *
+   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+   *   decl := ReactPropTypes.{type}(.isRequired)?
+   *
+   * Each and every declaration produces a function with the same signature. This
+   * allows the creation of custom validation functions. For example:
+   *
+   *  var MyLink = React.createClass({
+   *    propTypes: {
+   *      // An optional string or URI prop named "href".
+   *      href: function(props, propName, componentName) {
+   *        var propValue = props[propName];
+   *        if (propValue != null && typeof propValue !== 'string' &&
+   *            !(propValue instanceof URI)) {
+   *          return new Error(
+   *            'Expected a string or an URI for ' + propName + ' in ' +
+   *            componentName
+   *          );
+   *        }
+   *      }
+   *    },
+   *    render: function() {...}
+   *  });
+   *
+   * @internal
+   */
+
+  var ANONYMOUS = '<<anonymous>>';
+
+  // Important!
+  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+  var ReactPropTypes = {
+    array: createPrimitiveTypeChecker('array'),
+    bool: createPrimitiveTypeChecker('boolean'),
+    func: createPrimitiveTypeChecker('function'),
+    number: createPrimitiveTypeChecker('number'),
+    object: createPrimitiveTypeChecker('object'),
+    string: createPrimitiveTypeChecker('string'),
+    symbol: createPrimitiveTypeChecker('symbol'),
+
+    any: createAnyTypeChecker(),
+    arrayOf: createArrayOfTypeChecker,
+    element: createElementTypeChecker(),
+    instanceOf: createInstanceTypeChecker,
+    node: createNodeChecker(),
+    objectOf: createObjectOfTypeChecker,
+    oneOf: createEnumTypeChecker,
+    oneOfType: createUnionTypeChecker,
+    shape: createShapeTypeChecker,
+    exact: createStrictShapeTypeChecker,
+  };
+
+  /**
+   * inlined Object.is polyfill to avoid requiring consumers ship their own
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+   */
+  /*eslint-disable no-self-compare*/
+  function is(x, y) {
+    // SameValue algorithm
+    if (x === y) {
+      // Steps 1-5, 7-10
+      // Steps 6.b-6.e: +0 != -0
+      return x !== 0 || 1 / x === 1 / y;
+    } else {
+      // Step 6.a: NaN == NaN
+      return x !== x && y !== y;
+    }
+  }
+  /*eslint-enable no-self-compare*/
+
+  /**
+   * We use an Error-like object for backward compatibility as people may call
+   * PropTypes directly and inspect their output. However, we don't use real
+   * Errors anymore. We don't inspect their stack anyway, and creating them
+   * is prohibitively expensive if they are created too often, such as what
+   * happens in oneOfType() for any type before the one that matched.
+   */
+  function PropTypeError(message) {
+    this.message = message;
+    this.stack = '';
+  }
+  // Make `instanceof Error` still work for returned errors.
+  PropTypeError.prototype = Error.prototype;
+
+  function createChainableTypeChecker(validate) {
+    if (process$1.env.NODE_ENV !== 'production') {
+      var manualPropTypeCallCache = {};
+      var manualPropTypeWarningCount = 0;
+    }
+    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+      componentName = componentName || ANONYMOUS;
+      propFullName = propFullName || propName;
+
+      if (secret !== ReactPropTypesSecret_1$2) {
+        if (throwOnDirectAccess) {
+          // New behavior only for users of `prop-types` package
+          invariant_1$3(
+            false,
+            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+            'Use `PropTypes.checkPropTypes()` to call them. ' +
+            'Read more at http://fb.me/use-check-prop-types'
+          );
+        } else if (process$1.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
+          // Old behavior for people using React.PropTypes
+          var cacheKey = componentName + ':' + propName;
+          if (
+            !manualPropTypeCallCache[cacheKey] &&
+            // Avoid spamming the console because they are often not actionable except for lib authors
+            manualPropTypeWarningCount < 3
+          ) {
+            warning_1$2(
+              false,
+              'You are manually calling a React.PropTypes validation ' +
+              'function for the `%s` prop on `%s`. This is deprecated ' +
+              'and will throw in the standalone `prop-types` package. ' +
+              'You may be seeing this warning due to a third-party PropTypes ' +
+              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
+              propFullName,
+              componentName
+            );
+            manualPropTypeCallCache[cacheKey] = true;
+            manualPropTypeWarningCount++;
+          }
+        }
+      }
+      if (props[propName] == null) {
+        if (isRequired) {
+          if (props[propName] === null) {
+            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+          }
+          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+        }
+        return null;
+      } else {
+        return validate(props, propName, componentName, location, propFullName);
+      }
+    }
+
+    var chainedCheckType = checkType.bind(null, false);
+    chainedCheckType.isRequired = checkType.bind(null, true);
+
+    return chainedCheckType;
+  }
+
+  function createPrimitiveTypeChecker(expectedType) {
+    function validate(props, propName, componentName, location, propFullName, secret) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== expectedType) {
+        // `propValue` being instance of, say, date/regexp, pass the 'object'
+        // check, but we can offer a more precise error message here rather than
+        // 'of type `object`'.
+        var preciseType = getPreciseType(propValue);
+
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createAnyTypeChecker() {
+    return createChainableTypeChecker(emptyFunction_1$2.thatReturnsNull);
+  }
+
+  function createArrayOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+      }
+      var propValue = props[propName];
+      if (!Array.isArray(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+      }
+      for (var i = 0; i < propValue.length; i++) {
+        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret_1$2);
+        if (error instanceof Error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      if (!isValidElement(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createInstanceTypeChecker(expectedClass) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!(props[propName] instanceof expectedClass)) {
+        var expectedClassName = expectedClass.name || ANONYMOUS;
+        var actualClassName = getClassName(props[propName]);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createEnumTypeChecker(expectedValues) {
+    if (!Array.isArray(expectedValues)) {
+      process$1.env.NODE_ENV !== 'production' ? warning_1$2(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
+      return emptyFunction_1$2.thatReturnsNull;
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      for (var i = 0; i < expectedValues.length; i++) {
+        if (is(propValue, expectedValues[i])) {
+          return null;
+        }
+      }
+
+      var valuesString = JSON.stringify(expectedValues);
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createObjectOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+      }
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+      }
+      for (var key in propValue) {
+        if (propValue.hasOwnProperty(key)) {
+          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1$2);
+          if (error instanceof Error) {
+            return error;
+          }
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createUnionTypeChecker(arrayOfTypeCheckers) {
+    if (!Array.isArray(arrayOfTypeCheckers)) {
+      process$1.env.NODE_ENV !== 'production' ? warning_1$2(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+      return emptyFunction_1$2.thatReturnsNull;
+    }
+
+    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+      var checker = arrayOfTypeCheckers[i];
+      if (typeof checker !== 'function') {
+        warning_1$2(
+          false,
+          'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
+          'received %s at index %s.',
+          getPostfixForTypeWarning(checker),
+          i
+        );
+        return emptyFunction_1$2.thatReturnsNull;
+      }
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+        var checker = arrayOfTypeCheckers[i];
+        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret_1$2) == null) {
+          return null;
+        }
+      }
+
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createNodeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!isNode(props[propName])) {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      for (var key in shapeTypes) {
+        var checker = shapeTypes[key];
+        if (!checker) {
+          continue;
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1$2);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createStrictShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      // We need to check all keys in case some are required but missing from
+      // props.
+      var allKeys = objectAssign$2({}, props[propName], shapeTypes);
+      for (var key in allKeys) {
+        var checker = shapeTypes[key];
+        if (!checker) {
+          return new PropTypeError(
+            'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
+            '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
+            '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
+          );
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1$2);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function isNode(propValue) {
+    switch (typeof propValue) {
+      case 'number':
+      case 'string':
+      case 'undefined':
+        return true;
+      case 'boolean':
+        return !propValue;
+      case 'object':
+        if (Array.isArray(propValue)) {
+          return propValue.every(isNode);
+        }
+        if (propValue === null || isValidElement(propValue)) {
+          return true;
+        }
+
+        var iteratorFn = getIteratorFn(propValue);
+        if (iteratorFn) {
+          var iterator = iteratorFn.call(propValue);
+          var step;
+          if (iteratorFn !== propValue.entries) {
+            while (!(step = iterator.next()).done) {
+              if (!isNode(step.value)) {
+                return false;
+              }
+            }
+          } else {
+            // Iterator will provide entry [k,v] tuples rather than values.
+            while (!(step = iterator.next()).done) {
+              var entry = step.value;
+              if (entry) {
+                if (!isNode(entry[1])) {
+                  return false;
+                }
+              }
+            }
+          }
+        } else {
+          return false;
+        }
+
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  function isSymbol(propType, propValue) {
+    // Native Symbol.
+    if (propType === 'symbol') {
+      return true;
+    }
+
+    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+    if (propValue['@@toStringTag'] === 'Symbol') {
+      return true;
+    }
+
+    // Fallback for non-spec compliant Symbols which are polyfilled.
+    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // Equivalent of `typeof` but with special handling for array and regexp.
+  function getPropType(propValue) {
+    var propType = typeof propValue;
+    if (Array.isArray(propValue)) {
+      return 'array';
+    }
+    if (propValue instanceof RegExp) {
+      // Old webkits (at least until Android 4.0) return 'function' rather than
+      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+      // passes PropTypes.object.
+      return 'object';
+    }
+    if (isSymbol(propType, propValue)) {
+      return 'symbol';
+    }
+    return propType;
+  }
+
+  // This handles more types than `getPropType`. Only used for error messages.
+  // See `createPrimitiveTypeChecker`.
+  function getPreciseType(propValue) {
+    if (typeof propValue === 'undefined' || propValue === null) {
+      return '' + propValue;
+    }
+    var propType = getPropType(propValue);
+    if (propType === 'object') {
+      if (propValue instanceof Date) {
+        return 'date';
+      } else if (propValue instanceof RegExp) {
+        return 'regexp';
+      }
+    }
+    return propType;
+  }
+
+  // Returns a string that is postfixed to a warning about an invalid type.
+  // For example, "undefined" or "of type array"
+  function getPostfixForTypeWarning(value) {
+    var type = getPreciseType(value);
+    switch (type) {
+      case 'array':
+      case 'object':
+        return 'an ' + type;
+      case 'boolean':
+      case 'date':
+      case 'regexp':
+        return 'a ' + type;
+      default:
+        return type;
+    }
+  }
+
+  // Returns class name of the object, if any.
+  function getClassName(propValue) {
+    if (!propValue.constructor || !propValue.constructor.name) {
+      return ANONYMOUS;
+    }
+    return propValue.constructor.name;
+  }
+
+  ReactPropTypes.checkPropTypes = checkPropTypes_1$2;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+'use strict';
+
+
+
+
+
+var factoryWithThrowingShims$2 = function() {
+  function shim(props, propName, componentName, location, propFullName, secret) {
+    if (secret === ReactPropTypesSecret_1$2) {
+      // It is still safe when called from React.
+      return;
+    }
+    invariant_1$3(
+      false,
+      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+      'Use PropTypes.checkPropTypes() to call them. ' +
+      'Read more at http://fb.me/use-check-prop-types'
+    );
+  }
+  shim.isRequired = shim;
+  function getShim() {
+    return shim;
+  }
+  // Important!
+  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
+  var ReactPropTypes = {
+    array: shim,
+    bool: shim,
+    func: shim,
+    number: shim,
+    object: shim,
+    string: shim,
+    symbol: shim,
+
+    any: shim,
+    arrayOf: getShim,
+    element: shim,
+    instanceOf: getShim,
+    node: shim,
+    objectOf: getShim,
+    oneOf: getShim,
+    oneOfType: getShim,
+    shape: getShim,
+    exact: getShim
+  };
+
+  ReactPropTypes.checkPropTypes = emptyFunction_1$2;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+var propTypes$1 = createCommonjsModule$1(function (module) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+if (process$1.env.NODE_ENV !== 'production') {
+  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
+    Symbol.for &&
+    Symbol.for('react.element')) ||
+    0xeac7;
+
+  var isValidElement = function(object) {
+    return typeof object === 'object' &&
+      object !== null &&
+      object.$$typeof === REACT_ELEMENT_TYPE;
+  };
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = factoryWithTypeCheckers$2(isValidElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = factoryWithThrowingShims$2();
+}
+});
+
+var _typeof$2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+
+
+
+
+var asyncGenerator$1 = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
+
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var _extends$1 = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+var tileId = 0;
+
+var round = function round(number) {
+    return Number(number.toFixed(3));
+};
+
+function rotatePoint(pivot, point, angle) {
+    return [Math.cos(angle) * (point[0] - pivot[0]) + Math.sin(angle) * (point[1] - pivot[1]) + pivot[0], Math.cos(angle) * (point[1] - pivot[1]) - Math.sin(angle) * (point[0] - pivot[0]) + pivot[1]];
+}
+
+function getPoints(radius, borderWidth, n) {
+    var vertices = [];
+    var angleBorderWidth = borderWidth / Math.sin(Math.PI / 3);
+    var deltaAngle = 2 * Math.PI / n;
+
+    for (var i = 0; i < n; i++) {
+        var angle = Math.PI / 2 + i * deltaAngle;
+        vertices.push([radius + Math.cos(angle) * (radius - angleBorderWidth / 2), //half the stroke width seems to detract from the fill, there divide by 2 
+        radius - Math.sin(angle) * (radius - angleBorderWidth / 2)]);
+    }
+
+    return vertices.map(function (p) {
+        return p.map(round);
+    });
+}
+
+function getFlatTopPoints(radius, offset, n) {
+    return getPoints(radius, offset, n).map(function (p) {
+        return rotatePoint([radius, radius], p, Math.PI / n);
+    });
+}
+
+function NTile(props) {
+    var backgroundImage = props.backgroundImage,
+        bevel = props.bevel,
+        radius = props.radius,
+        flatTop = props.flatTop,
+        borderWidth = props.borderWidth,
+        borderColor = props.borderColor,
+        backgroundColor = props.backgroundColor,
+        children = props.children,
+        shadow = props.shadow,
+        n = props.n;
+
+    var ownId = tileId++;
+    var bgId = backgroundImage && 'bg-' + ownId;
+    var polygonStyle = {
+        fill: backgroundImage ? 'url(#' + bgId + ')' : backgroundColor,
+        stroke: borderColor,
+        strokeWidth: borderWidth
+    };
+    var points = flatTop ? getFlatTopPoints(radius, borderWidth, n) : getPoints(radius, borderWidth, n);
+    var polygonPoints = points.map(function (point) {
+        return point.join(',');
+    }).join(' ');
+    var bevelFilter = bevel ? 'url(#bevel)' : 'none';
+
+    var shadowStyle = typeof shadow === "boolean" ? shadow ? { filter: 'drop-shadow(1px 1px 2px rgba(82,81,82,1))' } : {} : { shadow: shadow };
+
+    var backgroundSize = {
+        height: 2 * (flatTop ? radius / (Math.sqrt(3) / 2) : radius),
+        width: 2 * (flatTop ? radius : radius / (Math.sqrt(3) / 2))
+    };
+
+    return react.createElement(
+        'svg',
+        {
+            viewBox: '0 0 ' + radius * 2 + ' ' + radius * 2,
+            style: _extends$1({
+                width: radius * 2 + 'px',
+                height: radius * 2 + 'px',
+                position: 'relative'
+            }, shadowStyle)
+        },
+        react.createElement(
+            'defs',
+            null,
+            react.createElement(
+                'filter',
+                { id: 'bevel', filterUnits: 'objectBoundingBox', x: '-10%', y: '-10%', width: '150%', height: '150%' },
+                react.createElement('feGaussianBlur', {
+                    'in': 'SourceAlpha',
+                    stdDeviation: '1.5',
+                    result: 'blur'
+                }),
+                react.createElement(
+                    'feSpecularLighting',
+                    {
+                        'in': 'blur',
+                        surfaceScale: '5',
+                        specularConstant: '0.5',
+                        specularExponent: '30',
+                        result: 'specOut',
+                        lightingColor: 'lightgrey'
+                    },
+                    react.createElement('fePointLight', { x: '-5000', y: '-5000', z: '8000' })
+                ),
+                react.createElement('feComposite', {
+                    'in': 'specOut',
+                    in2: 'SourceAlpha',
+                    operator: 'in',
+                    result: 'specOut2'
+                }),
+                react.createElement('feComposite', {
+                    'in': 'SourceGraphic',
+                    in2: 'specOut2',
+                    operator: 'arithmetic',
+                    k1: '0',
+                    k2: '1',
+                    k3: '1',
+                    k4: '0',
+                    result: 'litPaint'
+                })
+            ),
+            react.createElement(
+                'clipPath',
+                { id: 'tileClip' + ownId },
+                react.createElement('polygon', { points: polygonPoints })
+            ),
+            react.createElement(
+                'pattern',
+                { id: bgId, width: backgroundSize.width, height: backgroundSize.height, patternUnits: 'userSpaceOnUse' },
+                react.createElement('image', {
+                    width: backgroundSize.width,
+                    height: backgroundSize.height,
+                    xlinkHref: backgroundImage,
+                    preserveAspectRatio: 'xMidYMid slice'
+                })
+            )
+        ),
+        react.createElement('polygon', {
+            style: polygonStyle,
+            filter: bevelFilter,
+            points: polygonPoints
+        }),
+        react.createElement(
+            'foreignObject',
+            { x: '0', y: '0', width: '100%', height: '100%', clipPath: 'url(#tileClip' + ownId + ')' },
+            react.createElement(
+                'div',
+                {
+                    style: {
+                        width: 2 * radius + 'px',
+                        height: 2 * radius + 'px',
+                        position: 'relative',
+                        WebkitClipPath: 'url(#tileClip' + ownId + ')',
+                        clipPath: 'url(#tileClip' + ownId + ')'
+                    }
+                },
+                children
+            )
+        )
+    );
+}
+
+NTile.propTypes = {
+    n: propTypes$1.number.isRequired,
+    flatTop: propTypes$1.bool,
+    shadow: propTypes$1.oneOfType([propTypes$1.bool, propTypes$1.string]),
+    borderWidth: propTypes$1.number,
+    borderColor: propTypes$1.string,
+    backgroundColor: propTypes$1.string,
+    backgroundImage: propTypes$1.string,
+    children: propTypes$1.node,
+    bevel: propTypes$1.bool
+};
+
+NTile.defaultProps = {
+    flatTop: false,
+    shadow: false,
+    borderWidth: 0,
+    borderColor: '#efefef',
+    backgroundColor: 'white',
+    bevel: false
+};
+
+var HexTile = function HexTile(props) {
+    return react.createElement(NTile, _extends$1({ n: 6 }, props));
+};
+
+HexTile.propTypes = {
+    flatTop: propTypes$1.bool,
+    shadow: propTypes$1.oneOfType([propTypes$1.bool, propTypes$1.string]),
+    borderWidth: propTypes$1.number,
+    borderColor: propTypes$1.string,
+    backgroundColor: propTypes$1.string,
+    backgroundImage: propTypes$1.string,
+    children: propTypes$1.node,
+    bevel: propTypes$1.bool
+};
+
+var SquareTile = function SquareTile(props) {
+    return react.createElement(NTile, _extends$1({ n: 4 }, props, { flatTop: true }));
+};
+
+SquareTile.propTypes = {
+    shadow: propTypes$1.oneOfType([propTypes$1.bool, propTypes$1.string]),
+    borderWidth: propTypes$1.number,
+    borderColor: propTypes$1.string,
+    backgroundColor: propTypes$1.string,
+    backgroundImage: propTypes$1.string,
+    children: propTypes$1.node,
+    bevel: propTypes$1.bool
+};
+
+var handleMissingProp$2 = function handleMissingProp(isRequired, propName, componentName) {
+	if (isRequired) {
+		return new Error('Missing required property ' + propName + ' in ' + componentName);
+	}
+
+	return null;
+};
+
+var createCaseInsentivePropType = function createCaseInsentivePropType(validValues, isRequired) {
+	return function (props, propName, componentName) {
+		var prop = props[propName];
+		var type = typeof prop === 'undefined' ? 'undefined' : _typeof$2(prop);
+		var caseInsensitiveProp = type === 'string' ? prop.toLowerCase() : prop;
+
+		if (type === 'undefined') {
+			return handleMissingProp$2(isRequired, propName, componentName);
+		}
+
+		var isValid = validValues.indexOf(caseInsensitiveProp) > -1;
+
+		if (!isValid) {
+			return new Error(propName + ' in ' + componentName + ' must be one of the Values: ' + validValues.join(', '));
+		}
+
+		return null;
+	};
+};
+
+var validRanks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'king', 'queen', 'jack', 'ace', 'joker'];
+var validSuits = ['hearts', 'spades', 'clubs', 'diamonds'];
+
+var rank = createCaseInsentivePropType(validRanks, false);
+rank.isRequired = createCaseInsentivePropType(validRanks, true);
+
+var suit = createCaseInsentivePropType(validSuits, false);
+suit.isRequired = createCaseInsentivePropType(validSuits, true);
+
+var CustomPropTypes$3 = { rank: rank, suit: suit };
+
+var containerStyles = {
+    width: '100%',
+    height: '100%',
+    display: 'inline-block',
+    perspective: '1000px'
+};
+
+var frontStyles = {
+    backfaceVisibility: 'hidden',
+    zIndex: 2,
+    transform: 'rotateY(0deg)', //for firefox 31
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    left: 0,
+    top: 0
+};
+
+var backStyles = {
+    backfaceVisibility: 'hidden',
+    transform: 'rotateY(180deg)',
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    left: 0,
+    top: 0
+};
+
+var Flipper = function Flipper(_ref) {
+    var animateRotation = _ref.animateRotation,
+        isFlipped = _ref.isFlipped,
+        rotation = _ref.rotation,
+        children = _ref.children;
+    return react.createElement(
+        'div',
+        { style: _extends$1({}, containerStyles) },
+        react.createElement(
+            'div',
+            {
+                style: {
+                    transition: animateRotation ? '0.6s' : 'none',
+                    transform: 'rotateY(' + ((isFlipped ? 180 : 0) + rotation) + 'deg',
+                    transformStyle: 'preserve-3d',
+                    position: 'relative',
+                    width: '100%',
+                    height: '100%'
+                }
+            },
+            react.createElement(
+                'div',
+                { style: frontStyles },
+                children[0]
+            ),
+            react.createElement(
+                'div',
+                { style: backStyles },
+                children[1]
+            )
+        )
+    );
+};
+
+Flipper.propTypes = {
+    isFlipped: propTypes$1.bool,
+    rotation: propTypes$1.number,
+    animateRotation: propTypes$1.bool,
+    children: propTypes$1.node.isRequired
+};
+
+Flipper.defaultProps = {
+    isFlipped: false,
+    rotation: 0,
+    animateRotation: true
+};
+
+var DEFAULT_CARD_WIDTH = 210;
+var DEFAULT_CARD_HEIGHT = 300;
+
+var isBool = function isBool(val) {
+	return typeof val === 'boolean';
+};
+var isObj = function isObj(val) {
+	return (typeof val === 'undefined' ? 'undefined' : _typeof$2(val)) === 'object';
+};
+var baseStyles = {
+	backgroundPosition: 'center center',
+	backgroundRepeat: 'no-repeat',
+	backgroundSize: 'contain',
+	backgroundColor: 'white',
+	display: 'inline-block',
+	boxSizing: 'border-box',
+	position: 'absolute',
+	overflow: 'hidden',
+	top: 0,
+	left: 0,
+	right: 0,
+	bottom: 0
+};
+
+var PlayingCard = function PlayingCard(props) {
+	var borderRadius = props.borderRadius,
+	    animateRotation = props.animateRotation,
+	    front = props.front,
+	    back = props.back,
+	    shadow = props.shadow,
+	    border = props.border,
+	    rotation = props.rotation,
+	    _props$faceUp = props.faceUp,
+	    faceUp = _props$faceUp === undefined ? true : _props$faceUp,
+	    _props$width = props.width,
+	    width = _props$width === undefined ? DEFAULT_CARD_WIDTH : _props$width,
+	    _props$height = props.height,
+	    height = _props$height === undefined ? DEFAULT_CARD_HEIGHT : _props$height;
+
+
+	var shadowStyle = isBool(shadow) ? shadow ? { boxShadow: '1px 1px 2px 0px rgba(82,81,82,1)' } : {} : { shadow: shadow };
+	var borderStyle = isBool(border) ? border ? { border: '1px solid #efefef' } : {} : { border: border };
+	var borderRadiusStyle = isBool(borderRadius) ? borderRadius ? { borderRadius: '6px' } : {} : { borderRadius: borderRadius };
+
+	var styles = _extends$1({}, shadowStyle, borderStyle, borderRadiusStyle, baseStyles);
+
+	var renderSide = function renderSide(side) {
+		return isObj(side) ? react.createElement(
+			'div',
+			{ style: styles },
+			side
+		) : react.createElement('div', { style: _extends$1({ backgroundImage: 'url(' + side + ')' }, styles) });
+	};
+
+	return react.createElement(
+		'div',
+		{
+			style: {
+				width: width + 'px',
+				height: height + 'px'
+			}
+		},
+		react.createElement(
+			Flipper,
+			{ isFlipped: !faceUp, rotation: rotation, animateRotation: animateRotation },
+			renderSide(front),
+			renderSide(back)
+		)
+	);
+};
+
+PlayingCard.propTypes = {
+	front: propTypes$1.oneOfType([propTypes$1.string, propTypes$1.node]),
+	back: propTypes$1.oneOfType([propTypes$1.string, propTypes$1.node]),
+	faceUp: propTypes$1.bool,
+	rotation: propTypes$1.number,
+	shadow: propTypes$1.oneOfType([propTypes$1.string, propTypes$1.bool]),
+	border: propTypes$1.oneOfType([propTypes$1.string, propTypes$1.bool]),
+	borderRadius: propTypes$1.oneOfType([propTypes$1.string, propTypes$1.bool]),
+	animateRotation: propTypes$1.bool,
+	width: propTypes$1.number,
+	height: propTypes$1.number
+};
+
+PlayingCard.defaultProps = {
+	animateRotation: true,
+	borderRadius: true,
+	border: true,
+	shadow: true,
+	rotation: 0
+};
+
+var defaultFrontFragment = function defaultFrontFragment(suit, rank, isJoker) {
+    var r = typeof rank === 'string' ? rank.toLowerCase() : rank;
+    r = r === 'ace' ? 1 : r;
+    r = r === 'jack' ? 11 : r;
+    r = r === 'queen' ? 12 : r;
+    r = r === 'king' ? 13 : r;
+
+    return isJoker ? 'joker' : r + suit.charAt(0);
+};
+
+var defaultBackFragment = function defaultBackFragment() {
+    return 'back';
+};
+
+var makeStandardDeck = function makeStandardDeck(svgStack) {
+    var frontFragment = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : defaultFrontFragment;
+    var backFragment = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : defaultBackFragment;
+
+    var standardCard = function standardCard(props) {
+        return react.createElement(PlayingCard, _extends$1({}, props, {
+            front: svgStack + '#' + frontFragment(props.suit, props.rank, props.isJoker),
+            back: svgStack + '#' + backFragment(),
+            deck: svgStack,
+            frontFragment: frontFragment,
+            backFragment: backFragment
+        }));
+    };
+
+    standardCard.propTypes = {
+        rank: CustomPropTypes$3.rank.isRequired,
+        suit: CustomPropTypes$3.suit.isRequired,
+        isJoker: propTypes$1.bool
+    };
+
+    standardCard.defaultProps = {
+        rank: 1,
+        suit: 'hearts',
+        back: 'back',
+        isJoker: false
+    };
+
+    return standardCard;
+};
+
+
+//# sourceMappingURL=react-board-game-components.esm.js.map
+
+var StandardCard = makeStandardDeck('demo-bundle/' + Deck);
+
+var DraggablePlayingCard = configure()(StandardCard);
+
+var config$7 = {
+    snapTransform: SnapTransformers.snapAll,
+    snapCriteria: SnapCriteria.isCenterWithinRadius('100%')
+};
+
+var CardStack = function CardStack(_ref) {
+    var children = _ref.children;
+    return react.createElement(
+        'div',
+        { className: 'card-stack' },
+        children
+    );
+};
+
+var CardStackAsTarget = configure$1(config$7)(CardStack);
+
+var css$24 = ".card-game-demo {\n    width: 100%;\n    height: 100%;\n}\n\n.card-game-demo .target-wrapper {\n    top: 100px;\n    left: 100px;\n    position: absolute;\n    transform: translate(-50%,-50%);\n}\n\n.card-game-demo .target-wrapper:nth-of-type(2) {\n    left: 400px;\n}\n\n.card-game-demo .target-wrapper:nth-of-type(3) {\n    left: 800px;\n    transform: rotate(30deg) scale(1.3);\n}\n\n.card-game-demo .card-stack {\n    display: inline-block;\n    width: 140px;\n    height: 200px;\n    border: 2px dashed gray;\n    border-radius: 6px;\n}";
+styleInject(css$24);
+
+var CardGameDemo = function (_React$Component) {
+    inherits(CardGameDemo, _React$Component);
+
+    function CardGameDemo(props) {
+        classCallCheck(this, CardGameDemo);
+
+        var _this = possibleConstructorReturn(this, (CardGameDemo.__proto__ || Object.getPrototypeOf(CardGameDemo)).call(this, props));
+
+        _this.state = {
+            stackIndex: 0
+        };
+        return _this;
+    }
+
+    createClass(CardGameDemo, [{
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            var stackIndex = this.state.stackIndex;
+
+
+            var card = react.createElement(DraggablePlayingCard, { width: 140, height: 200 });
+
+            return react.createElement(
+                'div',
+                { className: 'card-game-demo' },
+                react.createElement(
+                    DragSnapContext,
+                    null,
+                    react.createElement(
+                        'div',
+                        { className: 'target-wrapper' },
+                        react.createElement(
+                            CardStackAsTarget,
+                            {
+                                onDropComplete: function onDropComplete() {
+                                    return _this2.setState({ stackIndex: 0 });
+                                },
+                                easyEscape: true
+                            },
+                            stackIndex === 0 && card
+                        )
+                    ),
+                    react.createElement(
+                        'div',
+                        { className: 'target-wrapper' },
+                        react.createElement(
+                            CardStackAsTarget,
+                            {
+                                onDropComplete: function onDropComplete() {
+                                    return _this2.setState({ stackIndex: 1 });
+                                },
+                                easyEscape: true
+                            },
+                            stackIndex === 1 && card
+                        )
+                    ),
+                    react.createElement(
+                        'div',
+                        { className: 'target-wrapper' },
+                        react.createElement(
+                            CardStackAsTarget,
+                            {
+                                onDropComplete: function onDropComplete() {
+                                    return _this2.setState({ stackIndex: 2 });
+                                },
+                                easyEscape: true
+                            },
+                            stackIndex === 2 && card
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+    return CardGameDemo;
+}(react.Component);
+
+/* eslint-disable */
+function toArray$1(val) {
     return Array.isArray(val) ? val : [val];
 }
 
 var css$26 = ".transformer {\n    position: absolute;\n    left: 0;\n    top: 0;\n    line-height: 0;\n}\n\n.margin-wrapper {\n    background:#F9CDA0;\n    display:inline-block;\n}\n\n.element {\n    position: relative;\n    display: inline-block;\n    background: content-box linear-gradient(0deg,#8EB5C2, #8EB5C2), linear-gradient(0deg,#C5CF8B, #C5CF8B);\n}\n\n.element:before {\n    content: attr(data-name);\n    line-height: normal;\n}\n\n.element-center {\n    transform: translate(-50%,-50%);\n    position: absolute;\n    color:darkblue;\n    font-size: 4px;\n}\n\n.draggable {\n    opacity: 0.6;\n}";
 styleInject(css$26);
 
+/* eslint-disable */
 var defaultSize = { width: 130, height: 260 };
 
 var BoxComponent = function (_React$Component) {
@@ -28335,16 +29471,16 @@ var BoxComponent = function (_React$Component) {
                 skewY = _ref$skewY === undefined ? 0 : _ref$skewY;
 
             var center = matrix ? this.DOMElementHelper.getCenterInBorderBoxCoordinates() : { x: 0, y: 0 };
-            var transformStyles = { transform: (matrix ? 'translate(' + -center.x + 'px,' + -center.y + 'px) ' : '') + ('translate(' + x + 'px, ' + y + 'px) rotate(' + rotate + 'deg) scaleX(' + (scaleX || scale) + ') scaleY(' + (scaleY || scale) + ') skewX(' + skewX + 'deg) skewY(' + skewY + 'deg)') };
+            var transformStyles = { transform: (matrix ? 'translate(' + -center.x + 'px,' + -center.y + 'px) ' : '') + 'translate(' + x + 'px, ' + y + 'px) rotate(' + rotate + 'deg) scaleX(' + (scaleX || scale) + ') scaleY(' + (scaleY || scale) + ') skewX(' + skewX + 'deg) skewY(' + skewY + 'deg)' };
 
             var elementStyles = {
                 boxSizing: boxSizing,
                 width: size.width + 'px',
                 height: size.height + 'px',
-                margin: toArray$2(margin).map(function (m) {
+                margin: toArray$1(margin).map(function (m) {
                     return m + 'px';
                 }).join(' '),
-                padding: toArray$2(padding).map(function (p) {
+                padding: toArray$1(padding).map(function (p) {
                     return p + 'px';
                 }).join(' ')
             };
@@ -28382,8 +29518,6 @@ var BoxComponent = function (_React$Component) {
     return BoxComponent;
 }(react.Component);
 
-
-
 BoxComponent.propTypes = {
     className: propTypes.string,
     boxSizing: propTypes.oneOf(['border-box', 'content-box']),
@@ -28403,36 +29537,28 @@ BoxComponent.propTypes = {
     renderIn: propTypes.object
 };
 
-/*
-1. Consider making a border around what constitutes the edge of the element
-2. Get the transform for the d and st on mount, and cache it internally
-3. Expose the transform from these using a public method
-4. Have test component extract the transforms and set them back
-5. Have test component create sn-transform and inject it when mode is snap
-6. Make control bar sticky
-7. Style control bar better
-
-Later:
-- Make them animate
-- Make it possible to pause the animation!
-- Make it possible to globally set the base transform for S and ST (also width/height) and snap-tranform?
-*/
-
 var css$28 = ".test-component {\n    display: inline-block;\n    vertical-align: top;\n    width: 400px;\n    height: 500px;\n    border: 1px solid darkred;\n    position: relative;\n}\n\n.prop-table {\n    width: 100%;\n    background: darkred;\n    color: white;\n}\n\n.prop-table th {\n    font-weight: bold;\n}\n\n.prop-table td {\n    text-align: center;\n}";
 styleInject(css$28);
 
-var snapTargetTransform = { x: 20, y: 100, scaleX: 1.2, scaleY: 0.9, rotate: 15, skewX: 5, skewY: 10 };
-var draggableTransform = { x: 170, y: 150, scale: .8, rotate: -5, skewX: 15, skewY: 20 };
-//const snapTargetTransform = {x: 20, y: 100, scaleX: 1, scaleY: 1, rotate: 10, skewX: 10, skewY: 0};
-//const draggableTransform = {x: 170, y: 150, scale: 1, rotate: 0, skewX: 14, skewY: 0};
+/* eslint-disable */
+var snapTargetTransform = {
+    x: 20, y: 100, scaleX: 1.2, scaleY: 0.9, rotate: 15, skewX: 5, skewY: 10
+};
+var draggableTransform = {
+    x: 170, y: 150, scale: 0.8, rotate: -5, skewX: 15, skewY: 20
+};
+// const snapTargetTransform = {x: 20, y: 100, scaleX: 1, scaleY: 1, rotate: 10, skewX: 10, skewY: 0};
+// const draggableTransform = {x: 170, y: 150, scale: 1, rotate: 0, skewX: 14, skewY: 0};
 
-//const snapTargetTransform = {x: 20, y: 100, scaleX: 1, scaleY: 1, rotate: 0, skewX: 10, skewY: 0};
-//const draggableTransform = {x: 170, y: 150, scale: 1, rotate: 0, skewX: 0, skewY: 0};
+// const snapTargetTransform = {x: 20, y: 100, scaleX: 1, scaleY: 1, rotate: 0, skewX: 10, skewY: 0};
+// const draggableTransform = {x: 170, y: 150, scale: 1, rotate: 0, skewX: 0, skewY: 0};
 
 
-//Upper left corner snap Transform:
-var snapTransform = { scale: .50, x: "-25%", y: "-25%", rotate: 0, skewY: 0 };
-//const snapTransform = {scale: 1};
+// Upper left corner snap Transform:
+var snapTransform = {
+    scale: 0.50, x: '-25%', y: '-25%', rotate: 0, skewY: 0
+};
+// const snapTransform = {scale: 1};
 
 var TestComponent = function (_React$Component) {
     inherits(TestComponent, _React$Component);
@@ -28540,12 +29666,12 @@ var TestComponent = function (_React$Component) {
                             react.createElement(
                                 'td',
                                 null,
-                                toArray$2(draggablePadding).join('/')
+                                toArray$1(draggablePadding).join('/')
                             ),
                             react.createElement(
                                 'td',
                                 null,
-                                toArray$2(draggableMargin).join('/')
+                                toArray$1(draggableMargin).join('/')
                             )
                         ),
                         react.createElement(
@@ -28564,12 +29690,12 @@ var TestComponent = function (_React$Component) {
                             react.createElement(
                                 'td',
                                 null,
-                                toArray$2(snapTargetPadding).join('/')
+                                toArray$1(snapTargetPadding).join('/')
                             ),
                             react.createElement(
                                 'td',
                                 null,
-                                toArray$2(snapTargetMargin).join('/')
+                                toArray$1(snapTargetMargin).join('/')
                             )
                         )
                     )
@@ -28608,8 +29734,6 @@ var TestComponent = function (_React$Component) {
     return TestComponent;
 }(react.Component);
 
-
-
 TestComponent.propTypes = {
     draggableBoxSizing: propTypes.oneOf(['content-box', 'border-box']),
     draggablePadding: propTypes.oneOfType([propTypes.number, propTypes.arrayOf(propTypes.number)]),
@@ -28624,9 +29748,10 @@ TestComponent.propTypes = {
 var css$30 = "#root {\n    overflow: auto;\n}\n\n.box-model-demo {\n    background: white;\n    position: relative;\n}\n\n.control-panel {\n    position: sticky;\n    top: 0;\n    z-index: 1;\n    background: white;\n    border-bottom: 1px solid black;\n    display: flex;\n}";
 styleInject(css$30);
 
+/* eslint-disable */
 var draggableBoxSizings = ['content-box', 'border-box'];
-var draggablePaddings = [0 /*, 30*/, [30, 100, 100, 30]];
-var draggableMargins = [0 /*, 30*/, [30, 100, 100, 30]];
+var draggablePaddings = [0 /* , 30 */, [30, 100, 100, 30]];
+var draggableMargins = [0 /* , 30 */, [30, 100, 100, 30]];
 var modes = ['normal', 'global', 'snap'];
 
 var snapBoxSizings = ['content-box', 'border-box'];
@@ -28634,150 +29759,146 @@ var snapPaddings = [0, 30];
 var snapMargins = [0, 30];
 
 var BoxModelDemo = function (_React$Component) {
-  inherits(BoxModelDemo, _React$Component);
+    inherits(BoxModelDemo, _React$Component);
 
-  function BoxModelDemo(props) {
-    classCallCheck(this, BoxModelDemo);
+    function BoxModelDemo(props) {
+        classCallCheck(this, BoxModelDemo);
 
-    var _this = possibleConstructorReturn(this, (BoxModelDemo.__proto__ || Object.getPrototypeOf(BoxModelDemo)).call(this, props));
+        var _this = possibleConstructorReturn(this, (BoxModelDemo.__proto__ || Object.getPrototypeOf(BoxModelDemo)).call(this, props));
 
-    _this.state = {
-      mode: 'normal',
-      animate: false
-    };
+        _this.state = {
+            mode: 'normal',
+            animate: false
+        };
 
-    _this.setMode = _this.setMode.bind(_this);
-    _this.toggleAnimation = _this.toggleAnimation.bind(_this);
-    _this.body = document.getElementsByTagName('body')[0];
-    return _this;
-  }
-
-  createClass(BoxModelDemo, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      this.DOMElement = reactDom.findDOMNode(this.el);
+        _this.setMode = _this.setMode.bind(_this);
+        _this.toggleAnimation = _this.toggleAnimation.bind(_this);
+        _this.body = document.getElementsByTagName('body')[0];
+        return _this;
     }
-  }, {
-    key: 'setMode',
-    value: function setMode(changeEvent) {
-      this.setState({
-        mode: changeEvent.currentTarget.value
-      });
-    }
-  }, {
-    key: 'toggleAnimation',
-    value: function toggleAnimation(changeEvent) {
-      this.setState({
-        animate: changeEvent.currentTarget.checked
-      });
-    }
-  }, {
-    key: 'renderControlPanel',
-    value: function renderControlPanel() {
-      var _this2 = this;
 
-      return react.createElement(
-        'div',
-        { className: 'control-panel' },
-        react.createElement(
-          'div',
-          null,
-          react.createElement(
-            'h4',
-            null,
-            'Mode'
-          ),
-          modes.map(function (mode) {
-            return react.createElement(
-              'label',
-              { key: mode },
-              react.createElement('input', { type: 'radio', name: 'mode', value: mode, key: mode, onChange: _this2.setMode }),
-              react.createElement(
-                'span',
-                null,
-                mode
-              )
-            );
-          })
-        ),
-        react.createElement(
-          'div',
-          null,
-          react.createElement(
-            'h4',
-            null,
-            'Animate'
-          ),
-          react.createElement(
-            'label',
-            null,
-            react.createElement('input', { type: 'checkbox', name: 'animate', defaultChecked: false, onChange: this.toggleAnimation }),
-            react.createElement(
-              'span',
-              null,
-              'Animate'
-            )
-          )
-        )
-      );
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this3 = this;
-
-      var mode = this.state.mode;
-
-      var tests = [];
-
-      draggableBoxSizings.forEach(function (draggableBoxSizing) {
-        draggablePaddings.forEach(function (draggablePadding) {
-          draggableMargins.forEach(function (draggableMargin) {
-            snapBoxSizings.forEach(function (snapTargetBoxSizing) {
-              snapPaddings.forEach(function (snapTargetPadding) {
-                snapMargins.forEach(function (snapTargetMargin) {
-                  tests.push({
-                    draggableBoxSizing: draggableBoxSizing,
-                    draggablePadding: draggablePadding,
-                    draggableMargin: draggableMargin,
-                    snapTargetBoxSizing: snapTargetBoxSizing,
-                    snapTargetPadding: snapTargetPadding,
-                    snapTargetMargin: snapTargetMargin
-                  });
-                });
-              });
+    createClass(BoxModelDemo, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.DOMElement = reactDom.findDOMNode(this.el);
+        }
+    }, {
+        key: 'setMode',
+        value: function setMode(changeEvent) {
+            this.setState({
+                mode: changeEvent.currentTarget.value
             });
-          });
-        });
-      });
+        }
+    }, {
+        key: 'toggleAnimation',
+        value: function toggleAnimation(changeEvent) {
+            this.setState({
+                animate: changeEvent.currentTarget.checked
+            });
+        }
+    }, {
+        key: 'renderControlPanel',
+        value: function renderControlPanel() {
+            var _this2 = this;
 
-      return react.createElement(
-        'div',
-        { className: 'box-model-demo', ref: function ref(el) {
-            return _this3.el = el;
-          } },
-        this.renderControlPanel(),
-        tests.map(function (test, i) {
-          return react.createElement(TestComponent, _extends({}, test, {
-            key: i,
-            renderIn: mode === 'global' || mode === 'snap' ? _this3.el : null,
-            mode: mode
-          }));
-        })
-      );
-    }
-  }]);
-  return BoxModelDemo;
+            return react.createElement(
+                'div',
+                { className: 'control-panel' },
+                react.createElement(
+                    'div',
+                    null,
+                    react.createElement(
+                        'h4',
+                        null,
+                        'Mode'
+                    ),
+                    modes.map(function (mode) {
+                        return react.createElement(
+                            'label',
+                            { key: mode },
+                            react.createElement('input', { type: 'radio', name: 'mode', value: mode, key: mode, onChange: _this2.setMode }),
+                            react.createElement(
+                                'span',
+                                null,
+                                mode
+                            )
+                        );
+                    })
+                ),
+                react.createElement(
+                    'div',
+                    null,
+                    react.createElement(
+                        'h4',
+                        null,
+                        'Animate'
+                    ),
+                    react.createElement(
+                        'label',
+                        null,
+                        react.createElement('input', { type: 'checkbox', name: 'animate', defaultChecked: false, onChange: this.toggleAnimation }),
+                        react.createElement(
+                            'span',
+                            null,
+                            'Animate'
+                        )
+                    )
+                )
+            );
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this3 = this;
+
+            var mode = this.state.mode;
+
+            var tests = [];
+
+            draggableBoxSizings.forEach(function (draggableBoxSizing) {
+                draggablePaddings.forEach(function (draggablePadding) {
+                    draggableMargins.forEach(function (draggableMargin) {
+                        snapBoxSizings.forEach(function (snapTargetBoxSizing) {
+                            snapPaddings.forEach(function (snapTargetPadding) {
+                                snapMargins.forEach(function (snapTargetMargin) {
+                                    tests.push({
+                                        draggableBoxSizing: draggableBoxSizing,
+                                        draggablePadding: draggablePadding,
+                                        draggableMargin: draggableMargin,
+                                        snapTargetBoxSizing: snapTargetBoxSizing,
+                                        snapTargetPadding: snapTargetPadding,
+                                        snapTargetMargin: snapTargetMargin
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+
+            return react.createElement(
+                'div',
+                { className: 'box-model-demo', ref: function ref(el) {
+                        return _this3.el = el;
+                    } },
+                this.renderControlPanel(),
+                tests.map(function (test, i) {
+                    return react.createElement(TestComponent, _extends({}, test, {
+                        key: i,
+                        renderIn: mode === 'global' || mode === 'snap' ? _this3.el : null,
+                        mode: mode
+                    }));
+                })
+            );
+        }
+    }]);
+    return BoxModelDemo;
 }(react.Component);
 
 var css$32 = "html, body, #root {\n    height: 100%;\n    touch-action: none;\n    overflow: hidden;\n    margin: 0;\n    padding: 0;\n    font-family: sans-serif;\n}";
 styleInject(css$32);
 
 var demoComponents = {
-    simpleDemo: {
-        component: react.createElement(SimpleDemo, null),
-        displayName: 'Simple'
-    },
     boxModelDemo: {
         component: react.createElement(BoxModelDemo, null),
         displayName: 'Box Model Demo'
@@ -28818,10 +29939,6 @@ var demoComponents = {
         component: react.createElement(MovingTargetDemo, null),
         displayName: 'Moving Target'
     },
-    movingTargetSimple: {
-        component: react.createElement(MovingTargetDemoSimple, null),
-        displayName: 'Moving Target (Simple)'
-    },
     customDemo: {
         component: react.createElement(CustomPropertyDemo, null),
         displayName: 'Custom Property Demo'
@@ -28830,21 +29947,17 @@ var demoComponents = {
         component: react.createElement(DropTest, null),
         displayName: 'DropTest'
     },
-    springEnablerTest: {
-        component: react.createElement(SpringEnablerTest, null),
-        displayName: 'Spring Enabler Test'
-    },
     cssTransitionDemo: {
         component: react.createElement(CSSTransitionDemo, null),
         displayName: 'CSS Transition Demo'
     },
-    overlap: {
-        component: react.createElement(Overlap, null),
-        displayName: 'Overlap'
-    },
     selfTransform: {
         component: react.createElement(SelfTransformDemo, null),
         displayName: 'Self Transform'
+    },
+    CardGame: {
+        component: react.createElement(CardGameDemo, null),
+        displayName: 'Card Game'
     }
 };
 
@@ -28857,7 +29970,7 @@ var Demos = function (_React$Component) {
         var _this = possibleConstructorReturn(this, (Demos.__proto__ || Object.getPrototypeOf(Demos)).call(this, props));
 
         _this.state = {
-            currentDemo: 'selfTransform'
+            currentDemo: 'CardGame'
         };
         return _this;
     }
@@ -28895,7 +30008,10 @@ var Demos = function (_React$Component) {
                 ),
                 react.createElement(
                     'div',
-                    { style: { width: '100%', height: 'calc(100% - 50px)', position: 'relative', outline: '1px solid lightgray', overflow: 'auto' } },
+                    { style: {
+                            width: '100%', height: 'calc(100% - 50px)', position: 'relative', outline: '1px solid lightgray', overflow: 'auto'
+                        }
+                    },
                     demoComponents[this.state.currentDemo].component
                 )
             );

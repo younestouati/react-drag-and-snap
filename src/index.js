@@ -1,7 +1,7 @@
 import makeDraggable from './make-draggable';
 import makeSnapTarget from './make-snap-target';
-import DragSnapContext from './drag-snap-context.js';
-import InternalSnapTargetTransform from './internal-snap-target-transform.js';
+import DragSnapContext from './drag-snap-context';
+import InternalSnapTargetTransform from './internal-snap-target-transform';
 
 import SnapTransformers from './defaults/default-snap-transformers';
 import SnapCriteria from './defaults/default-snap-criteria';
@@ -22,5 +22,5 @@ export {
     SnapPriorities,
     DraggableCollectors,
     SnapTargetCollectors,
-    SpringConfigurations
+    SpringConfigurations,
 };

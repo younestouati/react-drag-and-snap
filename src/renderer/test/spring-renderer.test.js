@@ -1,6 +1,6 @@
 import React from 'react';
-import {mount} from 'enzyme';
-import {SpringRenderer} from '../spring-renderer';
+import { mount } from 'enzyme';
+import { SpringRenderer } from '../spring-renderer';
 
 test('Spring Renderer applies the given transform props to the wrapper div', () => {
     const wrapper = mount((
@@ -16,16 +16,18 @@ test('Spring Renderer applies the given transform props to the wrapper div', () 
             isReleased={false}
             ignoreSticky={false}
             onRegrab={() => {}}
-            springConfig={{stiffness: 30, damping: 40}}
-            sticky={true}
+            springConfig={{ stiffness: 30, damping: 40 }}
+            sticky
         >
-            <div/>;
+            <div />;
         </SpringRenderer>
     ));
 
     const style = wrapper.find('div').at(0).prop('style');
     expect(style.transformOrigin).toMatch('50% 50%');
-    expect(style.transform).toMatch('translate3d(calc(1px - 50%),calc(2px - 50%), 0) rotate(3deg) scaleX(4) scaleY(5) skewX(6deg) skewY(7deg)');
+    expect(style.transform)
+        .toMatch(`translate3d(calc(1px - 50%),calc(2px - 50%), 0) 
+            rotate(3deg) scaleX(4) scaleY(5) skewX(6deg) skewY(7deg)'`);
     expect(style.WebkitTouchCallout).toMatch('none');
     expect(style.WebkitUserSelect).toMatch('none');
     expect(style.userSelect).toMatch('none');
@@ -36,7 +38,7 @@ test('Spring Renderer applies the given transform props to the wrapper div', () 
 
 test('Spring Renderer invokes the onRestAfterRelease callback when coming to rest after being released', (done) => {
     const restAfterReleaseHandler = jest.fn(() => done());
-    
+
     const wrapper = mount((
         <SpringRenderer
             x={1}
@@ -50,26 +52,26 @@ test('Spring Renderer invokes the onRestAfterRelease callback when coming to res
             isReleased={false}
             ignoreSticky={false}
             onRegrab={() => {}}
-            springConfig={{stiffness: 170, damping: 26}}
-            sticky={true}
+            springConfig={{ stiffness: 170, damping: 26 }}
+            sticky
         >
-            <div/>;
+            <div />;
         </SpringRenderer>
     ));
 
     wrapper.setProps({
         x: 5,
-        isReleased: true
+        isReleased: true,
     });
 });
 
-test('Spring Renderer will not invoke onRestAfterRelease when coming to rest, if it is not released', (done) => {    
+test('Spring Renderer will not invoke onRestAfterRelease when coming to rest, if it is not released', (done) => {
     const restAfterReleaseHandler = jest.fn();
     const restHandler = () => {
-        expect(restAfterReleaseHandler.mock.calls.length).toBe(0);
+        expect(restAfterReleaseHandler.mock.calls).toHaveLength(0);
         done();
     };
-    
+
     const wrapper = mount((
         <SpringRenderer
             x={1}
@@ -84,42 +86,45 @@ test('Spring Renderer will not invoke onRestAfterRelease when coming to rest, if
             isReleased={false}
             ignoreSticky={false}
             onRegrab={() => {}}
-            springConfig={{stiffness: 170, damping: 26}}
-            sticky={true}
+            springConfig={{ stiffness: 170, damping: 26 }}
+            sticky
         >
-            <div/>;
+            <div />;
         </SpringRenderer>
     ));
 
-    wrapper.setProps({x: 5});
+    wrapper.setProps({ x: 5 });
 });
 
-test('Spring Renderer invokes the onRestAfterRelease callback when released while already at rest when being released', (done) => {
-    const restAfterReleaseHandler = jest.fn(() => done());
+test(
+    'Spring Renderer invokes the onRestAfterRelease callback when released while already at rest when being released',
+    (done) => {
+        const restAfterReleaseHandler = jest.fn(() => done());
 
-    const wrapper = mount((
-        <SpringRenderer
-            x={1}
-            y={2}
-            rotate={3}
-            scaleX={4}
-            scaleY={5}
-            skewX={6}
-            skewY={7}
-            onRest={() => wrapper.setProps({isReleased: true})}
-            onRestAfterRelease={restAfterReleaseHandler}
-            isReleased={false}
-            ignoreSticky={false}
-            onRegrab={() => {}}
-            springConfig={{stiffness: 170, damping: 26}}
-            sticky={true}
-        >
-            <div/>;
-        </SpringRenderer>
-    ));
+        const wrapper = mount((
+            <SpringRenderer
+                x={1}
+                y={2}
+                rotate={3}
+                scaleX={4}
+                scaleY={5}
+                skewX={6}
+                skewY={7}
+                onRest={() => wrapper.setProps({ isReleased: true })}
+                onRestAfterRelease={restAfterReleaseHandler}
+                isReleased={false}
+                ignoreSticky={false}
+                onRegrab={() => {}}
+                springConfig={{ stiffness: 170, damping: 26 }}
+                sticky
+            >
+                <div />;
+            </SpringRenderer>
+        ));
 
-    wrapper.setProps({x: 5});
-});
+        wrapper.setProps({ x: 5 });
+    }
+);
 
 test('Spring Renderer invokes onRegrab callback when mouse is down', (done) => {
     const onRegrab = jest.fn(() => done());
@@ -137,13 +142,13 @@ test('Spring Renderer invokes onRegrab callback when mouse is down', (done) => {
             isReleased={false}
             ignoreSticky={false}
             onRegrab={onRegrab}
-            springConfig={{stiffness: 170, damping: 26}}
-            sticky={true}
+            springConfig={{ stiffness: 170, damping: 26 }}
+            sticky
         >
-            <div/>;
+            <div />;
         </SpringRenderer>
     ));
-    
+
     wrapper.find('div').at(0).simulate('mouseDown');
 });
 
@@ -163,12 +168,12 @@ test('Spring Renderer invokes onRegrab callback when touch start', (done) => {
             isReleased={false}
             ignoreSticky={false}
             onRegrab={onRegrab}
-            springConfig={{stiffness: 170, damping: 26}}
-            sticky={true}
+            springConfig={{ stiffness: 170, damping: 26 }}
+            sticky
         >
-            <div/>;
+            <div />;
         </SpringRenderer>
     ));
-    
+
     wrapper.find('div').at(0).simulate('touchStart');
 });

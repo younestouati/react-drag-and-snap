@@ -1,12 +1,38 @@
 {
+    "plugins": [
+        "jest"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "airbnb",
+        "plugin:jest/recommended",
+        "plugin:react/recommended"
+    ],
     "parserOptions": {
-        "ecmaVersion": 6,
+        "ecmaVersion": 2016,
         "sourceType": "module",
         "ecmaFeatures": {
             "jsx": true
         }
     },
     "rules": {
-        "jsx-quotes": [1, "prefer-double"]
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": ["error", 4],
+        "react/no-find-dom-node": 0,
+        "indent": [1, 4],
+        "comma-dangle": ["error", {
+            "arrays": "always-multiline",
+            "objects": "always-multiline",
+            "imports": "always-multiline",
+            "exports": "always-multiline",
+            "functions": "never"
+        }],
+        "max-len": ["error", 120],
+        "no-return-assign": 0
+    },
+    "env": {
+        "jest/globals": true,
+        "browser": true
     }
 }

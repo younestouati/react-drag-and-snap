@@ -1,4 +1,4 @@
-import {DOMElementHelper} from '../dom-element-helper';
+import DOMElementHelper from '../dom-element-helper';
 
 describe('DOMElementHelper tests', () => {
     const element = document.createElement('div');
@@ -9,11 +9,11 @@ describe('DOMElementHelper tests', () => {
         width: 200,
         top: 100,
         botton: 400,
-        height: 300
+        height: 300,
     });
 
-    Object.defineProperty(element, 'clientWidth', {value: 200});
-    Object.defineProperty(element, 'clientHeight', {value: 300});
+    Object.defineProperty(element, 'clientWidth', { value: 200 });
+    Object.defineProperty(element, 'clientHeight', { value: 300 });
 
     window.scrollX = 10;
     window.scrollY = 20;
@@ -40,9 +40,9 @@ describe('DOMElementHelper tests', () => {
     afterComputedStyle['padding-bottom'] = '44px';
     afterComputedStyle['other-prop'] = '14px';
 
-    computedStyle.getPropertyValue = jest.fn((style) => computedStyle[style]);
-    beforeComputedStyle.getPropertyValue = jest.fn((style) => beforeComputedStyle[style]);
-    afterComputedStyle.getPropertyValue = jest.fn((style) => afterComputedStyle[style]);
+    computedStyle.getPropertyValue = jest.fn(style => computedStyle[style]);
+    beforeComputedStyle.getPropertyValue = jest.fn(style => beforeComputedStyle[style]);
+    afterComputedStyle.getPropertyValue = jest.fn(style => afterComputedStyle[style]);
     window.getComputedStyle = jest.fn();
     window.getComputedStyle
         .mockReturnValueOnce(computedStyle)
@@ -51,36 +51,38 @@ describe('DOMElementHelper tests', () => {
     const domElementHelper = new DOMElementHelper(element);
 
     test('DOMElementHelper returns correct size for given DOM element', () => {
-        expect(domElementHelper.getSize()).toEqual({width: 170, height: 230});
+        expect(domElementHelper.getSize()).toEqual({ width: 170, height: 230 });
     });
 
-    test('DOMElementHelper returns correct size for given DOM element', () => {     
-        expect(domElementHelper.getPadding()).toEqual({paddingBottom: 40, paddingLeft: 10, paddingRight: 20, paddingTop: 30});
+    test('DOMElementHelper returns correct size for given DOM element with padding', () => {
+        expect(domElementHelper.getPadding()).toEqual({
+            paddingBottom: 40, paddingLeft: 10, paddingRight: 20, paddingTop: 30,
+        });
     });
 
-    test('DOMElementHelper returns correct computedStyles for given DOM element', () => {     
+    test('DOMElementHelper returns correct computedStyles for given DOM element', () => {
         expect(domElementHelper.getComputedStyles()).toEqual({
             base: [
-                {key: 'padding-left', value: '10px'},
-                {key: 'padding-right', value: '20px'},
-                {key: 'padding-top', value: '30px'},
-                {key: 'padding-bottom', value: '40px'},
-                {key: 'other-prop', value: '10px'}
+                { key: 'padding-left', value: '10px' },
+                { key: 'padding-right', value: '20px' },
+                { key: 'padding-top', value: '30px' },
+                { key: 'padding-bottom', value: '40px' },
+                { key: 'other-prop', value: '10px' },
             ],
             before: [
-                {key: 'padding-left', value: '12px'},
-                {key: 'padding-right', value: '22px'},
-                {key: 'padding-top', value: '32px'},
-                {key: 'padding-bottom', value: '42px'},
-                {key: 'other-prop', value: '12px'}
+                { key: 'padding-left', value: '12px' },
+                { key: 'padding-right', value: '22px' },
+                { key: 'padding-top', value: '32px' },
+                { key: 'padding-bottom', value: '42px' },
+                { key: 'other-prop', value: '12px' },
             ],
             after: [
-                {key: 'padding-left', value: '14px'},
-                {key: 'padding-right', value: '24px'},
-                {key: 'padding-top', value: '34px'},
-                {key: 'padding-bottom', value: '44px'},
-                {key: 'other-prop', value: '14px'}
-            ], 
+                { key: 'padding-left', value: '14px' },
+                { key: 'padding-right', value: '24px' },
+                { key: 'padding-top', value: '34px' },
+                { key: 'padding-bottom', value: '44px' },
+                { key: 'other-prop', value: '14px' },
+            ],
         });
     });
 });

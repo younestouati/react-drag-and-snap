@@ -1,6 +1,6 @@
 import React from 'react';
-import {makeDraggable} from '../lib-proxy';
+import { makeDraggable } from '../lib-proxy';
 
-const DraggableSquare = makeDraggable()(() => <div className="drag-square"/>);
+const DraggableSquare = makeDraggable()(() => <div className="drag-square" />);
 
-export {DraggableSquare};
+export { DraggableSquare };

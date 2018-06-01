@@ -1,25 +1,25 @@
 class StyleInjector {
-	constructor(mountNode = document.getElementsByTagName('head')[0]) {
-		this.mountNode = mountNode;
-	}
+    static remove(node) {
+        node.parentNode.removeChild(node);
+    }
 
-	inject(style, first = false) {
-		const node = document.createElement('style');
-		node.type = 'text/css';
-		node.innerHTML = style;
+    constructor(mountNode = document.getElementsByTagName('head')[0]) {
+        this.mountNode = mountNode;
+    }
 
-		if (first) {
-			this.mountNode.insertBefore(node, this.mountNode.firstChild);
-		} else {
-			this.mountNode.appendChild(node);
-		}
+    inject(style, first = false) {
+        const node = document.createElement('style');
+        node.type = 'text/css';
+        node.innerHTML = style;
 
-		return node;
-	}
+        if (first) {
+            this.mountNode.insertBefore(node, this.mountNode.firstChild);
+        } else {
+            this.mountNode.appendChild(node);
+        }
 
-	remove(node) {
-		node.parentNode.removeChild(node);
-	}
+        return node;
+    }
 }
 
-export {StyleInjector};
+export default StyleInjector;

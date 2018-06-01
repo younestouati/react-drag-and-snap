@@ -1,5 +1,5 @@
-import {shallowEqual} from '../utils/object-utils';
-import {isNullOrUndefined} from '../utils/type-utils';
+import { shallowEqual } from '../utils/object-utils';
+import { isNullOrUndefined } from '../utils/type-utils';
 
 class PropMonitor {
     constructor(oldProps, newProps) {
@@ -16,7 +16,7 @@ class PropMonitor {
     ifValueChange(prop, callback) {
         if (this.oldProps[prop] !== this.newProps[prop]) {
             callback();
-        }    
+        }
     }
 
     ifDefinedValueChange(prop, callback) {
@@ -26,7 +26,7 @@ class PropMonitor {
             !isNullOrUndefined(this.newProps[prop])
         ) {
             callback();
-        }    
+        }
     }
 
     ifBecomingTrue(prop, callback) {
@@ -44,8 +44,8 @@ class PropMonitor {
     ifShallowChange(prop, callback) {
         if (!shallowEqual(this.oldProps[prop], this.newProps[prop])) {
             callback();
-        }    
+        }
     }
 }
 
-export {PropMonitor};
+export default PropMonitor;

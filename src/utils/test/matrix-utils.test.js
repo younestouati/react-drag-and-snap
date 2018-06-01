@@ -1,18 +1,18 @@
 import {
-	getAccumulatedCSSTransform,
-	getTransformationMatrix,
-	qrDecompose,
-	extractRotation,
-	extractScale,
-	extractSkew,
-	extractTranslation,
-	transformMultiple,
-	translationOnly,
-	deltaMatrix,
-	overrideTranslation,
-	transformDescriptor,
-	transformVelocity,
-	transformPosition
+    getAccumulatedCSSTransform,
+    getTransformationMatrix,
+    qrDecompose,
+    extractRotation,
+    extractScale,
+    extractSkew,
+    extractTranslation,
+    transformMultiple,
+    translationOnly,
+    deltaMatrix,
+    overrideTranslation,
+    transformDescriptor,
+    transformVelocity,
+    transformPosition,
 } from '../matrix-utils';
 
 
@@ -24,15 +24,15 @@ import {
     scaleY: 3
     rotate: 30
     skewX: 15
-    skewY: 0 
+    skewY: 0
 */
-const m = { 
+const m = {
     a: 1.7320508075688774,
     b: 0.9999999999999999,
     c: -1.0358983848622452,
     d: 2.866025403784439,
     e: 10,
-    f: 20
+    f: 20,
 };
 
 test('qrDecompose correctly decomposes a matrix', () => {
@@ -47,7 +47,7 @@ test('qrDecompose correctly decomposes a matrix', () => {
 });
 
 test('overrideTranslation overrides the translation for the given matrix', () => {
-    const m1 = overrideTranslation(m, {x: 15, y: 30});
+    const m1 = overrideTranslation(m, { x: 15, y: 30 });
 
     expect(m1.a).toBeCloseTo(m.a);
     expect(m1.b).toBeCloseTo(m.b);
@@ -96,23 +96,29 @@ test('extractSkew returns an object representing the skew of the given matrix', 
 });
 
 test('transformPosition transforms the given point by the given matrix', () => {
-    const p = transformPosition(m, {x: 1, y: 2});
+    const p = transformPosition(m, { x: 1, y: 2 });
 
     expect(p.x).toBeCloseTo(-7.407);
     expect(p.y).toBeCloseTo(-3.696);
 });
 
 test('transformVelocity transforms the given velocity by the given matrix', () => {
-    const v = transformVelocity(m, {x: 1, y: 2});
+    const v = transformVelocity(m, { x: 1, y: 2 });
 
     expect(v.x).toBeCloseTo(0.82);
     expect(v.y).toBeCloseTo(0.41);
 });
 
 test('transformMultiple correctly multiplies multiple matrices', () => {
-    const m1 = {a: 1, b: 2, c: 3, d: 4, e: 5, f: 6};
-    const m2 = {a: 7, b: 8, c: 9, d: 10, e: 11, f: 12};
-    const m3 = {a: 13, b: 14, c: 15, d: 16, e: 17, f: 18};
+    const m1 = {
+        a: 1, b: 2, c: 3, d: 4, e: 5, f: 6,
+    };
+    const m2 = {
+        a: 7, b: 8, c: 9, d: 10, e: 11, f: 12,
+    };
+    const m3 = {
+        a: 13, b: 14, c: 15, d: 16, e: 17, f: 18,
+    };
 
     const m4 = transformMultiple(m1, m2, m3);
 
@@ -125,24 +131,25 @@ test('transformMultiple correctly multiplies multiple matrices', () => {
 });
 
 describe('Extracting matrices from DOM elements', () => {
-
     beforeEach(() => {
-        const getComputedStyleMock = jest.fn();    
-        getComputedStyleMock 
-        .mockReturnValueOnce({transform: 'matrix(13,14,15,16,17,18)'})
-        .mockReturnValueOnce({transform: 'matrix(7,8,9,10,11,12)'})
-        .mockReturnValueOnce({transform: 'matrix(1,2,3,4,5,6)'});
-    
+        const getComputedStyleMock = jest.fn();
+        getComputedStyleMock
+            .mockReturnValueOnce({ transform: 'matrix(13,14,15,16,17,18)' })
+            .mockReturnValueOnce({ transform: 'matrix(7,8,9,10,11,12)' })
+            .mockReturnValueOnce({ transform: 'matrix(1,2,3,4,5,6)' });
+
         window.getComputedStyle = getComputedStyleMock;
         window.scrollX = 5;
         window.scrollY = 10;
     });
 
     const DOMElement1 = {};
-    const DOMElement2 = {offsetParent: DOMElement1};
+    const DOMElement2 = { offsetParent: DOMElement1 };
     const DOMElement3 = {
         offsetParent: DOMElement2,
-        getBoundingClientRect: jest.fn(() => ({left: 5, top: 10, width: 15, height: 20}))
+        getBoundingClientRect: jest.fn(() => ({
+            left: 5, top: 10, width: 15, height: 20,
+        })),
     };
 
     test('getAccumulatedCSSTransform returns the accumulated matrix for the given DOMElement', () => {
@@ -176,7 +183,7 @@ test('deltaMatrix returns matrix that represents the delta between the two given
         scaleY: 2,
         skewX: 15,
         skewY: 0,
-        rotate: 30
+        rotate: 30,
     };
 
     const newDescriptor = {
@@ -186,7 +193,7 @@ test('deltaMatrix returns matrix that represents the delta between the two given
         scaleY: 4,
         skewX: 30,
         skewY: 0,
-        rotate: 45   
+        rotate: 45,
     };
 
     const m1 = deltaMatrix(oldDescriptor, newDescriptor);
@@ -207,7 +214,7 @@ test('transformDescriptor returns the given descriptor transformed by the given 
         height: 4,
         skewX: 5,
         skewY: 6,
-        rotate: 7
+        rotate: 7,
     };
 
     const d = transformDescriptor(m, descriptor);

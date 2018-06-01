@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {mount} from 'enzyme';
-import {asStateSubscriber, asStatePublisher} from '../state-sharing';
+import { mount } from 'enzyme';
+import { asStateSubscriber, asStatePublisher } from '../state-sharing';
 
 describe('State sharing', () => {
     class Dummy extends React.Component {
@@ -9,9 +9,9 @@ describe('State sharing', () => {
             super(props);
 
             this.state = {
-                updated: false
-            }
-        } 
+                updated: false,
+            };
+        }
 
         render() {
             return (
@@ -19,7 +19,7 @@ describe('State sharing', () => {
                     <span className="state">
                         {`Updated: ${this.state.updated}`}
                     </span>
-                    <button onClick={() => this.setState({updated: true})}/>
+                    <button onClick={() => this.setState({ updated: true })} />
                 </div>
             );
         }
@@ -30,24 +30,25 @@ describe('State sharing', () => {
 
     let handler;
     const context = {
-        publishState: jest.fn((state) => handler(state)),
-	    subscribeToState: jest.fn((h) => handler = h),
-    	unsubscribeToState: jest.fn()  
+        publishState: jest.fn(state => handler(state)),
+        subscribeToState: jest.fn(h => handler = h),
+        unsubscribeToState: jest.fn(),
     };
 
     const childContextTypes = {
         publishState: PropTypes.func,
         subscribeToState: PropTypes.func,
-        unsubscribeToState: PropTypes.func
+        unsubscribeToState: PropTypes.func,
     };
 
     test('publisher updated own and subscribers state', () => {
         const wrapper = mount(
-            <div>  
-                <DummyAsStatePublisher/>
-                <DummyAsStateSubscriber/>
-            </div>
-        , {context, childContextTypes});
+            <div>
+                <DummyAsStatePublisher />
+                <DummyAsStateSubscriber />
+            </div>,
+            { context, childContextTypes }
+        );
 
         wrapper.find('button').at(0).simulate('click');
         expect(wrapper.find('.state').map(node => node.text())).toEqual(['Updated: true', 'Updated: true']);
@@ -55,11 +56,12 @@ describe('State sharing', () => {
 
     test('subscriber is unable to update own state', () => {
         const wrapper = mount(
-            <div>  
-                <DummyAsStatePublisher/>
-                <DummyAsStateSubscriber/>
-            </div>
-        , {context, childContextTypes});
+            <div>
+                <DummyAsStatePublisher />
+                <DummyAsStateSubscriber />
+            </div>,
+            { context, childContextTypes }
+        );
 
         wrapper.find('button').at(1).simulate('click');
         expect(wrapper.find('.state').map(node => node.text())).toEqual(['Updated: false', 'Updated: false']);

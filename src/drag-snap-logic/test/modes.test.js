@@ -1,7 +1,7 @@
-import {MODES, modeStyles, getModeAttribute} from '../drag-modes';
+import { MODES, modeStyles, getModeAttribute } from '../drag-modes';
 
 test('MODES are default, move and clone', () => {
-    expect(MODES.length).toEqual(3);
+    expect(MODES).toHaveLength(3);
     expect(MODES.indexOf('default')).toBeGreaterThan(-1);
     expect(MODES.indexOf('move')).toBeGreaterThan(-1);
     expect(MODES.indexOf('clone')).toBeGreaterThan(-1);
@@ -9,19 +9,19 @@ test('MODES are default, move and clone', () => {
 
 test('modeStyles', () => {
     expect(modeStyles).toEqual(`
-	[data-drag-mode-move],
-	[data-drag-mode-move][style] {
-		display: none!important;
-	}
-	[data-drag-mode-default],
-	[data-drag-mode-default][style] {
-		visibility: hidden!important;
-	}
+    [data-drag-mode-move],
+    [data-drag-mode-move][style] {
+        display: none!important;
+    }
+    [data-drag-mode-default],
+    [data-drag-mode-default][style] {
+        visibility: hidden!important;
+    }
 `);
 });
 
 test('getModeAttribute returns correct atttribute', () => {
-    expect(getModeAttribute('move')).toEqual('data-drag-mode-move')
+    expect(getModeAttribute('move')).toEqual('data-drag-mode-move');
     expect(getModeAttribute('CLONE')).toEqual('data-drag-mode-clone');
-    expect(getModeAttribute('dEfaULT')).toEqual('data-drag-mode-default')
+    expect(getModeAttribute('dEfaULT')).toEqual('data-drag-mode-default');
 });

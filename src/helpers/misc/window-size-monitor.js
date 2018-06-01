@@ -1,8 +1,8 @@
 function debounce(fn, wait = 100) {
     let timeout;
     return (...args) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => fn.call(this, ...args), wait);
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn.call(this, ...args), wait);
     };
 }
 
@@ -17,20 +17,20 @@ class WindowSizeMonitor {
         const debouncedCallback = debounce(callback);
         window.addEventListener('resize', debouncedCallback);
         this.subscriptions[id] = debouncedCallback;
-        this.nextId++;
-        
+        this.nextId += 1;
+
         return id;
     }
 
     unsubscribeToResizeEnd(id) {
         const method = this.subscriptions[id];
- 
+
         if (method) {
             window.removeEventListener('resize', method);
         }
 
         this.subscriptions[id] = undefined;
-    };
+    }
 }
 
-export {WindowSizeMonitor};
+export default WindowSizeMonitor;

@@ -1,12 +1,12 @@
 import React from 'react';
-import {makeDraggable} from '../lib-proxy';
+import { makeDraggable } from '../lib-proxy';
 
-const Ball = ({radius, children, onClick}) => (
-    <div 
+const Ball = ({ radius, children, onClick }) => (
+    <div
         className="nested-ball"
         style={{
             width: `${radius}px`,
-            height: `${radius}px`
+            height: `${radius}px`,
         }}
         onClick={onClick}
     >
@@ -14,6 +14,6 @@ const Ball = ({radius, children, onClick}) => (
     </div>
 );
 
-const DraggableBall = makeDraggable()(Ball); 
+const DraggableBall = makeDraggable()(Ball);
 
-export {DraggableBall};
+export { DraggableBall };

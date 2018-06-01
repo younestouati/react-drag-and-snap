@@ -6,6 +6,9 @@
 # testing
 /coverage
 
+# demo and dev bundle
+/demo_bundle
+
 # production
 /dist
 

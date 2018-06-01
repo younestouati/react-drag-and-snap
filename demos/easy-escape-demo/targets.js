@@ -1,16 +1,16 @@
 import React from 'react';
-import {makeSnapTarget, SnapCriteria} from '../lib-proxy';
-import {DraggableBall} from './ball';
+import { makeSnapTarget, SnapCriteria } from '../lib-proxy';
+import { DraggableBall } from './ball';
 
 const config = {
-    snapCriteria: SnapCriteria.isCenterWithinRadius('300%')
+    snapCriteria: SnapCriteria.isCenterWithinRadius('300%'),
 };
 
-const Square = ({hasBall}) => (
+const Square = ({ hasBall }) => (
     <div className="square">
         {
-            hasBall 
-                ? <DraggableBall/>
+            hasBall
+                ? <DraggableBall />
                 : null
         }
     </div>
@@ -18,4 +18,4 @@ const Square = ({hasBall}) => (
 
 const SquareSnapTarget = makeSnapTarget(config)(Square);
 
-export {SquareSnapTarget};
+export { SquareSnapTarget };

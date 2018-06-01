@@ -1,65 +1,77 @@
-import React/*, { Component }*/ from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import {CustomPropTypes} from '../prop-types/custom-prop-types';
-import {Motion, spring} from 'react-motion';
-import {PositionSpringSwitch} from './position-spring-switch';
-import {PropMonitor} from './prop-monitor';
+import { Motion, spring } from 'react-motion';
+import CustomPropTypes from '../prop-types/custom-prop-types';
+import PositionSpringSwitch from './position-spring-switch';
+import { getCSSHidingRulesAsObject } from '../helpers/misc/css-hider';
+import PropMonitor from './prop-monitor';
 
-class SpringRendererApplier extends React.Component {
-	render() {
-		const {onRegrab, isVisible, children, transform, contextSize, draggableCenterInBorderBoxCoordinates} = this.props;
-		const {x, y, rotate, scaleX, scaleY, skewX} = transform;
-        /* 
-         * Offset x and y by half the context size, since x and y are in a coordinate system that has its origo
-         * in the middle of the dragSnapContext - not the upper left corner. It would be tempting just to set
-         * left: 50%, and top: 50% to achieve this, thus eliminating the need of know the contextSize. However,
-         * 'splitting' the positioning across left/top and transform sometimes leads to rounding errors in Chrome
-         */
-        const _x = contextSize.width/2 + x;
-        const _y = contextSize.height/2 + y;
-		return (
-			<div
-				onTouchStart={onRegrab}
-				onMouseDown={onRegrab}
-				style={{
-                    lineHeight: 0,
-					display: 'inline-block',
-					transformOrigin: '0 0',
-					transform: '' +
-						'translate3d(' + _x + 'px, ' + _y + 'px, 0) ' +
-						'rotate(' + rotate + 'deg) ' +
-						'scaleX(' + scaleX + ') ' +
-						'scaleY(' + scaleY + ') ' +
-                        'skewX(' + skewX + 'deg) ' +
-                        'translate3d(-' + draggableCenterInBorderBoxCoordinates.x + 'px, -' + draggableCenterInBorderBoxCoordinates.y + 'px, 0) ' +
-					'',
-					WebkitTouchCallout: 'none',
-					WebkitUserSelect: 'none',
-					visibility: isVisible ? 'visible' : 'hidden',
-					userSelect: 'none',
-					position: 'absolute',
-					left: 0,
-					top: 0
-				}}
-			>
-				{children}
-			</div>
-		);
-	}
-}
+const SpringRendererApplier = (props) => {
+    const {
+        onRegrab,
+        isVisible,
+        children,
+        transform,
+        contextSize,
+        draggableCenterInBorderBoxCoordinates,
+    } = props;
+    const {
+        x, y, rotate, scaleX, scaleY, skewX,
+    } = transform;
+    /*
+    * Offset x and y by half the context size, since x and y are in a coordinate system that
+    * has its origo in the middle of the dragSnapContext - not the upper left corner. It would
+    * be tempting just to set left: 50%, and top: 50% to achieve this, thus eliminating the
+    * need of know the contextSize. However, 'splitting' the positioning across left/top and
+    * transform sometimes leads to rounding errors in Chrome
+    */
+    const xToApply = (contextSize.width / 2) + x;
+    const yToApply = (contextSize.height / 2) + y;
+    return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+        <div
+            onTouchStart={onRegrab}
+            onMouseDown={onRegrab}
+            style={{
+                lineHeight: 0,
+                display: 'inline-block',
+                transformOrigin: '0 0',
+                transform: `${'' +
+                    'translate3d('}${xToApply}px, ${yToApply}px, 0) ` +
+                    `rotate(${rotate}deg) ` +
+                    `scaleX(${scaleX}) ` +
+                    `scaleY(${scaleY}) ` +
+                    `skewX(${skewX}deg) ` +
+                    /* eslint-disable max-len */
+                    `translate3d(-${draggableCenterInBorderBoxCoordinates.x}px, -${draggableCenterInBorderBoxCoordinates.y}px, 0) ` +
+                /* eslint-enable max-len */
+                '',
+                WebkitTouchCallout: 'none',
+                WebkitUserSelect: 'none',
+                userSelect: 'none',
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                ...(isVisible ? {} : getCSSHidingRulesAsObject()),
+            }}
+        >
+            {children}
+        </div>
+    );
+};
 
 SpringRendererApplier.propTypes = {
     contextSize: CustomPropTypes.size.isRequired,
     draggableCenterInBorderBoxCoordinates: CustomPropTypes.point.isRequired,
-	transform: CustomPropTypes.transform.isRequired,
-	isVisible: PropTypes.bool.isRequired,
-	onRegrab: PropTypes.func.isRequired,
-	children: PropTypes.node.isRequired
+    transform: CustomPropTypes.transform.isRequired,
+    isVisible: PropTypes.bool.isRequired,
+    onRegrab: PropTypes.func.isRequired,
+    children: PropTypes.node.isRequired,
 };
 
-//Component needed because react motion only support a single child, 
-//whereas we want to pass in an array of children (original element and drag clone)
-const Tweener = ({children, transform, displacement}) => children(transform, displacement);
+// Component needed because react motion only support a single child,
+// whereas we want to pass in an array of children (original element and drag clone)
+const Tweener = ({ children, transform, displacement }) => children(transform, displacement);
 
 const nullTransform = {
     x: 0,
@@ -67,59 +79,71 @@ const nullTransform = {
     rotate: 0,
     scaleX: 1,
     scaleY: 1,
-    skewX: 0
+    skewX: 0,
 };
 
 class SpringRenderer extends React.Component {
-	constructor(props) {
-		super(props);
+    constructor(props) {
+        super(props);
 
         this.state = {
             flipIsActive: false,
-            springActivations: 0
+            springActivations: 0,
         };
 
-		this.atRest = true;
-	}
-
-    activateSpring() {
-        const {springActivations} = this.state;
-        this.setState({springActivations: springActivations + 1});
+        this.atRest = true;
+        this.boundRestHandler = this.restHandler.bind(this);
     }
 
-    //TODO: Consider using componentDidUpdate instead. Seems like this is called synchronously, when state in
-    //parent component (make-draggable) is set, which means onRestAfterRelease may be called earlier than
-    //one would expect!
-	componentWillReceiveProps(nextProps) {
+    // TODO: Consider using componentDidUpdate instead. Seems like this is called synchronously,
+    // when state in parent component (make-draggable) is set, which means onRestAfterRelease
+    // may be called earlier than one would expect!
+    componentWillReceiveProps(nextProps) {
         const propMonitor = new PropMonitor(this.props, nextProps);
-        propMonitor.ifShallowChange('transform', () => this.atRest = !nextProps.isActive);
-        propMonitor.ifBecomingTrue('isReleased', () => this.atRest ? nextProps.onRestAfterRelease() : null);
+        propMonitor.ifShallowChange(
+            'transform',
+            /* eslint-disable-next-line no-return-assign */
+            () => this.atRest = !nextProps.isActive
+        );
+        propMonitor.ifBecomingTrue('isReleased', () => (this.atRest ? nextProps.onRestAfterRelease() : null));
 
         propMonitor.ifDefinedValueChange('snapTargetId', this.activateSpring.bind(this));
         propMonitor.ifDefinedValueChange('isPositionSnapped', this.activateSpring.bind(this));
         propMonitor.ifBecomingTrue('isSnappingBack', this.activateSpring.bind(this));
 
-        //Flip isActive flag for one frame, given react motion a chance to update to right start position before animation
-        propMonitor.ifBecomingTrue('isActive', () => requestAnimationFrame(() => this.setState({flipIsActive: false})));
-        propMonitor.ifBecomingFalse('isActive', () => this.setState({flipIsActive: true}));
+        // Flip isActive flag for one frame, given react motion a chance to update to right start
+        // position before animation
+        propMonitor.ifBecomingTrue(
+            'isActive',
+            () => requestAnimationFrame(() => this.setState({ flipIsActive: false }))
+        );
+        propMonitor.ifBecomingFalse('isActive', () => this.setState({ flipIsActive: true }));
     }
 
-	restHandler() {
+    activateSpring() {
+        const { springActivations } = this.state;
+        this.setState({ springActivations: springActivations + 1 });
+    }
+
+    restHandler() {
         this.atRest = true;
-		if (this.props.isReleased) {
-			this.props.onRestAfterRelease();
-		}
+        if (this.props.isReleased) {
+            this.props.onRestAfterRelease();
+        }
 
-		//Important that this is called after onRestAfterRelease as the unit tests rely on it (this method is only needed for testing anyway)
-		this.props.onRest();
-	}
+        // Important that this is called after onRestAfterRelease as the unit tests rely
+        // on it (this method is only needed for testing anyway)
+        this.props.onRest();
+    }
 
-	render() {
-		const {transform, children, springConfig, sticky, isReleased, isActive} = this.props;
-        const {springActivations, flipIsActive} = this.state;
+    render() {
+        const {
+            transform, children, springConfig, sticky, isReleased, isActive,
+        } = this.props;
+        const { springActivations, flipIsActive } = this.state;
         const useSpring = isActive && !flipIsActive;
 
-		return (
+        return (
             <Motion
                 style={{
                     x: useSpring ? spring(transform.x, springConfig) : transform.x,
@@ -129,56 +153,56 @@ class SpringRenderer extends React.Component {
                     scaleY: useSpring ? spring(transform.scaleY, springConfig) : transform.scaleY,
                     skewX: useSpring ? spring(transform.skewX, springConfig) : transform.skewX,
                 }}
-                onRest={this.restHandler.bind(this)}
+                onRest={this.boundRestHandler}
             >
                 {
-                    (springTransform) =>  {
-                        return (
-                            <PositionSpringSwitch
-                                isReleased={isReleased}
-                                rawTransform={transform}
-                                springTransform={springTransform}
-                                activations={springActivations}
-                                switchOffAutomatically={!isReleased}
-                                alwaysOn={!sticky}
-                                springConfig={springConfig}
-                            >
-                                {
-                                    (transformToApply, displacement) => (
-                                        <Tweener 
-                                            transform={transformToApply}
-                                            displacement={displacement}
-                                        >
-                                            {children}
-                                        </Tweener>    
-                                    )
-                                }
-                            </PositionSpringSwitch>
-                        )
-                    }
+                    springTransform => (
+                        <PositionSpringSwitch
+                            isReleased={isReleased}
+                            rawTransform={transform}
+                            springTransform={springTransform}
+                            activations={springActivations}
+                            switchOffAutomatically={!isReleased}
+                            alwaysOn={!sticky}
+                            springConfig={springConfig}
+                        >
+                            {
+                                (transformToApply, displacement) => (
+                                    <Tweener
+                                        transform={transformToApply}
+                                        displacement={displacement}
+                                    >
+                                        {children}
+                                    </Tweener>
+                                )
+                            }
+                        </PositionSpringSwitch>
+                    )
                 }
             </Motion>
-		);
-	}
+        );
+    }
 }
 
 SpringRenderer.propTypes = {
-	transform: CustomPropTypes.transform.isRequired,
-	children: PropTypes.func.isRequired,
-	onRestAfterRelease: PropTypes.func.isRequired,
+    transform: CustomPropTypes.transform.isRequired,
+    children: PropTypes.func.isRequired,
+    onRestAfterRelease: PropTypes.func.isRequired,
     onRest: PropTypes.func,
     isActive: PropTypes.bool.isRequired,
     isReleased: PropTypes.bool.isRequired,
+    /* eslint-disable */
     snapTargetId: PropTypes.string,
     isPositionSnapped: PropTypes.bool,
     isSnappingBack: PropTypes.bool.isRequired,
-	springConfig: CustomPropTypes.springConfig.isRequired,
-	sticky: PropTypes.bool.isRequired
+    /* eslint-enable */
+    springConfig: CustomPropTypes.springConfig.isRequired,
+    sticky: PropTypes.bool.isRequired,
 };
 
 SpringRenderer.defaultProps = {
     transform: nullTransform,
-	onRest: () => {}
+    onRest: () => {},
 };
 
-export {SpringRenderer, SpringRendererApplier};
+export { SpringRenderer, SpringRendererApplier };

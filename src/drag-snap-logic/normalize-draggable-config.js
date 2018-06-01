@@ -1,33 +1,36 @@
 import invariant from 'invariant';
-import {extend} from '../utils/object-utils';
-import {isNumber, isBoolean} from '../utils/type-utils';
+import { isNumber, isBoolean } from '../utils/type-utils';
 
 const defaultConfig = {
     stiffness: 390,
     damping: 35,
     sticky: true,
-    mode: 'default'
+    mode: 'default',
 };
 const normalizeDraggableConfig = (customConfig = {}) => {
-	const config = extend(defaultConfig, customConfig);
+    const config = { ...defaultConfig, ...customConfig };
 
-	invariant(isNumber(config.stiffness), 
-		`Invalid property 'stiffness' in draggable config. Must be a number. Was: ${config.stiffness}`
-	);
-	
-	invariant(isNumber(config.damping), 
-		`Invalid property 'damping' in draggable config. Must be a number. Was: ${config.damping}`
+    invariant(
+        isNumber(config.stiffness),
+        `Invalid property 'stiffness' in draggable config. Must be a number. Was: ${config.stiffness}`
     );
-    
-    invariant(isBoolean(config.sticky), 
+
+    invariant(
+        isNumber(config.damping),
+        `Invalid property 'damping' in draggable config. Must be a number. Was: ${config.damping}`
+    );
+
+    invariant(
+        isBoolean(config.sticky),
         `Invalid property 'sticky' in draggable config. Must be a boolean. Was: ${config.sticky}`
     );
 
-    invariant(['default', 'clone', 'move'].indexOf(config.mode) > -1, 
+    invariant(
+        ['default', 'clone', 'move'].indexOf(config.mode) > -1,
         `Invalid property 'mode' in draggable config. Must be either 'default', 'clone', or 'move'. Was: ${config.move}`
     );
 
-	return config;
+    return config;
 };
 
- export {normalizeDraggableConfig};
+export default normalizeDraggableConfig;

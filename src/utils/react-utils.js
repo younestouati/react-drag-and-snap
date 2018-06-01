@@ -1,3 +1,7 @@
-const getDisplayName = (component) => component.displayName || component.name || 'Component';
+const getComponentDisplayName = component => component.displayName || component.name || 'Component';
 
-export {getDisplayName};
+const reactUtils = {
+    getComponentDisplayName,
+};
+
+export default reactUtils;

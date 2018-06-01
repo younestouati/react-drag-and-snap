@@ -1,4 +1,4 @@
-import {isBoolean, isFunction, isObject, isNumber, isString, isArray, isNullOrUndefined} from '../type-utils';
+import { isBoolean, isFunction, isObject, isNumber, isString, isArray, isNullOrUndefined } from '../type-utils';
 
 test('isBoolean correctly recognizes a boolean', () => {
     expect(isBoolean(true)).toBe(true);
@@ -16,9 +16,10 @@ test('isBoolean correctly recognizes a boolean', () => {
 });
 
 test('isFunction correctly recognizes a function', () => {
+    /* eslint-disable-next-line func-names */
     const f1 = function () {};
     const f2 = () => {};
-    function f3 () {};
+    function f3() {}
 
     expect(isFunction(f1)).toBe(true);
     expect(isFunction(f2)).toBe(true);
@@ -37,6 +38,7 @@ test('isFunction correctly recognizes a function', () => {
 
 test('isObject correctly recognizes an object', () => {
     const o1 = {};
+    /* eslint-disable-next-line no-new-object */
     const o2 = new Object();
 
     expect(isObject(o1)).toBe(true);
@@ -57,7 +59,7 @@ test('isNumber correctly recognizes a number', () => {
     expect(isNumber(0)).toBe(true);
     expect(isNumber(-1)).toBe(true);
     expect(isNumber(5)).toBe(true);
-    expect(isNumber(1/3)).toBe(true);
+    expect(isNumber(1 / 3)).toBe(true);
     expect(isNumber(Math.PI)).toBe(true);
 
     expect(isNumber()).toBe(false);
@@ -75,7 +77,7 @@ test('isString correctly recognizes a string', () => {
     expect(isString('')).toBe(true);
     expect(isString(String('test'))).toBe(true);
     expect(isString('Hello')).toBe(true);
-    
+
     expect(isString()).toBe(false);
     expect(isString(undefined)).toBe(false);
     expect(isString(null)).toBe(false);
@@ -89,7 +91,7 @@ test('isString correctly recognizes a string', () => {
 
 test('isArray correctly recognizes an array', () => {
     expect(isArray([])).toBe(true);
-    expect(isArray([1,2,3])).toBe(true);
+    expect(isArray([1, 2, 3])).toBe(true);
     expect(isArray(new Array(1))).toBe(true);
 
     expect(isArray()).toBe(false);
@@ -109,7 +111,7 @@ test('isNullOrUndefined correctly recognizes null and undefined', () => {
     expect(isNullOrUndefined(null)).toBe(true);
     expect(isNullOrUndefined(undefined)).toBe(true);
 
-    expect(isNullOrUndefined([1,2,3])).toBe(false);
+    expect(isNullOrUndefined([1, 2, 3])).toBe(false);
     expect(isNullOrUndefined([])).toBe(false);
     expect(isNullOrUndefined(3)).toBe(false);
     expect(isNullOrUndefined({})).toBe(false);

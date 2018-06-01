@@ -2,7 +2,7 @@ const DRAG_STATES = {
     INACTIVE: 'inactive',
     GRABBED: 'grabbed',
     DRAGGED: 'dragged',
-    RELEASED: 'released'
+    RELEASED: 'released',
 };
 
-export {DRAG_STATES};
+export default DRAG_STATES;

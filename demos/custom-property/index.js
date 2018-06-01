@@ -1,34 +1,34 @@
 import React from 'react';
-import {DragSnapContext} from '../lib-proxy';
-import {DraggableBall} from './ball';
-import {SquareTargetDefault, SquareTargetProportional, RoundTargetDefault, RoundTargetProportional} from './targets';
+import { DragSnapContext } from '../lib-proxy';
+import { DraggableBall } from './ball';
+import { SquareTargetDefault, SquareTargetProportional, RoundTargetDefault, RoundTargetProportional } from './targets';
 
 import './styles.css';
 
 class CustomPropertyDemo extends React.Component {
-	render() {
-		return (
+    render() {
+        return (
             <div className="custom-property-demo">
                 <DragSnapContext>
                     <div className="target-wrapper">
-                        <SquareTargetDefault/>
+                        <SquareTargetDefault />
                     </div>
                     <div className="target-wrapper">
-                        <SquareTargetProportional/>
+                        <SquareTargetProportional />
                     </div>
                     <div className="target-wrapper">
-                        <RoundTargetDefault/>
+                        <RoundTargetDefault />
                     </div>
                     <div className="target-wrapper">
-                        <RoundTargetProportional/>
+                        <RoundTargetProportional />
                     </div>
                     <div className="ball-wrapper">
-                        <DraggableBall/>
+                        <DraggableBall />
                     </div>
                 </DragSnapContext>
             </div>
-		);
-	}
+        );
+    }
 }
 
-export {CustomPropertyDemo};
+export { CustomPropertyDemo };

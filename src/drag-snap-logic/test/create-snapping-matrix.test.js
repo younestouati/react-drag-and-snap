@@ -1,9 +1,8 @@
-import {MODES, modeStyles, getModeAttribute} from '../drag-modes';
-import {createSnapMatrix} from '../create-snapping-matrix';
-import {normalizeTransform} from '../normalize-transform';
+import createSnapMatrix from '../create-snapping-matrix';
+import normalizeTransform from '../normalize-transform';
 
 test('parseSnapTransform fills in missing values with defaults', () => {
-    const descriptor = normalizeTransform({}, {width: 100, height: 200}, {width: 300, height: 400});
+    const descriptor = normalizeTransform({}, { width: 100, height: 200 }, { width: 300, height: 400 });
 
     expect(descriptor.x).toBe(0);
     expect(descriptor.y).toBe(0);
@@ -25,8 +24,11 @@ test('parseSnapTransform returns a fully specificied numeric descriptor as-is', 
         rotate: 7,
     };
 
-    const parsedDescriptor = normalizeTransform(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400});
-    expect(parsedDescriptor).toEqual(Object.assign({}, inputDescriptor, {customSnapProps: {}}));
+    const parsedDescriptor = normalizeTransform(
+        inputDescriptor,
+        { width: 100, height: 200 }, { width: 300, height: 400 }
+    );
+    expect(parsedDescriptor).toEqual(Object.assign({}, inputDescriptor, { customSnapProps: {} }));
 });
 
 test('parseSnapTransform correctly interprets percentages', () => {
@@ -37,10 +39,13 @@ test('parseSnapTransform correctly interprets percentages', () => {
         height: '100%',
         skewX: 5,
         skewY: 6,
-        rotate: 7
+        rotate: 7,
     };
 
-    const parsedDescriptor = normalizeTransform(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400});
+    const parsedDescriptor = normalizeTransform(
+        inputDescriptor,
+        { width: 100, height: 200 }, { width: 300, height: 400 }
+    );
     expect(parsedDescriptor).toEqual({
         x: 10,
         y: -20,
@@ -48,11 +53,10 @@ test('parseSnapTransform correctly interprets percentages', () => {
         width: 50,
         skewX: 5,
         skewY: 6,
-        rotate: 7, 
-        customSnapProps: {}  
+        rotate: 7,
+        customSnapProps: {},
     });
 });
-
 
 
 test('parseSnapTransform throws if given an invalid string value (not a percentage)', () => {
@@ -66,7 +70,10 @@ test('parseSnapTransform throws if given an invalid string value (not a percenta
         rotate: 7,
     };
 
-    expect(() => normalizeTransform(inputDescriptor, {width: 100, height: 200}, {width: 300, height: 400})).toThrow();
+    expect(() => normalizeTransform(
+        inputDescriptor,
+        { width: 100, height: 200 }, { width: 300, height: 400 }
+    )).toThrow();
 });
 
 test('createSnappingMatrix correctly calculates the snapping matrix', () => {
@@ -87,7 +94,7 @@ test('createSnappingMatrix correctly calculates the snapping matrix', () => {
         skewY: 0,
         rotate: 45,
     };
-    const draggableSize = {width: 20, height: 30};
+    const draggableSize = { width: 20, height: 30 };
 
     const m = createSnapMatrix(baseMatrix, descriptor, draggableSize);
 

@@ -1,28 +1,10 @@
-import {extend, iterate, shallowClone, shallowCloneExcluding} from '../object-utils';
-
-test('extend merges the given objects without mutating them', () => {
-    const o1 = {a: 1, b: 2};
-    const o2 = {b: 3, c: 4};
-    const o3 = extend(o1, o2);
-
-    expect(o1.a).toBe(1);
-    expect(o1.b).toBe(2);
-    expect(o1.c).toBe(undefined);
-
-    expect(o2.a).toBe(undefined);
-    expect(o2.b).toBe(3);
-    expect(o2.c).toBe(4);
-
-    expect(o3.a).toBe(1);
-    expect(o3.b).toBe(3);
-    expect(o3.c).toBe(4);
-});
+import { iterate, shallowClone, shallowCloneExcluding } from '../object-utils';
 
 test('iterate iterates over the all the keys of the given object', () => {
     const o1 = {
         key1: 1,
         key2: 2,
-        key3: 3
+        key3: 3,
     };
 
     const o2 = {};
@@ -37,7 +19,7 @@ test('iterate iterates over the all the keys of the given object', () => {
 test('shallowClone clones the given object without mutating it', () => {
     const o1 = {
         a: 1,
-        b: 2
+        b: 2,
     };
 
     const o2 = shallowClone(o1);
@@ -54,7 +36,7 @@ test('shallowCloneExcluding clones the given object (except the specified keys) 
     const o1 = {
         a: 1,
         b: 2,
-        c: 3
+        c: 3,
     };
 
     const o2 = shallowCloneExcluding(o1, ['c']);

@@ -1,15 +1,15 @@
 const noProps = () => {};
 
-const staticAndLowFrequencyProps = (draggable) => ({
+const staticAndLowFrequencyProps = draggable => ({
     dragState: draggable.dragState,
 });
 
-const allProps = (draggable) => draggable;
+const allProps = draggable => draggable;
 
 const draggableCollectors = {
     noProps,
     staticAndLowFrequencyProps,
-    allProps
+    allProps,
 };
 
 export default draggableCollectors;

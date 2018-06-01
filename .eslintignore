@@ -1,0 +1,8 @@
+node_modules
+coverage
+docs
+dist
+lib
+rollup.config.js
+dev-bundle
+*.css

@@ -11,12 +11,12 @@ const DraggableItem = makeDraggable()(Item);
 const SnapTarget = makeSnapTarget()(Target);
 
 const BasicDemo = () => (
-	<div className="basic-demo">
-		<DragSnapContext>
-			<DraggableItem/>
-			<SnapTarget onDropComplete={() => alert('Item was dropped on target')}/>
-		</DragSnapContext>
-	</div>
+    <div className="basic-demo">
+        <DragSnapContext>
+            <DraggableItem />
+            <SnapTarget onDropComplete={() => alert('Item was dropped on target')} />
+        </DragSnapContext>
+    </div>
 );
 
-export {BasicDemo};
+export { BasicDemo };

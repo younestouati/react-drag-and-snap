@@ -1,10 +1,10 @@
 import React from 'react';
-import {makeSnapTarget, SnapCriteria} from '../lib-proxy';
+import { makeSnapTarget, SnapCriteria } from '../lib-proxy';
 
 const config = {
-	snapCriteria: SnapCriteria.isCenterWithinRadius('400%')
+    snapCriteria: SnapCriteria.isCenterWithinRadius('400%'),
 };
 
-const SnapTarget = makeSnapTarget(config)(() => <div className="target"/>);
+const SnapTarget = makeSnapTarget(config)(() => <div className="target" />);
 
-export {SnapTarget};
+export { SnapTarget };

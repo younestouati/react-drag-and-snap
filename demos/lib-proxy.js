@@ -12,7 +12,7 @@ import {
     SnapPriorities,
     DraggableCollectors,
     SnapTargetCollectors,
-    SpringConfigurations
+    SpringConfigurations,
 } from '../src/index';
 
 export {
@@ -25,5 +25,5 @@ export {
     SnapPriorities,
     DraggableCollectors,
     SnapTargetCollectors,
-    SpringConfigurations
+    SpringConfigurations,
 };

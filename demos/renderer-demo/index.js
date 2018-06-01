@@ -1,33 +1,33 @@
 import React from 'react';
-import {DragSnapContext} from '../lib-proxy';
-import {DraggableBall} from './ball';
-import {LargeReachTarget, LeavesPositionTarget} from './targets';
+import { DragSnapContext } from '../lib-proxy';
+import { DraggableBall } from './ball';
+import { LargeReachTarget, LeavesPositionTarget } from './targets';
 
 import './styles.css';
 
 class RendererDemo extends React.Component {
-	render() {
-		return (
+    render() {
+        return (
             <div className="renderer-demo">
                 <DragSnapContext>
                     <div className="target-wrapper">
-                        <LargeReachTarget/>
+                        <LargeReachTarget />
                     </div>
                     <div className="target-wrapper">
-                        <LargeReachTarget/>
+                        <LargeReachTarget />
                     </div>
                     <div className="target-wrapper">
-                        <LeavesPositionTarget/>
+                        <LeavesPositionTarget />
                     </div>
                     <div className="ball-wrapper">
-                        <DraggableBall/>
-                        <DraggableBall/>
-                        <DraggableBall/>
+                        <DraggableBall />
+                        <DraggableBall />
+                        <DraggableBall />
                     </div>
                 </DragSnapContext>
             </div>
-		);
-	}
+        );
+    }
 }
 
-export {RendererDemo};
+export { RendererDemo };

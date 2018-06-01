@@ -1,6 +1,6 @@
 import React from 'react';
-import {DragSnapContext} from '../lib-proxy';
-import {SquareSnapTarget} from './targets';
+import { DragSnapContext } from '../lib-proxy';
+import { SquareSnapTarget } from './targets';
 
 import './styles.css';
 
@@ -9,21 +9,21 @@ class EasyEscapeDemo extends React.Component {
         super(props);
 
         this.state = {
-            ballIndex: 2
+            ballIndex: 2,
         };
     }
 
-	render() {
-        const {ballIndex} = this.state;
+    render() {
+        const { ballIndex } = this.state;
 
-		return (
+        return (
             <div className="easy-escape-demo">
                 <DragSnapContext>
                     <div className="target-wrapper">
-                        <SquareSnapTarget 
+                        <SquareSnapTarget
                             hasBall={ballIndex === 0}
                             onDropComplete={
-                                () => this.setState({ballIndex: 0})
+                                () => this.setState({ ballIndex: 0 })
                             }
                         />
                     </div>
@@ -31,24 +31,24 @@ class EasyEscapeDemo extends React.Component {
                         <SquareSnapTarget
                             hasBall={ballIndex === 1}
                             onDropComplete={
-                                () => this.setState({ballIndex: 1})
+                                () => this.setState({ ballIndex: 1 })
                             }
-                            easyEscape={true}
+                            easyEscape
                         />
                     </div>
                     <div className="target-wrapper">
                         <SquareSnapTarget
                             hasBall={ballIndex === 2}
                             onDropComplete={
-                                () => this.setState({ballIndex: 2})
+                                () => this.setState({ ballIndex: 2 })
                             }
-                            easyEscape={true}
+                            easyEscape
                         />
                     </div>
                 </DragSnapContext>
             </div>
-		);
-	}
+        );
+    }
 }
 
-export {EasyEscapeDemo};
+export { EasyEscapeDemo };

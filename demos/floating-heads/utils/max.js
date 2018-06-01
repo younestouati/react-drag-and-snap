@@ -1,3 +1,3 @@
-const max = (numbers) => numbers.length ? Math.max(...numbers) : null;
+const max = numbers => (numbers.length ? Math.max(...numbers) : null);
 
-export {max};
+export { max };

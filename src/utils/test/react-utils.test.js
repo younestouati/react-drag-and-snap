@@ -1,4 +1,4 @@
-import {getDisplayName} from '../react-utils';
+// import { getDisplayName } from '../react-utils';
 
 test('getDisplayName to return the components displayName', () => {
     expect(true).toEqual(true);
@@ -6,7 +6,7 @@ test('getDisplayName to return the components displayName', () => {
 
 /* TODO: MOCK A COMPONENT
 function getDisplayName(WrappedComponent) {
-	return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
 export {getDisplayName};
