@@ -4,8 +4,8 @@ import { Motion, spring } from 'react-motion';
 import CustomPropTypes from '../prop-types/custom-prop-types';
 import PositionSpringSwitch from './position-spring-switch';
 import { getCSSHidingRulesAsObject } from '../helpers/misc/css-hider';
-import PropMonitor from './prop-monitor';
 import { isNullOrUndefined } from '../utils/type-utils';
+import { shallowEqual } from '../utils/object-utils';
 
 const SpringRendererApplier = (props) => {
     const {
@@ -125,14 +125,11 @@ class SpringRenderer extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const propMonitor = new PropMonitor(prevProps, this.props);
-
-        propMonitor.ifShallowChange(
-            'transform',
-            /* eslint-disable-next-line no-return-assign */
-            () => this.atRest = !this.props.isActive
-        );
-        //propMonitor.ifBecomingTrue('isReleased', () => (this.atRest ? this.props.onRestAfterRelease() : null));
+        // If transform hasn't changed (the draggable is not moving), consider at rest, unless it is
+        // still active - that is grabbed (but not moved)
+        if (!shallowEqual(prevProps.transform, this.props.transform)) {
+            this.atRest = !this.props.isActive; //TODO: EXPLAIN WHY THIS IS THE CASE!!!
+        }
 
         if (!prevProps.isReleased && this.props.isReleased && this.atRest) {
             this.props.onRestAfterRelease();
