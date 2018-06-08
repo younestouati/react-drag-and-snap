@@ -25,9 +25,9 @@ function asStateSubscriber(WrappedComponent) {
             this.boundStateChangeHandler = this.stateChangeHandler.bind(this);
         }
 
-        componentWillMount() {
-            if (super.componentWillMount) {
-                super.componentWillMount();
+        componentDidMount() {
+            if (super.componentDidMount) {
+                super.componentDidMount();
             }
 
             this.props.draggableContext.subscribeToState(this.boundStateChangeHandler);
@@ -72,9 +72,9 @@ function asStateSubscriber(WrappedComponent) {
 // of a context provided publishing method
 function asStatePublisher(WrappedComponent) {
     class StatePublisher extends WrappedComponent {
-        componentWillUpdate(nextProps, nextState) {
-            if (super.componentWillUpdate) {
-                super.componentWillUpdate(nextProps, nextState);
+        componentDidUpdate(nextProps, nextState) {
+            if (super.componentDidUpdate) {
+                super.componentDidUpdate(nextProps, nextState);
             }
 
             this.props.draggableContext.publishState(nextState);

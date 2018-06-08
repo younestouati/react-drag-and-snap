@@ -9,6 +9,12 @@ import { AnimatedTransform } from '../shared/animated-transform';
 import { Avatar } from './avatar';
 
 class Trap extends React.Component {
+    static getDerivedStateFromProps(props) {
+        return {
+            trappedUserPosition: props.trappedUserPosition,
+        };
+    }
+
     constructor(props) {
         super(props);
 
@@ -17,12 +23,10 @@ class Trap extends React.Component {
         };
     }
 
-    componentWillReceiveProps({ trappedUserPosition }) {
-        if (arePointsDifferent(trappedUserPosition, this.props.trappedUserPosition)) {
-            this.setState(
-                { trappedUserPosition: { ...trappedUserPosition } },
-                () => this.setState({ trappedUserPosition: getOrigo() })
-            );
+    componentDidUpdate() {
+        if (arePointsDifferent(this.state.trappedUserPosition, getOrigo())) {
+            /* eslint-disable-next-line react/no-did-update-set-state */
+            this.setState({ trappedUserPosition: getOrigo() });
         }
     }
 

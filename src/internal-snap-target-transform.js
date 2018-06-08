@@ -19,12 +19,10 @@ class InternalSnapTargetTransform extends React.Component {
         this.transform = defaultTransform;
     }
 
-    /* eslint-disable camelcase */
-    UNSAFE_componentWillReceiveProps(newProps) {
-    /* eslint-enable camelcase */
-        if (transformProps.some(prop => this.transform[prop] !== newProps[prop])) {
-            this.props.context.setInternalTransformation(shallowClone(newProps));
-            this.transform = shallowClone(newProps);
+    componentDidUpdate() {
+        if (transformProps.some(prop => this.transform[prop] !== this.props[prop])) {
+            this.props.context.setInternalTransformation(shallowClone(this.props));
+            this.transform = shallowClone(this.props);
         }
     }
 
@@ -76,6 +74,7 @@ InternalSnapTargetTransform.propTypes = {
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node,
     ]).isRequired,
+    /* eslint-disable-next-line react/forbid-prop-types */
     context: PropTypes.object.isRequired,
 };
 

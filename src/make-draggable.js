@@ -76,19 +76,17 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 this.DOMElement.addEventListener('touchstart', this.boundStartPointerTracker, { passive: true });
             }
 
-            componentWillUpdate(nextProps, { dragState: nextDragState }) {
+            componentDidUpdate({ dragState: prevDragState }) {
                 const { dragState } = this.state;
 
-                if (dragState !== DRAGGED && nextDragState === DRAGGED) {
+                if (prevDragState !== DRAGGED && dragState === DRAGGED) {
                     this.DOMElement.setAttribute(dragModeAttribute, true);
                 }
 
-                if (dragState !== INACTIVE && nextDragState === INACTIVE) {
+                if (prevDragState !== INACTIVE && dragState === INACTIVE) {
                     this.DOMElement.removeAttribute(dragModeAttribute);
                 }
-            }
 
-            componentDidUpdate() {
                 if (this.state.flipGrabbedFlag) {
                     // Postpone till after next DOM update after clone is mounted (to support css transition
                     // triggered by change of the grabbed property)
@@ -370,7 +368,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                             {(transform, dragDisplacement) => {
                                 const dragProps = collect({
                                     dragState: applyState,
-                                    dragVelocity: velocity, // TODO: CAN IT BE DETERMINED BASED ON THE DRAG DISPLACEMENT??
+                                    dragVelocity: velocity, // TODO: DETERMINE BASED ON THE DRAG DISPLACEMENT??
                                     dragDisplacement,
                                 });
 

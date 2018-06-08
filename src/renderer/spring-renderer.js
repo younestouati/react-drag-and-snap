@@ -5,6 +5,7 @@ import CustomPropTypes from '../prop-types/custom-prop-types';
 import PositionSpringSwitch from './position-spring-switch';
 import { getCSSHidingRulesAsObject } from '../helpers/misc/css-hider';
 import PropMonitor from './prop-monitor';
+import { isNullOrUndefined } from '../utils/type-utils';
 
 const SpringRendererApplier = (props) => {
     const {
@@ -83,6 +84,34 @@ const nullTransform = {
 };
 
 class SpringRenderer extends React.Component {
+    static getDerivedStateFromProps(props, state) {
+        const newState = {
+            snapTargetId: props.snapTargetId,
+            isPositionSnapped: props.isPositionSnapped,
+            isSnappingBack: props.isSnappingBack,
+            isActive: props.isActive,
+            flipIsActive: !state.isActive && props.isActive,
+        };
+
+        const isSwichingSnapTarget = (
+            props.snapTargetId !== state.snapTargetId
+            && !isNullOrUndefined(props.snapTargetId)
+            && !isNullOrUndefined(state.snapTargetId)
+        );
+
+        const isStartingOrStoppingSnapping = (
+            props.isPositionSnapped !== state.isPositionSnapped
+            && !isNullOrUndefined(props.isPositionSnapped)
+            && !isNullOrUndefined(state.isPositionSnapped)
+        );
+
+        const isSnappingBack = props.isSnappingBack && !state.isSnappingBack;
+
+        return (isSwichingSnapTarget || isStartingOrStoppingSnapping || isSnappingBack)
+            ? { ...newState, springActivations: state.springActivations + 1 }
+            : newState;
+    }
+
     constructor(props) {
         super(props);
 
@@ -95,29 +124,25 @@ class SpringRenderer extends React.Component {
         this.boundRestHandler = this.restHandler.bind(this);
     }
 
-    // TODO: Consider using componentDidUpdate instead. Seems like this is called synchronously,
-    // when state in parent component (make-draggable) is set, which means onRestAfterRelease
-    // may be called earlier than one would expect!
-    componentWillReceiveProps(nextProps) {
-        const propMonitor = new PropMonitor(this.props, nextProps);
+    componentDidUpdate(prevProps) {
+        const propMonitor = new PropMonitor(prevProps, this.props);
+
         propMonitor.ifShallowChange(
             'transform',
             /* eslint-disable-next-line no-return-assign */
-            () => this.atRest = !nextProps.isActive
+            () => this.atRest = !this.props.isActive
         );
-        propMonitor.ifBecomingTrue('isReleased', () => (this.atRest ? nextProps.onRestAfterRelease() : null));
+        //propMonitor.ifBecomingTrue('isReleased', () => (this.atRest ? this.props.onRestAfterRelease() : null));
 
-        propMonitor.ifDefinedValueChange('snapTargetId', this.activateSpring.bind(this));
-        propMonitor.ifDefinedValueChange('isPositionSnapped', this.activateSpring.bind(this));
-        propMonitor.ifBecomingTrue('isSnappingBack', this.activateSpring.bind(this));
-
-        // Flip isActive flag for one frame, given react motion a chance to update to right start
-        // position before animation
-        propMonitor.ifBecomingTrue(
-            'isActive',
-            () => requestAnimationFrame(() => this.setState({ flipIsActive: false }))
-        );
-        propMonitor.ifBecomingFalse('isActive', () => this.setState({ flipIsActive: true }));
+        if (!prevProps.isReleased && this.props.isReleased && this.atRest) {
+            this.props.onRestAfterRelease();
+        }
+        
+        // Flip isActive flag for one frame allowing react motion to update to right start position before animation
+        if (this.state.flipIsActive) {
+            /* eslint-disable-next-line react/no-did-update-set-state */
+            this.setState({ flipIsActive: false });  
+        }
     }
 
     activateSpring() {

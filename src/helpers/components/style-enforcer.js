@@ -115,7 +115,7 @@ class StyleEnforcer extends React.Component {
         this.styleInjector = new props.StyleInjector();
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const size = this.props.DOMElementHelper.getSize();
         const padding = this.props.DOMElementHelper.getPadding();
         const borderWidth = this.props.DOMElementHelper.getBorderWidth();
