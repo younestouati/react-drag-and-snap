@@ -128,7 +128,7 @@ class SpringRenderer extends React.Component {
         // If transform hasn't changed (the draggable is not moving), consider at rest, unless it is
         // still active - that is grabbed (but not moved)
         if (!shallowEqual(prevProps.transform, this.props.transform)) {
-            this.atRest = !this.props.isActive; //TODO: EXPLAIN WHY THIS IS THE CASE!!!
+            this.atRest = !this.props.isActive;
         }
 
         if (!prevProps.isReleased && this.props.isReleased && this.atRest) {
