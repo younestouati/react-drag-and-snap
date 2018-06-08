@@ -22959,6 +22959,30 @@ var CustomPropTypes = {
 
 var PositionSpringSwitch = function (_React$Component) {
     inherits(PositionSpringSwitch, _React$Component);
+    createClass(PositionSpringSwitch, null, [{
+        key: 'getDerivedStateFromProps',
+        value: function getDerivedStateFromProps(props, state) {
+            var currentDelta = {
+                x: props.springTransform.x - props.rawTransform.x,
+                y: props.springTransform.y - props.rawTransform.y
+            };
+
+            if (state.activations !== props.activations) {
+                var startDelta = state.currentDelta;
+
+                return {
+                    activations: props.activations,
+                    isSpringOnForPosition: true,
+                    startDelta: startDelta,
+                    currentDelta: currentDelta
+                };
+            }
+
+            return {
+                currentDelta: currentDelta
+            };
+        }
+    }]);
 
     function PositionSpringSwitch(props) {
         classCallCheck(this, PositionSpringSwitch);
@@ -22966,33 +22990,22 @@ var PositionSpringSwitch = function (_React$Component) {
         var _this = possibleConstructorReturn(this, (PositionSpringSwitch.__proto__ || Object.getPrototypeOf(PositionSpringSwitch)).call(this, props));
 
         _this.state = {
-            initialRawTransform: props.rawTransform,
             isSpringOnForPosition: props.alwaysOn,
+            /* eslint-disable react/no-unused-state */
+            activations: 0,
+            currentDelta: { x: 0, y: 0 },
+            /* eslint-enable react/no-unused-state */
             startDelta: { x: 0, y: 0 }
         };
         return _this;
     }
 
     createClass(PositionSpringSwitch, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            var _this2 = this;
-
-            if (this.props.activations !== nextProps.activations) {
-                var startDelta = {
-                    x: this.props.springTransform.x - this.props.rawTransform.x,
-                    y: this.props.springTransform.y - this.props.rawTransform.y
-                };
-
-                this.setState({
-                    isSpringOnForPosition: true,
-                    startDelta: startDelta,
-                    initialRawTransform: this.props.rawTransform
-                });
-
-                requestAnimationFrame(function () {
-                    return _this2.setState({ isSpringOnForPosition: false });
-                });
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+            if (this.state.isSpringOnForPosition) {
+                /* eslint-disable-next-line react/no-did-update-set-state */
+                this.setState({ isSpringOnForPosition: false });
             }
         }
     }, {
@@ -23000,18 +23013,14 @@ var PositionSpringSwitch = function (_React$Component) {
         value: function render() {
             var _props = this.props,
                 children = _props.children,
-                currentRawTransform = _props.rawTransform,
+                rawTransform = _props.rawTransform,
                 springTransform = _props.springTransform,
                 springConfig = _props.springConfig,
                 alwaysOn = _props.alwaysOn;
             var _state = this.state,
                 isSpringOnForPosition = _state.isSpringOnForPosition,
-                startDelta = _state.startDelta,
-                initialRawTransform = _state.initialRawTransform;
+                startDelta = _state.startDelta;
 
-            // TODO: EXPLAIN THIS!!
-
-            var rawTransform = isSpringOnForPosition ? initialRawTransform : currentRawTransform;
 
             return react.createElement(
                 reactMotion_1,
@@ -23026,13 +23035,10 @@ var PositionSpringSwitch = function (_React$Component) {
                     var transformToApply = shallowClone(springTransform);
 
                     if (!alwaysOn) {
-                        var delta = {
-                            x: springTransform.x - rawTransform.x,
-                            y: springTransform.y - rawTransform.y
-                        };
-
-                        transformToApply.x = rawTransform.x + (delta.x - startDelta.x) * multiplier;
-                        transformToApply.y = rawTransform.y + (delta.y - startDelta.y) * multiplier;
+                        /* eslint-disable max-len */
+                        transformToApply.x = (1 - multiplier) * rawTransform.x + (springTransform.x - startDelta.x) * multiplier;
+                        transformToApply.y = (1 - multiplier) * rawTransform.y + (springTransform.y - startDelta.y) * multiplier;
+                        /* eslint-enable max-len */
                     }
 
                     var displacement = {
@@ -23051,65 +23057,12 @@ var PositionSpringSwitch = function (_React$Component) {
 PositionSpringSwitch.propTypes = {
     rawTransform: CustomPropTypes.transform.isRequired,
     springTransform: CustomPropTypes.transform.isRequired,
+    /* eslint-disable-next-line react/no-unused-prop-types */
     activations: propTypes.number.isRequired,
     alwaysOn: propTypes.bool.isRequired,
     springConfig: CustomPropTypes.springConfig.isRequired,
     children: propTypes.func.isRequired
 };
-
-var PropMonitor = function () {
-    function PropMonitor(oldProps, newProps) {
-        classCallCheck(this, PropMonitor);
-
-        this.oldProps = oldProps;
-        this.newProps = newProps;
-    }
-
-    createClass(PropMonitor, [{
-        key: 'ifBecomingFalse',
-        value: function ifBecomingFalse(prop, callback) {
-            if (this.oldProps[prop] && !this.newProps[prop]) {
-                callback();
-            }
-        }
-    }, {
-        key: 'ifValueChange',
-        value: function ifValueChange(prop, callback) {
-            if (this.oldProps[prop] !== this.newProps[prop]) {
-                callback();
-            }
-        }
-    }, {
-        key: 'ifDefinedValueChange',
-        value: function ifDefinedValueChange(prop, callback) {
-            if (this.oldProps[prop] !== this.newProps[prop] && !isNullOrUndefined(this.oldProps[prop]) && !isNullOrUndefined(this.newProps[prop])) {
-                callback();
-            }
-        }
-    }, {
-        key: 'ifBecomingTrue',
-        value: function ifBecomingTrue(prop, callback) {
-            if (!this.oldProps[prop] && this.newProps[prop]) {
-                callback();
-            }
-        }
-    }, {
-        key: 'ifBooleanChange',
-        value: function ifBooleanChange(prop, callback) {
-            if (this.oldProps[prop] !== this.newProps[prop]) {
-                callback();
-            }
-        }
-    }, {
-        key: 'ifShallowChange',
-        value: function ifShallowChange(prop, callback) {
-            if (!shallowEqual$1(this.oldProps[prop], this.newProps[prop])) {
-                callback();
-            }
-        }
-    }]);
-    return PropMonitor;
-}();
 
 var SpringRendererApplier = function SpringRendererApplier(props) {
     var onRegrab = props.onRegrab,
@@ -23192,6 +23145,26 @@ var nullTransform = {
 
 var SpringRenderer = function (_React$Component) {
     inherits(SpringRenderer, _React$Component);
+    createClass(SpringRenderer, null, [{
+        key: 'getDerivedStateFromProps',
+        value: function getDerivedStateFromProps(props, state) {
+            var newState = {
+                snapTargetId: props.snapTargetId,
+                isPositionSnapped: props.isPositionSnapped,
+                isSnappingBack: props.isSnappingBack,
+                isActive: props.isActive,
+                flipIsActive: !state.isActive && props.isActive
+            };
+
+            var isSwichingSnapTarget = props.snapTargetId !== state.snapTargetId && !isNullOrUndefined(props.snapTargetId) && !isNullOrUndefined(state.snapTargetId);
+
+            var isStartingOrStoppingSnapping = props.isPositionSnapped !== state.isPositionSnapped && !isNullOrUndefined(props.isPositionSnapped) && !isNullOrUndefined(state.isPositionSnapped);
+
+            var isSnappingBack = props.isSnappingBack && !state.isSnappingBack;
+
+            return isSwichingSnapTarget || isStartingOrStoppingSnapping || isSnappingBack ? _extends({}, newState, { springActivations: state.springActivations + 1 }) : newState;
+        }
+    }]);
 
     function SpringRenderer(props) {
         classCallCheck(this, SpringRenderer);
@@ -23208,40 +23181,24 @@ var SpringRenderer = function (_React$Component) {
         return _this;
     }
 
-    // TODO: Consider using componentDidUpdate instead. Seems like this is called synchronously,
-    // when state in parent component (make-draggable) is set, which means onRestAfterRelease
-    // may be called earlier than one would expect!
-
-
     createClass(SpringRenderer, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            var _this2 = this;
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps) {
+            // If transform hasn't changed (the draggable is not moving), consider at rest, unless it is
+            // still active - that is grabbed (but not moved)
+            if (!shallowEqual$1(prevProps.transform, this.props.transform)) {
+                this.atRest = !this.props.isActive;
+            }
 
-            var propMonitor = new PropMonitor(this.props, nextProps);
-            propMonitor.ifShallowChange('transform',
-            /* eslint-disable-next-line no-return-assign */
-            function () {
-                return _this2.atRest = !nextProps.isActive;
-            });
-            propMonitor.ifBecomingTrue('isReleased', function () {
-                return _this2.atRest ? nextProps.onRestAfterRelease() : null;
-            });
+            if (!prevProps.isReleased && this.props.isReleased && this.atRest) {
+                this.props.onRestAfterRelease();
+            }
 
-            propMonitor.ifDefinedValueChange('snapTargetId', this.activateSpring.bind(this));
-            propMonitor.ifDefinedValueChange('isPositionSnapped', this.activateSpring.bind(this));
-            propMonitor.ifBecomingTrue('isSnappingBack', this.activateSpring.bind(this));
-
-            // Flip isActive flag for one frame, given react motion a chance to update to right start
-            // position before animation
-            propMonitor.ifBecomingTrue('isActive', function () {
-                return requestAnimationFrame(function () {
-                    return _this2.setState({ flipIsActive: false });
-                });
-            });
-            propMonitor.ifBecomingFalse('isActive', function () {
-                return _this2.setState({ flipIsActive: true });
-            });
+            // Flip isActive flag for one frame allowing react motion to update to right start position before animation
+            if (this.state.flipIsActive) {
+                /* eslint-disable-next-line react/no-did-update-set-state */
+                this.setState({ flipIsActive: false });
+            }
         }
     }, {
         key: 'activateSpring',
@@ -23498,8 +23455,8 @@ var StyleEnforcer = function (_React$Component) {
     }
 
     createClass(StyleEnforcer, [{
-        key: 'componentWillMount',
-        value: function componentWillMount() {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
             var size = this.props.DOMElementHelper.getSize();
             var padding = this.props.DOMElementHelper.getPadding();
             var borderWidth = this.props.DOMElementHelper.getBorderWidth();
@@ -23631,10 +23588,10 @@ function asStateSubscriber(WrappedComponent) {
         }
 
         createClass(StateSubscriber, [{
-            key: 'componentWillMount',
-            value: function componentWillMount() {
-                if (get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentWillMount', this)) {
-                    get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentWillMount', this).call(this);
+            key: 'componentDidMount',
+            value: function componentDidMount() {
+                if (get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentDidMount', this)) {
+                    get(StateSubscriber.prototype.__proto__ || Object.getPrototypeOf(StateSubscriber.prototype), 'componentDidMount', this).call(this);
                 }
 
                 this.props.draggableContext.subscribeToState(this.boundStateChangeHandler);
@@ -23710,10 +23667,10 @@ function asStatePublisher(WrappedComponent) {
         }
 
         createClass(StatePublisher, [{
-            key: 'componentWillUpdate',
-            value: function componentWillUpdate(nextProps, nextState) {
-                if (get(StatePublisher.prototype.__proto__ || Object.getPrototypeOf(StatePublisher.prototype), 'componentWillUpdate', this)) {
-                    get(StatePublisher.prototype.__proto__ || Object.getPrototypeOf(StatePublisher.prototype), 'componentWillUpdate', this).call(this, nextProps, nextState);
+            key: 'componentDidUpdate',
+            value: function componentDidUpdate(nextProps, nextState) {
+                if (get(StatePublisher.prototype.__proto__ || Object.getPrototypeOf(StatePublisher.prototype), 'componentDidUpdate', this)) {
+                    get(StatePublisher.prototype.__proto__ || Object.getPrototypeOf(StatePublisher.prototype), 'componentDidUpdate', this).call(this, nextProps, nextState);
                 }
 
                 this.props.draggableContext.publishState(nextState);
@@ -24255,24 +24212,21 @@ function configure() {
                     this.DOMElement.addEventListener('touchstart', this.boundStartPointerTracker, { passive: true });
                 }
             }, {
-                key: 'componentWillUpdate',
-                value: function componentWillUpdate(nextProps, _ref) {
-                    var nextDragState = _ref.dragState;
+                key: 'componentDidUpdate',
+                value: function componentDidUpdate(_ref) {
+                    var _this2 = this;
+
+                    var prevDragState = _ref.dragState;
                     var dragState = this.state.dragState;
 
 
-                    if (dragState !== DRAGGED && nextDragState === DRAGGED) {
+                    if (prevDragState !== DRAGGED && dragState === DRAGGED) {
                         this.DOMElement.setAttribute(dragModeAttribute, true);
                     }
 
-                    if (dragState !== INACTIVE && nextDragState === INACTIVE) {
+                    if (prevDragState !== INACTIVE && dragState === INACTIVE) {
                         this.DOMElement.removeAttribute(dragModeAttribute);
                     }
-                }
-            }, {
-                key: 'componentDidUpdate',
-                value: function componentDidUpdate() {
-                    var _this2 = this;
 
                     if (this.state.flipGrabbedFlag) {
                         // Postpone till after next DOM update after clone is mounted (to support css transition
@@ -24551,7 +24505,7 @@ function configure() {
                             function (transform, dragDisplacement) {
                                 var dragProps = collect({
                                     dragState: applyState,
-                                    dragVelocity: velocity, // TODO: CAN IT BE DETERMINED BASED ON THE DRAG DISPLACEMENT??
+                                    dragVelocity: velocity, // TODO: DETERMINE BASED ON THE DRAG DISPLACEMENT??
                                     dragDisplacement: dragDisplacement
                                 });
 
@@ -25437,20 +25391,16 @@ var InternalSnapTargetTransform = function (_React$Component) {
         return _this;
     }
 
-    /* eslint-disable camelcase */
-
-
     createClass(InternalSnapTargetTransform, [{
-        key: 'UNSAFE_componentWillReceiveProps',
-        value: function UNSAFE_componentWillReceiveProps(newProps) {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
             var _this2 = this;
 
-            /* eslint-enable camelcase */
             if (transformProps.some(function (prop) {
-                return _this2.transform[prop] !== newProps[prop];
+                return _this2.transform[prop] !== _this2.props[prop];
             })) {
-                this.props.context.setInternalTransformation(shallowClone(newProps));
-                this.transform = shallowClone(newProps);
+                this.props.context.setInternalTransformation(shallowClone(this.props));
+                this.transform = shallowClone(this.props);
             }
         }
     }, {
@@ -25504,6 +25454,7 @@ InternalSnapTargetTransform.propTypes = {
     skewX: propTypes.number,
     skewY: propTypes.number,
     children: propTypes.oneOfType([propTypes.arrayOf(propTypes.node), propTypes.node]).isRequired,
+    /* eslint-disable-next-line react/forbid-prop-types */
     context: propTypes.object.isRequired
 };
 
@@ -25895,6 +25846,14 @@ AnimatedTransform.defaultProps = {
 
 var Trap = function (_React$Component) {
     inherits(Trap, _React$Component);
+    createClass(Trap, null, [{
+        key: 'getDerivedStateFromProps',
+        value: function getDerivedStateFromProps(props) {
+            return {
+                trappedUserPosition: props.trappedUserPosition
+            };
+        }
+    }]);
 
     function Trap(props) {
         classCallCheck(this, Trap);
@@ -25908,16 +25867,11 @@ var Trap = function (_React$Component) {
     }
 
     createClass(Trap, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(_ref) {
-            var _this2 = this;
-
-            var trappedUserPosition = _ref.trappedUserPosition;
-
-            if (arePointsDifferent(trappedUserPosition, this.props.trappedUserPosition)) {
-                this.setState({ trappedUserPosition: _extends({}, trappedUserPosition) }, function () {
-                    return _this2.setState({ trappedUserPosition: getOrigo$1() });
-                });
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+            if (arePointsDifferent(this.state.trappedUserPosition, getOrigo$1())) {
+                /* eslint-disable-next-line react/no-did-update-set-state */
+                this.setState({ trappedUserPosition: getOrigo$1() });
             }
         }
     }, {
@@ -25973,10 +25927,10 @@ var Trap = function (_React$Component) {
                     },
                     onRest: onKillUser
                 },
-                function (_ref2) {
-                    var x = _ref2.x,
-                        y = _ref2.y,
-                        scale = _ref2.scale;
+                function (_ref) {
+                    var x = _ref.x,
+                        y = _ref.y,
+                        scale = _ref.scale;
                     return react.createElement(
                         InternalSnapTargetTransformWithContext,
                         { x: x, y: y },
