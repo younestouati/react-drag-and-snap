@@ -1,0 +1,72 @@
+.self-transform-demo {
+    width: 100%;
+    height: 100%;
+}
+
+.self-transform-demo .self-transform-ball {
+    background: content-box linear-gradient(0deg,#ccB5C2, #ccB5C2), linear-gradient(0deg,#C5CF8B, #C5CF8B);
+    display: inline-block;
+    /*margin: 8px 8px 4px 4px;*/
+    transform: translate(50px, 50px) skewX(10deg) skewY(15deg);
+    border: 4px dashed black;
+    /*border-right-width: 2px;*/
+    padding: 8px;
+    padding: 16px 16px 2px 2px;
+    opacity: 0.6;
+    color: white;
+    font-size: 10px;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+}
+
+.self-transform-demo .self-transform-ball.content-box {
+    box-sizing: content-box;
+    width: 40px/*128px*/;
+    height: 38px/*128px*/;
+}
+
+.self-transform-demo .self-transform-ball.border-box {
+    box-sizing: border-box;
+    width: 64px;
+    height: 64px;
+}
+
+.self-transform-demo .self-transform-ball.content-box:before {
+    content: 'Drag me! (Content box)';
+}
+
+.self-transform-demo .self-transform-ball.border-box:before {
+    content: 'Drag me! (Border box)';
+}
+
+.self-transform-demo .self-transform-target {
+    transform: rotate(-45deg) skewX(-5deg) skewY(-5deg);;
+    /*outline: 1px dashed black;*/
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: content-box linear-gradient(0deg,#8EB5C2, #8EB5C2), linear-gradient(0deg,#C5CF8B, #C5CF8B);
+    color: white;
+    padding: 32px 32px 8px 8px;
+}
+
+.self-transform-demo .self-transform-target.border-box {
+    box-sizing: border-box;
+    width: 128px;
+    height: 128px;
+}
+
+.self-transform-demo .self-transform-target.border-box:before {
+    content: "Border box";
+}
+
+.self-transform-demo .self-transform-target.content-box {
+    box-sizing: content-box;
+    width: 64px;
+    height: 64px;
+}
+
+.self-transform-demo .self-transform-target.content-box:before {
+    content: "Content box";
+}

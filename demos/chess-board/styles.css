@@ -1,0 +1,95 @@
+body {
+    background-color: cornflowerblue;
+}
+
+.chess-demo {
+    width: 100%;
+    height: 100%;
+}
+
+.chess-demo .chess-board {
+    width: 100vw;
+    height: 100vw;
+    max-width: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.chess-demo .square {
+    display: inline-block;
+    background: white;
+    position: relative;
+}
+
+.chess-demo .knight {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.chess-demo .knight.is-dragged {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 50% 50%;
+}
+
+.chess-demo .knight:not(.is-dragged):before {
+    content: '♘';
+    font-size: 5vh;
+    line-height: 5vh;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@media all and (orientation: portrait) {
+    .chess-demo .knight:not(.is-dragged):before {
+        font-size: 5vw;
+        line-height: 5vw;
+    }
+}
+
+.chess-demo .black {
+    background: black;
+    color: white;
+}
+
+.chess-demo .is-over:after,
+.chess-demo .legal-move:after {
+    content: '';
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.chess-demo .legal-move:after {
+    background: lightgreen;
+}
+
+.chess-demo .is-over:after {
+    background: red;
+}
+
+.chess-demo .is-over.legal-move:after {
+    background: green;
+}
+
+.is-clone:before {
+    color: lightgreen;
+    -webkit-text-fill-color: lightgreen;
+}
+
+.is-not-clone:before {
+    color: purple;
+    -webkit-text-fill-color: purple;
+}

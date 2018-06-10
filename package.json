@@ -1,31 +1,96 @@
 {
   "name": "react-drag-and-snap",
+  "author": "Younes Touati <younestouati@gmail.com>",
+  "description": "React-drag-and-snap is a set of React components and higher order components for building complex and highly interactive drag and drop interfaces. It is particularly well-suited for playful web interfaces and React-based digital board game implementations. It supports mouse as well as (multi-)touch interfaces out of the box, and it is built on top of react-motion ensuring nice, smooth animations.",
+  "keywords": [
+    "react",
+    "react.js",
+    "drag",
+    "drop",
+    "drag and drop",
+    "drag-and-drop",
+    "dnd",
+    "snap",
+    "snapping",
+    "board game"
+  ],
+  "homepage": "https://github.com/younestouati/react-drag-and-snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/younestouati/react-drag-and-snap"
+  },
+  "bugs": {
+    "url": "https://github.com/younestouati/react-drag-and-snap/issues"
+  },
   "version": "0.1.0",
-  "private": true,
+  "main": "dist/bundle.cjs.js",
+  "module": "dist/bundle.esm.js",
+  "browser": "dist/bundle.umd.js",
   "devDependencies": {
-    "react-scripts": "1.0.14",
-    "enzyme": "^3.2.0",
-    "react-test-renderer": "^16.1.1",
-    "enzyme-adapter-react-16": "^1.1.0"
+    "@younestouati/playing-cards-standard-deck": "2.0.1",
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.2.2",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "eslint": "4.19.1",
+    "eslint-config-airbnb": "16.1.0",
+    "eslint-plugin-import": "2.12.0",
+    "eslint-plugin-jest": "21.15.1",
+    "eslint-plugin-jsx-a11y": "6.0.3",
+    "eslint-plugin-react": "7.8.2",
+    "jest": "^22.3.0",
+    "jest-css-modules": "^1.1.0",
+    "react": "^16.2.0",
+    "react-board-game-components": "git://github.com/younestouati/react-board-game-components.git#29047838ca143d717257cb278d043990cf8d46a3",
+    "react-dom": "^16.2.0",
+    "rollup": "^0.50.0",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-eslint": "^4.0.0",
+    "rollup-plugin-image": "^1.0.2",
+    "rollup-plugin-livereload": "^0.6.0",
+    "rollup-plugin-node-globals": "^1.1.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-postcss": "^1.2.8",
+    "rollup-plugin-react-svg": "2.1.0",
+    "rollup-plugin-serve": "0.4.2",
+    "rollup-plugin-uglify": "^3.0.0",
+    "rollup-plugin-url": "1.4.0",
+    "rollup-watch": "^4.3.1"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*",
+    "react-motion": "*"
   },
   "dependencies": {
-    "classnames": "^2.2.5",
-    "invariant": "^2.2.2",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-motion": "^0.5.2",
-    "transformation-matrix": "^1.5.0"
+    "prop-types": "^15.6.0",
+    "invariant": "2.2.4",
+    "transformation-matrix": "1.10.0"
+  },
+  "jest": {
+    "setupTestFrameworkScriptFile": "./setup-tests.js",
+    "transform": {
+      ".*": "./node_modules/jest-css-modules"
+    }
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "build": "NODE_ENV=production rollup -c",
+    "dev": "NODE_ENV=development rollup -c -w",
+    "test": "jest",
+    "test-watch": "jest --watchAll",
+    "lint": "node_modules/.bin/eslint src/**",
+    "lint-fix": "node_modules/.bin/eslint src/** --fix",
+    "demo-lint": "node_modules/.bin/eslint demos/**",
+    "demo-lint-fix": "node_modules/.bin/eslint demos/** --fix"
   },
-  "prettier": {
-    "printWidth": 120,
-    "tabWidth": 4,
-    "singleQuote": true,
-    "bracketSpacing": false
-  }
+  "files": [
+    "dist"
+  ],
+  "license": "MIT"
 }

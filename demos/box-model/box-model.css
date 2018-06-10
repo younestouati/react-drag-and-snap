@@ -1,0 +1,17 @@
+#root {
+    overflow: auto;
+}
+
+.box-model-demo {
+    background: white;
+    position: relative;
+}
+
+.control-panel {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: white;
+    border-bottom: 1px solid black;
+    display: flex;
+}
