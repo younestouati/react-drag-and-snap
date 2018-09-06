@@ -1,28 +1,25 @@
 .card-game-demo {
+    display: grid;
+    grid-template-columns: [left] 50% [middle] 50% [end];
+    grid-template-rows: [top] 50% [center] 50% [right];
     width: 100%;
     height: 100%;
+    margin: 10px;
+    box-sizing: border-box;
 }
 
-.card-game-demo .target-wrapper {
-    top: 100px;
-    left: 100px;
-    position: absolute;
-    transform: translate(-50%,-50%);
+.card-game-demo .stack-wrapper {
+    text-align: center;
 }
 
-.card-game-demo .target-wrapper:nth-of-type(2) {
-    left: 400px;
+.card-game-demo .stack-wrapper:nth-of-type(2) > * {
+    /*transform: rotate(20deg) translateY(20%) scale(1.5);*/
+    transform-origin: 0;
 }
 
-.card-game-demo .target-wrapper:nth-of-type(3) {
-    left: 800px;
-    transform: rotate(30deg) scale(1.3);
-}
-
-.card-game-demo .card-stack {
-    display: inline-block;
-    width: 140px;
-    height: 200px;
-    border: 2px dashed gray;
-    border-radius: 6px;
+@media (max-aspect-ratio: 1/1) {
+    .card-game-demo .card-stack {
+        width: 40%;
+        padding-top: 60%;
+    }
 }

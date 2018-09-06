@@ -33,8 +33,6 @@ const initialState = {
     velocity: null, // The velocity (pixels/ms) by which the draggable is currently being dragged
     baseMatrix: null, // The draggable's position in window coordinate system prior to dragging
     matrix: null, // The draggable's current position in window coordinate system
-    hasEscaped: false, // If the draggable has escaped its first snapTarget in a new drag
-    firstSnapTargetId: null, // Id of the first snapTarget to which draggable snapped in current drag session
     touchOffset: null, // Local coordinates of where the draggable has been grabbed
 };
 
@@ -72,8 +70,8 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
 
             componentDidMount() {
                 this.DOMElement = ReactDOM.findDOMNode(this.el);
-                this.DOMElement.addEventListener('mousedown', this.boundStartPointerTracker, { passive: true });
-                this.DOMElement.addEventListener('touchstart', this.boundStartPointerTracker, { passive: true });
+                this.DOMElement.addEventListener('mousedown', this.boundStartPointerTracker, { passive: false });
+                this.DOMElement.addEventListener('touchstart', this.boundStartPointerTracker, { passive: false });
             }
 
             componentDidUpdate({ dragState: prevDragState }) {
@@ -90,13 +88,13 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 if (this.state.flipGrabbedFlag) {
                     // Postpone till after next DOM update after clone is mounted (to support css transition
                     // triggered by change of the grabbed property)
-                    requestAnimationFrame(() => this.setState({ flipGrabbedFlag: false }));
+                    requestAnimationFrame(() => requestAnimationFrame(() => this.setState({ flipGrabbedFlag: false })));
                 }
             }
 
             componentWillUnmount() {
-                this.DOMElement.removeEventListener('mousedown', this.boundStartPointerTracker);
-                this.DOMElement.removeEventListener('touchstart', this.boundStartPointerTracker);
+                this.DOMElement.removeEventListener('mousedown', this.boundStartPointerTracker, { passive: false });
+                this.DOMElement.removeEventListener('touchstart', this.boundStartPointerTracker, { passive: false });
                 this.pointerTracker.destroy();
 
                 if (this.state.dragState !== INACTIVE) {
@@ -113,12 +111,19 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 const elementDragPosition = subtractPoints(cursorPosition, state.touchOffset);
                 const draggedMatrix = overrideTranslation(state.baseMatrix, elementDragPosition);
 
-                return this.props.dragSnapContext.snap(
-                    state.firstSnapTargetId,
-                    state.hasEscaped,
+                const snapping = this.props.dragSnapContext.snap(
                     dragState,
                     this.getDraggableDescriptor(dragState, draggedMatrix, cursorPosition, velocity, state.snapTargetId)
                 );
+
+                if (snapping.snapTargetId && snapping.snapTargetId !== this.state.snapTargetId) {
+                    this.snapCount = {
+                        ...this.snapCount,
+                        [snapping.snapTargetId]: (this.snapCount[snapping.snapTargetId] || 0) + 1,
+                    };
+                }
+
+                return snapping;
             }
 
             getDraggableDescriptor(dragState, matrix, cursorPosition, velocity, snapTargetId) {
@@ -137,6 +142,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                     cursorPosition,
                     matrix,
                     snapTargetId,
+                    snapCount: this.snapCount,
                 };
             }
 
@@ -149,8 +155,6 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                     dragState,
                     baseMatrix,
                     touchOffset,
-                    hasEscaped: false,
-                    firstSnapTargetId: null,
                     flipGrabbedFlag: true,
                     isSnappingBack: false,
                     isPositionSnapped: null, // Unclear if this is true or false at this point. Initialize to null
@@ -161,7 +165,6 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 this.setState({
                     dragState: INACTIVE, isSnappingBack: false, customSnapProps: {}, velocity: getOrigo(),
                 });
-                // this.setState(initialState);
             }
 
             setStateChangeHandler(handler) {
@@ -259,9 +262,13 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 if (this.state.dragState === INACTIVE) {
                     this.pointerTracker.track(e);
                 }
+
+                e.preventDefault();// Prevent browser's default dragging (ghost image)
+                return false;
             }
 
             startDrag(position, velocity) {
+                this.snapCount = {}; // Map of snap target ids to snap occurrence count in currect drag session
                 this.props.dragSnapContext.onDragStateUpdate('grab');
                 this.DOMElementHelper.updateElement(this.DOMElement);
                 const startState = this.getInitialDragState(position);
@@ -370,6 +377,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                                     dragState: applyState,
                                     dragVelocity: velocity, // TODO: DETERMINE BASED ON THE DRAG DISPLACEMENT??
                                     dragDisplacement,
+                                    transform,
                                 });
 
                                 return [

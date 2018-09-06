@@ -28,13 +28,13 @@ const createSnapMatrix = (snapTargetMatrix, snapTransform, snapTargetDOMElementH
     );
 
     const rotationMatrix = rotateDEG(snapTransform.rotate + rotate);
+    const skewMatrix = skew(skewX + snapTransform.skewX, snapTransform.skewY);
 
-    // The snapTransform's scaling will impact that translation and skew (but leave rotation unaffected)
+    // The snapTransform's scaling will impact that translation
     const snapTransformScalingMatrix = scale(snapTransform.scaleX, snapTransform.scaleY);
 
-    const skewMatrix = skew(skewX + snapTransform.skewX, snapTransform.skewY);
-    // Create a translation matrix taking the snap transform's scaling (in x and y directions) into account.
-    const localTranslationMatrix = translate((snapTransform.x) / scaleX, (snapTransform.y) / scaleY);
+    const localTranslationMatrix = translate(snapTransform.x, snapTransform.y);
+
     // Extract the translation part and create a translation only matrix
     const translationMatrix = translationOnly(transformMultiple(
         snapTargetMatrix,

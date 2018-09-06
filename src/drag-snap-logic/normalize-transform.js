@@ -36,7 +36,7 @@ const TRANSFORM_PROPS = ['x', 'y', 'rotate', 'scaleX', 'scaleY', 'skewX', 'skewY
 * - customSnapProps: any  (default: {})
 *
 * Valid input:
-* The input transform can have any number of the properties listed below specified. In addition note that:
+* The input transform can have any number of the properties listed above specified. In addition note that:
 * - translateX can be used as an alias for x and translateY can be used as an alias for y
 * - x and y (and translateX and translateY) can be percentages encoded as string, e.g. '50%'.
 *   The percentage is based on the width/height of the snapTarget

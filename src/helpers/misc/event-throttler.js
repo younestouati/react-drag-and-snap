@@ -5,11 +5,12 @@ class EventThrottler {
         this.handler = handler;
         this.latestEvent = null;
         this.animationId = null;
+        this.boundInvokeCallback = this.invokeCallback.bind(this);
     }
 
     invokeCallback() {
         this.handler(this.latestEvent);
-        this.animationId = requestAnimationFrame(this.invokeCallback.bind(this));
+        this.animationId = requestAnimationFrame(this.boundInvokeCallback);
     }
 
     pause() {
@@ -20,7 +21,7 @@ class EventThrottler {
     addEvent(event) {
         this.latestEvent = shallowClone(event);
         if (!this.animationId) {
-            this.animationId = requestAnimationFrame(this.invokeCallback.bind(this));
+            this.animationId = requestAnimationFrame(this.boundInvokeCallback);
         }
     }
 }

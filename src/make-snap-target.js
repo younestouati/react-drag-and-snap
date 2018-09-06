@@ -17,7 +17,7 @@ import {
     qrDecompose,
 } from './utils/matrix-utils';
 import DOMElementHelper from './helpers/misc/dom-element-helper';
-import createSnapMatrix from './drag-snap-logic/create-snapping-matrix';
+import createSnapMatrix from './drag-snap-logic/create-snap-matrix';
 import normalizeTransform from './drag-snap-logic/normalize-transform';
 import makeClassBasedComponent from './helpers/higher-order-components/make-class-based-component';
 import normalizeSnapTargetConfig from './drag-snap-logic/normalize-snap-target-config';
@@ -45,7 +45,6 @@ const SnapTargetPropTypes = {
     onDropStart: PropTypes.func,
     onDropComplete: PropTypes.func,
     onDropCancel: PropTypes.func,
-    easyEscape: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
     continuousUpdate: PropTypes.bool,
     /* eslint-disable-next-line react/forbid-prop-types */
     dragSnapContext: PropTypes.object.isRequired,
@@ -243,12 +242,6 @@ function configure(customConfig = {}, collect = SnapTargetCollectors.staticAndLo
                 }
             }
 
-            allowsEasyEscape(draggableDescriptor) {
-                const { easyEscape } = this.props;
-                const params = this.getParams(draggableDescriptor);
-                return isFunction(easyEscape) ? easyEscape(...params) : easyEscape;
-            }
-
             collectDragProps(cur) {
                 const items = this.draggedItems || [];
                 items.sort(sort.byId);
@@ -297,6 +290,7 @@ function configure(customConfig = {}, collect = SnapTargetCollectors.staticAndLo
                 velocity,
                 cursorPosition,
                 snapTargetId,
+                snapCount,
             }) {
                 const {
                     x, y, rotate, skewX, skewY,
@@ -325,6 +319,7 @@ function configure(customConfig = {}, collect = SnapTargetCollectors.staticAndLo
                     cursorPosition: cursorPosition ? transformPosition(this.getMatrix(), cursorPosition) : null,
                     isSnappingToThisTarget,
                     isSnappingToOtherTarget,
+                    snapCount: snapCount[this.id] || 0,
                 };
             }
 
@@ -358,7 +353,6 @@ function configure(customConfig = {}, collect = SnapTargetCollectors.staticAndLo
             onDropStart: () => {},
             onDropComplete: () => {},
             onDropCancel: () => {},
-            easyEscape: false,
             continuousUpdate: false,
             snapPriority: SnapPriorities.distanceBasedWithOffset(100),
         };

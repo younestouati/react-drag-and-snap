@@ -36,12 +36,10 @@ class DragSnapContext extends React.Component {
 
     componentDidMount() {
         this.styleNode = this.styleInjector.inject(dragModeStyles);
-        this.inverseContainerMatrix = inverse(getTransformationMatrix(this.container));
         this.updateSizeMeasurement();
 
         this.resizeEndSubscription = this.windowSizeMonitor.subscribeToResizeEnd(() => {
-            this.inverseContainerMatrix = inverse(getTransformationMatrix(this.container));
-            this.snapTargets.forEach(snapTarget => snapTarget.update());
+            this.measurePositions();
             this.updateSizeMeasurement();
         });
     }
@@ -53,6 +51,13 @@ class DragSnapContext extends React.Component {
     }
 
     onDragStateUpdate(update) {
+        if (this.getTotalCount() === 0) { // This signifies the start of a new drag session
+            // Remeasure positions of snap targets and of the context it self when a new
+            // drag session starts. This is a potential performance issue, but needed
+            // to account for changed scroll positions etc. since last drag gesture
+            this.measurePositions();
+        }
+
         switch (update) {
         case 'grab':
             this.grabbedCount += 1;
@@ -83,8 +88,12 @@ class DragSnapContext extends React.Component {
             grabbedCount: this.grabbedCount,
             draggedCount: this.draggedCount,
             releasedCount: this.releasedCount,
-            totalCount: this.grabbedCount + this.draggedCount + this.releasedCount,
+            totalCount: this.getTotalCount(),
         });
+    }
+
+    getTotalCount() {
+        return this.grabbedCount + this.draggedCount + this.releasedCount;
     }
 
     getDragContainerDOMElement() {
@@ -95,9 +104,14 @@ class DragSnapContext extends React.Component {
         return this.size;
     }
 
+    measurePositions() {
+        this.inverseContainerMatrix = inverse(getTransformationMatrix(this.container));
+        this.snapTargets.forEach(snapTarget => snapTarget.update());
+    }
+
     updateSizeMeasurement() {
         this.size = {
-            width: this.container.clientWidth,
+            width: this.container.clientWidth, // TODO: COMPUTE HERE (FOR SUBPIXEL PRECISION)??
             height: this.container.clientHeight,
         };
     }
@@ -125,55 +139,29 @@ class DragSnapContext extends React.Component {
         this.snapTargets.forEach(target => target.removeItem(id));
     }
 
-    snap(firstSnapTargetId, hasEscaped, dragState, draggableDescriptor) {
-        // When true it doesn't necessarily mean it will snap (if target allows easyEscape)
-        let isInSnappingArea = false;
+    snap(dragState, draggableDescriptor) {
         let snapping = null;
-        let allowsEasyEscape = false;
-        let hasEscapedNow;
         let maxPriority = SnapPriorities.lowestPriority;
-        let newFirstSnapTargetId = firstSnapTargetId;
 
         this.snapTargets.forEach((target) => {
             target.continuousUpdateIfEnabled();
 
             if (target.isSnapCriteriaMet(dragState, draggableDescriptor)) {
-                isInSnappingArea = true;
                 const priority = target.getSnapPriority(dragState, draggableDescriptor);
 
                 if (priority <= maxPriority) { // Smaller number means higher priority
                     maxPriority = priority;
                     snapping = target.getSnapping(dragState, draggableDescriptor);
-                    allowsEasyEscape = target.allowsEasyEscape(draggableDescriptor);
                 }
             }
         });
-
-        hasEscapedNow = hasEscaped || !isInSnappingArea;
-
-        if (snapping) {
-            const isStillFirstSnapTarget = (
-                !firstSnapTargetId || firstSnapTargetId === snapping.snapTargetId
-            );
-            newFirstSnapTargetId = newFirstSnapTargetId || (snapping ? snapping.snapTargetId : null);
-
-            // If easyEscape is enabled for the snapTarget, and it is still in its realm,
-            // disable the snapping
-            if (snapping && !hasEscapedNow && allowsEasyEscape && isStillFirstSnapTarget) {
-                snapping = null;
-            } else {
-                hasEscapedNow = true;
-            }
-        }
 
         return {
             matrix: snapping ? snapping.matrix : draggableDescriptor.matrix,
             customSnapProps: snapping ? snapping.customSnapProps : {},
             isPositionSnapped: snapping ? snapping.isPositionSnapped : false,
             isSnapping: !!snapping,
-            hasEscaped: hasEscapedNow,
             snapTargetId: snapping ? snapping.snapTargetId : null,
-            firstSnapTargetId: newFirstSnapTargetId,
         };
     }
 

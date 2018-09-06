@@ -121,8 +121,14 @@ class StyleEnforcer extends React.Component {
         const borderWidth = this.props.DOMElementHelper.getBorderWidth();
         const computedStyles = StyleEnforcer.cleanUpComputedStyles(this.props.DOMElementHelper.getComputedStyles());
 
+        const width = parseFloat(computedStyles.base.get('width'));
+        const height = parseFloat(computedStyles.base.get('height'));
+        console.log('computedStyles.base: ', computedStyles.base);
+        console.log('Width is: ', width);
+        console.log('Height is: ', height);
+
         this.injectStyles({
-            ...size, padding, borderWidth, computedStyles,
+            /*...size,*/ padding, borderWidth, computedStyles, width, height,
         });
     }
 
@@ -157,7 +163,7 @@ class StyleEnforcer extends React.Component {
 
         // [style] is a way of overwriting even inline styles (https://css-tricks.com/override-inline-styles-with-css/)
         // Also setting transform to none. Transform is already account for (for element itself) as well
-        // as ancestor in the matrix applied while dragging
+        // as ancestor in the matrix applied while dragging.
         this.highPriorityStyles = this.styleInjector.inject(`
             #${this.state.id} > *,
             #${this.state.id} > *[style] {
@@ -185,7 +191,7 @@ class StyleEnforcer extends React.Component {
                 margin-top: 0 !important;
                 margin-bottom: 0 !important;
             }
-            `);
+        `);
     }
 
     removeStyles() {

@@ -3,7 +3,7 @@ import makeSnapTarget from './make-snap-target';
 import DragSnapContext from './drag-snap-context';
 import InternalSnapTargetTransform from './internal-snap-target-transform';
 
-import SnapTransformers from './defaults/default-snap-transformers';
+import SnapTransforms from './defaults/default-snap-transforms';
 import SnapCriteria from './defaults/default-snap-criteria';
 import SnapPriorities from './defaults/default-snap-priorities';
 
@@ -17,7 +17,7 @@ export {
     makeSnapTarget,
     DragSnapContext,
     InternalSnapTargetTransform,
-    SnapTransformers,
+    SnapTransforms,
     SnapCriteria,
     SnapPriorities,
     DraggableCollectors,

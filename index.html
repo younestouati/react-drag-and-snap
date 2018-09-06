@@ -7,17 +7,18 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
-        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-        <script src='/demo-bundle/bundle.umd.js'></script>
+        <style>
+            html, body {
+                padding: 0;
+                margin: 0;
+            }
+
+            iframe {
+                border-width: 0;
+            }
+        </style>
     </head>
     <body>
-        <div id="root"></div>
-        <script>
-            ReactDOM.render(
-                React.createElement(ReactDragAndSnapDemos, null),
-                document.getElementById('root')
-            );
-        </script>
+        <iframe src="docs/index.html" style="width:100%;height:100%"></iframe>
     </body>
 </html>

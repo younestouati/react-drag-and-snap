@@ -1,82 +1,124 @@
 import React from 'react';
 import { DragSnapContext } from '../lib-proxy';
-import { DraggablePlayingCard } from './draggable-playing-card';
-import { CardStackAsTarget } from './card-stack';
-
+import Card from './card';
+import DummyCard from './dummy-card';
+import CardStack from './card-stack';
 import './styles.css';
+
+const stacks = [
+    {
+        faceUp: false,
+        initialCards: [
+            { suit: 'hearts', rank: 5 },
+            { suit: 'spades', rank: 11 },
+        ],
+    },
+    {
+        faceUp: true,
+        initialCards: [
+            /*{ suit: 'hearts', rank: 1 },
+            { suit: 'diamonds', rank: 1 },
+            { suit: 'clubs', rank: 9 },*/
+            { suit: 'clubs', rank: 12 },
+        ],
+    },
+];
 
 class CardGameDemo extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            stackIndex: 0,
+            cardsInStacks: stacks.map(stack => stack.initialCards),
         };
     }
 
-    render() {
-        const { stackIndex } = this.state;
+    handleDrop(dragData, targetStackIndex) {
+        const { stackIndex: sourceStackIndex, suit, rank } = dragData;
 
-        const card = <DraggablePlayingCard width={140} height={200} />;
+        if (sourceStackIndex === targetStackIndex || targetStackIndex === null) {
+            return;
+        }
+
+        this.setState({
+            cardsInStacks: this.state.cardsInStacks.map((cards, stackIndex) => {
+                // Remove card from the stack it came from
+                if (stackIndex === sourceStackIndex) {
+                    return cards.filter(card => !(card.suit === suit && card.rank === rank));
+                }
+
+                // Add card to the stack it was dropped on
+                if (stackIndex === targetStackIndex) {
+                    return [
+                        ...cards,
+                        { rank, suit },
+                    ];
+                }
+
+                // For other stacks - just return the cards as they were
+                return cards;
+            }),
+        });
+    }
+
+    render() {
+        const { cardsInStacks } = this.state;
 
         return (
-            <div className="card-game-demo">
-                <DragSnapContext>
-                    <div className="target-wrapper">
-                        <CardStackAsTarget
-                            onDropComplete={
-                                () => this.setState({ stackIndex: 0 })
-                            }
-                            easyEscape={true}
-                        >
-                            {stackIndex === 0 && card}
-                        </CardStackAsTarget >
+            <DragSnapContext>
+                <div className="card-game-demo">
+                    {stacks.map(({ faceUp }, index) => (
+                        <div className="stack-wrapper" key={index}>
+                            <CardStack
+                                width="20%"
+                                height="200px"
+                                borderRadius="2%"
+                                stackIndex={index}
+                                stackBorder={0} //Remove
+                                rotateY={faceUp ? 180 : 0}
+                                shadow={0} //2
+                                onDropComplete={({ dragData }) => this.handleDrop(dragData, index)}
+                                messy={false}
+                                messAngle={10}
+                            >
+                                {
+                                    cardsInStacks[index].map(({ suit, rank }) => (
+                                        <Card
+                                            border={1} // Remove
+                                            suit={suit}
+                                            rank={rank}
+                                            dragData={{ stackIndex: index, suit, rank }}
+                                            key={`${suit}_${rank}`}
+                                        />
+                                    ))
+                                }
+                            </CardStack>
+                        </div>
+                    ))}
+                    <div>
+                        <DummyCard
+                            width="20%"
+                            height="200px"
+                            dragData={{ stackIndex: null }}
+                        />
                     </div>
-                    <div className="target-wrapper">
-                        <CardStackAsTarget
-                            onDropComplete={
-                                () => this.setState({ stackIndex: 1 })
-                            }
-                            easyEscape={true}
-                        >
-                            {stackIndex === 1 && card}
-                        </CardStackAsTarget>
+                    <div>
+                        <Card
+                            width="20%"
+                            height="200px"
+                            border={1} // Remove
+                            suit="c"
+                            rank={12}
+                            faceUp
+                            shadow={false}
+                            borderRadius="2%"
+                            dragData={{ stackIndex: null }}
+                        />
                     </div>
-                    <div className="target-wrapper">
-                        <CardStackAsTarget
-                            onDropComplete={
-                                () => this.setState({ stackIndex: 2 })
-                            }
-                            easyEscape={true}
-                        >
-                            {stackIndex === 2 && card}
-                        </CardStackAsTarget>
-                    </div>
-                </DragSnapContext>
-            </div>
+                </div>
+            </DragSnapContext>
         );
     }
 }
 
-export { CardGameDemo };
-
-/*
-<div className="target-wrapper">
-                        <CardStackAsTarget
-                            onDropComplete={
-                                () => this.setState({stackIndex: 1})
-                            }
-                        >
-                            {stackIndex === 1 && <DraggablePlayingCard/>}
-                        </CardStackAsTarget>
-                    </div>
-                    <div className="target-wrapper">
-                        <CardStackAsTarget
-                            onDropComplete={
-                                () => this.setState({stackIndex: 2})
-                            }
-                        >
-                            {stackIndex === 2 && <DraggablePlayingCard/>}
-                        </CardStackAsTarget>
-                    </div>
-                    */
+export default CardGameDemo;

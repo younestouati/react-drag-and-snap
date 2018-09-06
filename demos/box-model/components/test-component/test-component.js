@@ -5,7 +5,7 @@ import BoxComponent from '../box-component/box-component';
 import { toArray } from '../../utils/to-array';
 import { qrDecompose } from '../../../../src/utils/matrix-utils';
 import normalizeTransform from '../../../../src/drag-snap-logic/normalize-transform';
-import createSnapMatrix from '../../../../src/drag-snap-logic/create-snapping-matrix';
+import createSnapMatrix from '../../../../src/drag-snap-logic/create-snap-matrix';
 import './test-component.css';
 
 const snapTargetTransform = {

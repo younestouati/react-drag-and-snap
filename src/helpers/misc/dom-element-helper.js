@@ -60,17 +60,27 @@ class DOMElementHelper {
 
         this.isBorderBox = this.computedStyles.base.get('box-sizing') === 'border-box';
 
+        // TODO: HANDLE THAT COMPUTED STYLE ALREADY RETURNS WIDTH/HEIGHT CORRECTLY ACCORDING TO BOX-SIZING!
+
+        // ADVANTAGE 1: SUB PIXEL (AS OPPOSED TO CLIENTWIDTH). 2: ACCORDING TO BOX SIZING!
+        const w = window.parseFloat(this.computedStyles.base.get('width'));
+        const h = window.parseFloat(this.computedStyles.base.get('height'));
+
         this.contentBoxSize = {
-            width: this.el.clientWidth - (this.padding.left + this.padding.right),
-            height: this.el.clientHeight - (this.padding.top + this.padding.bottom),
+            //TODO: USE COMPUTED STYLES HERE (WIDTH AND HEIGHT)
+            width: w,/*this.el.clientWidth*/ //- (this.padding.left + this.padding.right),
+            height: h/*this.el.clientHeight*/ //- (this.padding.top + this.padding.bottom),
         };
 
         // Border-box size includes padding and border widths (padding already included
         // in clientWidth)
         this.borderBoxSize = {
-            width: this.el.clientWidth + this.borderWidth.left + this.borderWidth.right,
-            height: this.el.clientHeight + this.borderWidth.top + this.borderWidth.bottom,
+            width: w,///*this.el.clientWidth*/ + this.borderWidth.left + this.borderWidth.right,
+            height: h///*this.el.clientHeight*/ + this.borderWidth.top + this.borderWidth.bottom,
         };
+
+        console.log('The contextBoxSize is: ', this.contentBoxSize);
+        console.log('The borderBoxSize is: ', this.borderBoxSize);
     }
 
     refresh() {

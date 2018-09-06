@@ -2,7 +2,7 @@ import invariant from 'invariant';
 import { isNumber, isBoolean } from '../utils/type-utils';
 
 const defaultConfig = {
-    stiffness: 390,
+    stiffness: 500,
     damping: 35,
     sticky: true,
     mode: 'default',

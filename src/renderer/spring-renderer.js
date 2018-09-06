@@ -134,11 +134,11 @@ class SpringRenderer extends React.Component {
         if (!prevProps.isReleased && this.props.isReleased && this.atRest) {
             this.props.onRestAfterRelease();
         }
-        
+
         // Flip isActive flag for one frame allowing react motion to update to right start position before animation
         if (this.state.flipIsActive) {
             /* eslint-disable-next-line react/no-did-update-set-state */
-            this.setState({ flipIsActive: false });  
+            this.setState({ flipIsActive: false });
         }
     }
 

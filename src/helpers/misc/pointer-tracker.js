@@ -23,11 +23,11 @@ class PointerTracker {
     }
 
     removeEventHandlers() {
-        window.removeEventListener('mousemove', this.boundMoveHandler);
-        window.removeEventListener('mouseup', this.boundEndHandler);
-        window.removeEventListener('touchmove', this.boundMoveHandler);
-        window.removeEventListener('touchend', this.boundEndHandler);
-        window.removeEventListener('touchcancel', this.boundCancelHandler);
+        window.removeEventListener('mousemove', this.boundMoveHandler, { passive: false });
+        window.removeEventListener('mouseup', this.boundEndHandler, { passive: false });
+        window.removeEventListener('touchmove', this.boundMoveHandler, { passive: false });
+        window.removeEventListener('touchend', this.boundEndHandler, { passive: false });
+        window.removeEventListener('touchcancel', this.boundCancelHandler, { passive: false });
     }
 
     addEventHandlers() {

@@ -1,13 +1,13 @@
 import React from 'react';
 import { Square } from './square';
 import { Target } from './target';
-import { DragSnapContext, makeDraggable, makeSnapTarget, SnapCriteria, SnapTargetCollectors, SnapTransformers } from '../lib-proxy';
+import { DragSnapContext, makeDraggable, makeSnapTarget, SnapCriteria, SnapTargetCollectors, SnapTransforms } from '../lib-proxy';
 
 const DraggableSquare = makeDraggable()(Square);
 
 const config1 = {
     dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
-    dragSnapTransform: SnapTransformers.withCustomSnapProps(SnapTransformers.snapProportionally(200, 10), { borderRadius: 100 }),
+    dragSnapTransform: SnapTransforms.withCustomSnapProps(SnapTransforms.snapAll, { borderRadius: 100 }),
     releaseSnapCriteria: SnapCriteria.never,
 };
 
@@ -17,7 +17,7 @@ const config2 = {
 
 const config3 = {
     dragSnapCriteria: SnapCriteria.isCenterWithinRadius(200),
-    dragSnapTransform: SnapTransformers.snapProportionally(200, 10),
+    dragSnapTransform: SnapTransforms.snapAll,
     releaseSnapCriteria: SnapCriteria.never,
 };
 

@@ -187,7 +187,7 @@ function getAccumulatedCSSTransform(DOMElement) {
 
     do {
         accumulatedMatrix = transform(getCSSTransformsMatrix(currentDOMElement), accumulatedMatrix);
-        currentDOMElement = currentDOMElement.offsetParent;
+        currentDOMElement = currentDOMElement.parentElement;
     } while (currentDOMElement);
 
     return accumulatedMatrix;

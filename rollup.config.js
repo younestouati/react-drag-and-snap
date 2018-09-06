@@ -4,9 +4,7 @@ import postcss from 'rollup-plugin-postcss';
 import uglify from 'rollup-plugin-uglify';
 import eslint from 'rollup-plugin-eslint';
 import babel from 'rollup-plugin-babel';
-//import reactSvg from "rollup-plugin-react-svg";
-//import image from 'rollup-plugin-image';
-import url from "rollup-plugin-url"
+import json from 'rollup-plugin-json';
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 import globals from 'rollup-plugin-node-globals';
@@ -30,11 +28,7 @@ const plugins = [
     }),
     resolve(), // Makes it possible to load third-party modules in node_modules.
     commonjs(), // Converts CommonJS modules to ES6.
-    //reactSvg(),
-    //image(), // For importing JPG, PNG, GIF and SVG images
-    url({
-        limit: 0
-    }),
+    json(), // Converts JSON to ES6 modules (used for standard cards in cards demo)
     globals(), // Injects the same node globals browserify does (i.e process, Buffer, etc)    
 ]
 
@@ -43,11 +37,11 @@ export default [
     //The dev/demo bundle contains the demos as well as the library.
     {
         input: 'demos/index.js',
-        output: {name: 'ReactDragAndSnapDemos', file: 'demo-bundle/bundle.umd.js', format: 'umd'},
+        output: {name: 'ReactDragAndSnapDemos', file: 'docs/demo-bundle.umd.js', format: 'umd'},
         plugins: [
             ...plugins,
             (isDevelopment && serve({open: true, contentBase: ''})), // assumes index.html in the root of the project!
-            (isDevelopment && livereload({watch: 'demo-bundle'}))
+            (isDevelopment && livereload({watch: 'docs'}))
         ]
     },
     //Production builds.

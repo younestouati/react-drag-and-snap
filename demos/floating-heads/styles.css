@@ -2,6 +2,10 @@ body {
     background: linear-gradient(to bottom, #7abcff 0%,#60abf8 44%,#4096ee 100%);
 }
 
+.app-container {
+    overflow: hidden;
+}
+
 .app-container,
 .margin-container,
 .gradient {

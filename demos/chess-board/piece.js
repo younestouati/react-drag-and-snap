@@ -19,7 +19,6 @@ Piece.propTypes = {
 const config = {
     stiffness: 600,
     damping: 30,
-    mode: 'clone',
 };
 
 const DraggablePiece = makeDraggable(config)(Piece);

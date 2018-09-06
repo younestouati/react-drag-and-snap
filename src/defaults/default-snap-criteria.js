@@ -1,4 +1,3 @@
-import { distance } from '../utils/point-utils';
 import arrayUtils from '../utils/array-utils';
 
 const isPercentageString = value => typeof value === 'string' && value.slice(-1) === '%';
@@ -22,16 +21,9 @@ const isCenterOverTarget = ({ transform }, { width, height }) => {
 };
 
 const isCenterWithinRadius = (radius, hysteresisRadius) => (
-    {
-        transform,
-        isSnappingToThisTarget,
-    },
-    {
-        width,
-        height,
-    }
+    { distance, isSnappingToThisTarget },
+    { width, height }
 ) => {
-    const { x, y } = transform;
     let radiusToApply = (isSnappingToThisTarget && hysteresisRadius) ? hysteresisRadius : radius;
 
     if (isPercentageString(radiusToApply)) {
@@ -41,7 +33,7 @@ const isCenterWithinRadius = (radius, hysteresisRadius) => (
         radiusToApply = ((diagonal / 2) / 100) * percentage;
     }
 
-    return distance({ x, y }) < radiusToApply;
+    return distance < radiusToApply;
 };
 
 const isNoOtherDraggableSnapping = ({ id }, _, { draggedItems }) => !draggedItems

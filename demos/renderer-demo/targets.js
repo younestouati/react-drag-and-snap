@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeSnapTarget, SnapCriteria, SnapTransformers } from '../lib-proxy';
+import { makeSnapTarget, SnapCriteria, SnapTransforms } from '../lib-proxy';
 
 const Round = () => <div className="square" />;
 
@@ -9,7 +9,7 @@ const largeReachConfig = {
 
 const leavesPositionConfig = {
     snapCriteria: SnapCriteria.isCenterWithinRadius(100),
-    snapTransform: SnapTransformers.snapScaleAndRotation,
+    snapTransform: SnapTransforms.snapScaleAndRotation,
 };
 
 const LargeReachTarget = makeSnapTarget(largeReachConfig)(Round);

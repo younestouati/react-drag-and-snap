@@ -1,11 +1,11 @@
 import invariant from 'invariant';
 import SnapCriteria from '../defaults/default-snap-criteria';
-import SnapTransformers from '../defaults/default-snap-transformers';
+import SnapTransforms from '../defaults/default-snap-transforms';
 import { isFunction, isObject, isArray } from '../utils/type-utils';
 
 const defaultConfig = {
     snapCriteria: SnapCriteria.isCenterWithinRadius('150%'),
-    snapTransform: SnapTransformers.snapAllButScale,
+    snapTransform: SnapTransforms.snapAllButScale,
 };
 
 const normalizeSnapTargetConfig = (customConfig = {}) => {

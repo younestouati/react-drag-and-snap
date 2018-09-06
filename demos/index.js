@@ -5,8 +5,6 @@ import { FloatingHeadsDemo } from './floating-heads/index';
 import { StateDemo } from './state-demo/index';
 import { ChessBoard } from './chess-board/index';
 
-import { DropTest } from './drop-test/index';
-import { EasyEscapeDemo } from './easy-escape-demo/index';
 import { NestedDraggablesDemo } from './nested-draggables/index';
 import { RendererDemo } from './renderer-demo/index';
 import { EyeDemo } from './eyes/index';
@@ -14,7 +12,8 @@ import { MovingTargetDemo } from './moving-target/index';
 import { CustomPropertyDemo } from './custom-property/index';
 import { CSSTransitionDemo } from './css-transition/index';
 import { SelfTransformDemo } from './self-transform/index';
-import { CardGameDemo } from './card-game/index';
+import ProportionalDemo from './proportional-demo/index';
+import CardGameDemo from './card-game/index';
 
 import { BoxModelDemo } from './box-model/box-model';
 import './demo-styles.css';
@@ -23,10 +22,6 @@ const demoComponents = {
     boxModelDemo: {
         component: <BoxModelDemo />,
         displayName: 'Box Model Demo',
-    },
-    easyEscapeDemo: {
-        component: <EasyEscapeDemo />,
-        displayName: 'Easy Escape',
     },
     nestedDraggablesDemo: {
         component: <NestedDraggablesDemo />,
@@ -64,10 +59,6 @@ const demoComponents = {
         component: <CustomPropertyDemo />,
         displayName: 'Custom Property Demo',
     },
-    dropDemo: {
-        component: <DropTest />,
-        displayName: 'DropTest',
-    },
     cssTransitionDemo: {
         component: <CSSTransitionDemo />,
         displayName: 'CSS Transition Demo',
@@ -76,7 +67,11 @@ const demoComponents = {
         component: <SelfTransformDemo />,
         displayName: 'Self Transform',
     },
-    CardGame: {
+    proportionalDemo: {
+        component: <ProportionalDemo/>,
+        displayName: 'Proportional Snapping',
+    },
+    cardGame: {
         component: <CardGameDemo />,
         displayName: 'Card Game',
     },
@@ -86,7 +81,7 @@ class Demos extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentDemo: 'CardGame',
+            currentDemo: 'cardGame',
         };
     }
 
