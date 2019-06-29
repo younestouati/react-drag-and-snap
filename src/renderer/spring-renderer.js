@@ -3,14 +3,12 @@ import PropTypes from 'prop-types';
 import { Motion, spring } from 'react-motion';
 import CustomPropTypes from '../prop-types/custom-prop-types';
 import PositionSpringSwitch from './position-spring-switch';
-import { getCSSHidingRulesAsObject } from '../helpers/misc/css-hider';
 import { isNullOrUndefined } from '../utils/type-utils';
 import { shallowEqual } from '../utils/object-utils';
 
 const SpringRendererApplier = (props) => {
     const {
         onRegrab,
-        isVisible,
         children,
         transform,
         contextSize,
@@ -53,7 +51,6 @@ const SpringRendererApplier = (props) => {
                 position: 'absolute',
                 left: 0,
                 top: 0,
-                ...(isVisible ? {} : getCSSHidingRulesAsObject()),
             }}
         >
             {children}
@@ -65,7 +62,6 @@ SpringRendererApplier.propTypes = {
     contextSize: CustomPropTypes.size.isRequired,
     draggableCenterInBorderBoxCoordinates: CustomPropTypes.point.isRequired,
     transform: CustomPropTypes.transform.isRequired,
-    isVisible: PropTypes.bool.isRequired,
     onRegrab: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
 };

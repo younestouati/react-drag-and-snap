@@ -1,12 +1,15 @@
 import React from 'react';
 import { DragSnapContext } from '../lib-proxy';
 import Card from './card';
-import DummyCard from './dummy-card';
 import CardStack from './card-stack';
+import { CardRow } from './tmp'; 
+import CardRowTarget from './card-row';
 import './styles.css';
 
-const stacks = [
-    {
+// cardContainer is a common term for card stacks, rows and fans.
+const cardContainers = [
+    /*{
+        type: 'stack',
         faceUp: false,
         initialCards: [
             { suit: 'hearts', rank: 5 },
@@ -14,107 +17,169 @@ const stacks = [
         ],
     },
     {
+        type: 'stack',
         faceUp: true,
         initialCards: [
-            /*{ suit: 'hearts', rank: 1 },
+            { suit: 'hearts', rank: 3 },
+            { suit: 'hearts', rank: 1 },
             { suit: 'diamonds', rank: 1 },
-            { suit: 'clubs', rank: 9 },*/
             { suit: 'clubs', rank: 12 },
+        ],
+    },*/
+    {
+        type: 'row',
+        faceUp: true,
+        initialCards: [
+            /*{ suit: 'diamonds', rank: 7 },*/
+            { suit: 'clubs', rank: 4 },
+            { suit: 'clubs', rank: 13 },
+            { suit: 'spades', rank: 2 },
         ],
     },
 ];
+
+const removeCard = (cards, predicate) => cards.filter(c => !predicate(c));
+const insertCardAtIndex = (cards, card, index) => {
+    const newCards = [...cards];
+    newCards.splice(index, 0, card);
+    return newCards;
+};
+
+function arrayMove(arr, oldIndex, newIndex) {
+    if (newIndex >= arr.length) {
+        let k = newIndex - arr.length + 1;
+        while (k--) {
+            arr.push(undefined);
+        }
+    }
+    arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
+    return arr; // for testing
+}
 
 class CardGameDemo extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            cardsInStacks: stacks.map(stack => stack.initialCards),
+            cardsInContainers: cardContainers.map(container => container.initialCards),
         };
+
+        this.boundHandleDrop = this.handleDrop.bind(this);
     }
 
-    handleDrop(dragData, targetStackIndex) {
-        const { stackIndex: sourceStackIndex, suit, rank } = dragData;
+    handleDrop(draggableDescriptor, snapTargetDescriptor, releaseTransform) {
+        const { dragData } = draggableDescriptor;
+        const { containerIndex: sourceContainerIndex, suit, rank } = dragData;
+        const { containerIndex: targetContainerIndex } = snapTargetDescriptor.props;
 
-        if (sourceStackIndex === targetStackIndex || targetStackIndex === null) {
+        if (targetContainerIndex === null) {
             return;
         }
 
         this.setState({
-            cardsInStacks: this.state.cardsInStacks.map((cards, stackIndex) => {
-                // Remove card from the stack it came from
-                if (stackIndex === sourceStackIndex) {
-                    return cards.filter(card => !(card.suit === suit && card.rank === rank));
+            cardsInContainers: this.state.cardsInContainers.map((cards, containerIndex) => {
+                if (containerIndex === sourceContainerIndex && containerIndex === targetContainerIndex) {
+                    console.log('XXX: IN HERE!!');
+                    // TODO: MAKE SURE THAT WE DON'T SUBTRACT ONE HERE??? CONTINUE
+                    //const index = snapTargetDescriptor.snapTarget.getCardIndexClosestToPoint(releaseTransform, 1);
+                    
+                    const index = CardRow.getCardIndexClosestToPoint(
+                        snapTargetDescriptor.props,
+                        { width: snapTargetDescriptor.width, height: snapTargetDescriptor.height },
+                        this.state.cardsInContainers[containerIndex].length,
+                        releaseTransform
+                    );
+
+                    const removeIndex = cards.findIndex(card => card.suit === suit && card.rank === rank);
+                    const t = arrayMove([...cards], removeIndex, index);
+
+                    console.log('Moving card from index ', removeIndex, ' to index ', index);
+
+                    return t;
+                    //const cardsWithout = removeCard(cards, card => card.suit === suit && card.rank === rank);
+                    //return insertCardAtIndex(cardsWithout, { rank, suit }, index);
+
+                    //https://stackoverflow.com/questions/5306680/move-an-array-element-from-one-array-position-to-another
+                }
+                
+                // Remove card from the container it came from
+                if (containerIndex === sourceContainerIndex) {
+                    return removeCard(cards, card => card.suit === suit && card.rank === rank);
                 }
 
-                // Add card to the stack it was dropped on
-                if (stackIndex === targetStackIndex) {
-                    return [
-                        ...cards,
-                        { rank, suit },
-                    ];
+                if (containerIndex === targetContainerIndex) {
+                    const index = CardRow.getCardIndexClosestToPoint(
+                        snapTargetDescriptor.props,
+                        { width: snapTargetDescriptor.width, height: snapTargetDescriptor.height },
+                        this.state.cardsInContainers[containerIndex].length,
+                        releaseTransform
+                    );
+
+                    return insertCardAtIndex(cards, { rank, suit }, index);
                 }
 
-                // For other stacks - just return the cards as they were
+                // For other containers - just return the cards as they were
                 return cards;
             }),
         });
     }
 
-    render() {
-        const { cardsInStacks } = this.state;
+    renderCardsInContainer(containerIndex) {
+        return (
+            this.state.cardsInContainers[containerIndex].map(({ suit, rank }) => (
+                <Card
+                    suit={suit}
+                    rank={rank}
+                    shadow={2}
+                    dragData={{ containerIndex, suit, rank }}
+                    key={`${suit}_${rank}`}
+                />
+            ))
+        );
+    }
 
+    render() {
         return (
             <DragSnapContext>
                 <div className="card-game-demo">
-                    {stacks.map(({ faceUp }, index) => (
-                        <div className="stack-wrapper" key={index}>
-                            <CardStack
-                                width="20%"
-                                height="200px"
-                                borderRadius="2%"
-                                stackIndex={index}
-                                stackBorder={0} //Remove
-                                rotateY={faceUp ? 180 : 0}
-                                shadow={0} //2
-                                onDropComplete={({ dragData }) => this.handleDrop(dragData, index)}
-                                messy={false}
-                                messAngle={10}
-                            >
-                                {
-                                    cardsInStacks[index].map(({ suit, rank }) => (
-                                        <Card
-                                            border={1} // Remove
-                                            suit={suit}
-                                            rank={rank}
-                                            dragData={{ stackIndex: index, suit, rank }}
-                                            key={`${suit}_${rank}`}
-                                        />
-                                    ))
-                                }
-                            </CardStack>
-                        </div>
-                    ))}
-                    <div>
-                        <DummyCard
-                            width="20%"
-                            height="200px"
-                            dragData={{ stackIndex: null }}
-                        />
-                    </div>
-                    <div>
-                        <Card
-                            width="20%"
-                            height="200px"
-                            border={1} // Remove
-                            suit="c"
-                            rank={12}
-                            faceUp
-                            shadow={false}
-                            borderRadius="2%"
-                            dragData={{ stackIndex: null }}
-                        />
-                    </div>
+                    {
+                        cardContainers.map(({ faceUp, type }, containerIndex) => {
+                            switch (type) {
+                            case 'stack':
+                                return (
+                                    <div className="container-wrapper" key={containerIndex}>
+                                        <CardStack
+                                            style={{ width: '20%' }}
+                                            borderRadius="2%"
+                                            containerIndex={containerIndex}
+                                            faceUp={faceUp ? 180 : 0}
+                                            onDropComplete={this.boundHandleDrop}
+                                            messy
+                                        >
+                                            {this.renderCardsInContainer(containerIndex)}
+                                        </CardStack>
+                                    </div>
+                                );
+                            case 'row':
+                                return (
+                                    <div className="container-wrapper" key={containerIndex}>
+                                        <CardRowTarget
+                                            style={{ width: '80%', marginLeft: '20%' }}
+                                            aspectRatio={5}
+                                            preferredGap={1}
+                                            containerIndex={containerIndex}
+                                            faceUp={faceUp ? 180 : 0}
+                                            onDropComplete={this.boundHandleDrop}
+                                        >
+                                            {this.renderCardsInContainer(containerIndex)}
+                                        </CardRowTarget>
+                                    </div>
+                                );
+                            default:
+                                return null;
+                            }
+                        })
+                    }
                 </div>
             </DragSnapContext>
         );

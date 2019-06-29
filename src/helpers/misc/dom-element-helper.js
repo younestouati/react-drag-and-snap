@@ -60,27 +60,15 @@ class DOMElementHelper {
 
         this.isBorderBox = this.computedStyles.base.get('box-sizing') === 'border-box';
 
-        // TODO: HANDLE THAT COMPUTED STYLE ALREADY RETURNS WIDTH/HEIGHT CORRECTLY ACCORDING TO BOX-SIZING!
+        // TODO: FIGURE OUT IF WIDTH/HEIGHT NEEDS TO BE SOMETHING LIKE RIGHT-LEFT INSTEAD (AFTER ROUNDING)
 
-        // ADVANTAGE 1: SUB PIXEL (AS OPPOSED TO CLIENTWIDTH). 2: ACCORDING TO BOX SIZING!
-        const w = window.parseFloat(this.computedStyles.base.get('width'));
-        const h = window.parseFloat(this.computedStyles.base.get('height'));
-
-        this.contentBoxSize = {
-            //TODO: USE COMPUTED STYLES HERE (WIDTH AND HEIGHT)
-            width: w,/*this.el.clientWidth*/ //- (this.padding.left + this.padding.right),
-            height: h/*this.el.clientHeight*/ //- (this.padding.top + this.padding.bottom),
+        // Basing size on computedStyles rather than clientWidth etc. ensures that
+        // a) We get subpixel accuracy
+        // b) Size respects box sizing (will return contextbox size or borderbox size depending on box sizing value)
+        this.size = {
+            width: window.parseFloat(this.computedStyles.base.get('width')),
+            height: window.parseFloat(this.computedStyles.base.get('height')),
         };
-
-        // Border-box size includes padding and border widths (padding already included
-        // in clientWidth)
-        this.borderBoxSize = {
-            width: w,///*this.el.clientWidth*/ + this.borderWidth.left + this.borderWidth.right,
-            height: h///*this.el.clientHeight*/ + this.borderWidth.top + this.borderWidth.bottom,
-        };
-
-        console.log('The contextBoxSize is: ', this.contentBoxSize);
-        console.log('The borderBoxSize is: ', this.borderBoxSize);
     }
 
     refresh() {
@@ -92,7 +80,7 @@ class DOMElementHelper {
     }
 
     getSize() {
-        return this.isBorderBox ? this.borderBoxSize : this.contentBoxSize;
+        return this.size;
     }
 
     getScaledSize(scaleX, scaleY) {
@@ -128,11 +116,11 @@ class DOMElementHelper {
     // Eitherway it will be returned in border box coordinates.
     getCenterInBorderBoxCoordinates() {
         return this.isBorderBox ? {
-            x: this.borderBoxSize.width / 2,
-            y: this.borderBoxSize.height / 2,
+            x: this.size.width / 2,
+            y: this.size.height / 2,
         } : {
-            x: (this.contentBoxSize.width / 2) + this.padding.left + this.borderWidth.left,
-            y: (this.contentBoxSize.height / 2) + this.padding.top + this.borderWidth.top,
+            x: (this.size.width / 2) + this.padding.left + this.borderWidth.left,
+            y: (this.size.height / 2) + this.padding.top + this.borderWidth.top,
         };
     }
 

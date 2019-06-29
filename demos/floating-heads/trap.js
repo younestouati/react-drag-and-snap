@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Motion, spring, presets } from 'react-motion';
 import { CustomPropTypes } from '../shared/custom-prop-types';
 import { scalePoint, getOrigo, byDistance, extractPoint, addPoints, arePointsDifferent } from './utils/point-utils';
 import { sort } from './utils/sort';
 import { makeSnapTarget, InternalSnapTargetTransform, SnapCriteria, SnapTargetCollectors } from '../lib-proxy';
-import { Motion, spring, presets } from 'react-motion';
 import { AnimatedTransform } from '../shared/animated-transform';
 import { Avatar } from './avatar';
 

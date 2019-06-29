@@ -10,7 +10,6 @@ import { RendererDemo } from './renderer-demo/index';
 import { EyeDemo } from './eyes/index';
 import { MovingTargetDemo } from './moving-target/index';
 import { CustomPropertyDemo } from './custom-property/index';
-import { CSSTransitionDemo } from './css-transition/index';
 import { SelfTransformDemo } from './self-transform/index';
 import ProportionalDemo from './proportional-demo/index';
 import CardGameDemo from './card-game/index';
@@ -58,10 +57,6 @@ const demoComponents = {
     customDemo: {
         component: <CustomPropertyDemo />,
         displayName: 'Custom Property Demo',
-    },
-    cssTransitionDemo: {
-        component: <CSSTransitionDemo />,
-        displayName: 'CSS Transition Demo',
     },
     selfTransform: {
         component: <SelfTransformDemo />,

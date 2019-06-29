@@ -29,7 +29,6 @@ const initialState = {
     isSnappingBack: false, // If it is currently snapping back to its initial position (after a drop)
     snapTargetId: null, // The id of the snapTarget it is currently snapping to. Null when not snapping
     customSnapProps: {}, // The customSnapProps as defined by the snapTarget currently snapped to
-    flipGrabbedFlag: false, // Used to postpone dragState sent to wrapped component one frame, when dragged
     velocity: null, // The velocity (pixels/ms) by which the draggable is currently being dragged
     baseMatrix: null, // The draggable's position in window coordinate system prior to dragging
     matrix: null, // The draggable's current position in window coordinate system
@@ -77,18 +76,12 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
             componentDidUpdate({ dragState: prevDragState }) {
                 const { dragState } = this.state;
 
-                if (prevDragState !== DRAGGED && dragState === DRAGGED) {
+                if (prevDragState !== GRABBED && dragState === GRABBED) {
                     this.DOMElement.setAttribute(dragModeAttribute, true);
                 }
 
                 if (prevDragState !== INACTIVE && dragState === INACTIVE) {
                     this.DOMElement.removeAttribute(dragModeAttribute);
-                }
-
-                if (this.state.flipGrabbedFlag) {
-                    // Postpone till after next DOM update after clone is mounted (to support css transition
-                    // triggered by change of the grabbed property)
-                    requestAnimationFrame(() => requestAnimationFrame(() => this.setState({ flipGrabbedFlag: false })));
                 }
             }
 
@@ -155,7 +148,6 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                     dragState,
                     baseMatrix,
                     touchOffset,
-                    flipGrabbedFlag: true,
                     isSnappingBack: false,
                     isPositionSnapped: null, // Unclear if this is true or false at this point. Initialize to null
                 };
@@ -185,7 +177,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
 
                 if (snapTargetId) {
                     const draggableDescriptor = this.getDraggableDescriptor(INACTIVE, matrix);
-                    this.props.dragSnapContext.relayDropEvent(snapTargetId, 'complete', draggableDescriptor);
+                    this.props.dragSnapContext.relayDropEvent(snapTargetId, 'complete', draggableDescriptor, this.priorMatrix);
                 }
 
                 this.props.dragSnapContext.relayDraggableRemovalToTargets(this.id);
@@ -202,13 +194,15 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                 const dragState = RELEASED;
                 const { baseMatrix, matrix: priorMatrix } = this.state;
                 const snapping = this.getSnapping(dragState, position, velocity);
-                let { matrix } = snapping;
+                let matrixToApply = snapping.matrix;
                 let isSnappingBack = false;
+
+                this.priorMatrix = priorMatrix; // TODO: PUT IN STATE?
 
                 if (snapping.isSnapping) {
                     const draggableDescriptor = this.getDraggableDescriptor(
                         dragState,
-                        priorMatrix,
+                        priorMatrix, // TODO: SAVE THE PRIOR MATRIX FOR DROP COMPLETE EVENT!!!!
                         position,
                         velocity,
                         snapping.snapTargetId
@@ -220,17 +214,17 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                         snapping.matrix
                     );
                 } else if (this.props.snapBack) {
-                    matrix = baseMatrix;
+                    matrixToApply = baseMatrix;
                     isSnappingBack = true;
                 }
 
                 this.setState({
-                    ...snapping, matrix, velocity, isSnappingBack, dragState,
+                    ...snapping, matrix: matrixToApply, velocity, isSnappingBack, dragState,
                 });
 
                 this.props.dragSnapContext.relayDraggableUpdateToTargets(this.getDraggableDescriptor(
                     dragState,
-                    matrix,
+                    matrixToApply,
                     position,
                     velocity,
                     snapping.snapTargetId
@@ -339,11 +333,9 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                     isPositionSnapped,
                     isSnappingBack,
                     customSnapProps,
-                    flipGrabbedFlag,
                     matrix,
                 } = this.state;
                 const snapProps = { isSnapping, isSnappingBack, customSnapProps };
-                const applyState = (dragState === GRABBED && flipGrabbedFlag) ? INACTIVE : dragState;
 
                 // Matrix is in window coordinates, but draggables will be rendered in the context, so must transform
                 const contextTransform = matrix
@@ -374,7 +366,7 @@ function configure(customConfig = {}, collect = draggableCollectors.allProps) {
                         >
                             {(transform, dragDisplacement) => {
                                 const dragProps = collect({
-                                    dragState: applyState,
+                                    dragState,
                                     dragVelocity: velocity, // TODO: DETERMINE BASED ON THE DRAG DISPLACEMENT??
                                     dragDisplacement,
                                     transform,

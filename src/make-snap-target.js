@@ -93,19 +93,29 @@ function configure(customConfig = {}, collect = SnapTargetCollectors.staticAndLo
                 this.props.dragSnapContext.unregisterAsSnapTarget(this.id);
             }
 
-            onDropEvent(type, draggableDescriptor, globalSnapMatrix) {
+            // For dropStart the additionalMatrix is the matrix describing the draggable when snapping is complete
+            // for dropComplete the additionalMatrix is the matrix describing the draggable when it was released
+            onDropEvent(type, draggableDescriptor, additionalMatrix) {
                 const snapTargetSpecificDraggableDescriptor = this.makeSnapTargetSpecific(draggableDescriptor);
+                
+                const snapTargetSpecificAdditionalTransform = additionalMatrix
+                    ? this.toSnapTargetSpecificTransform(additionalMatrix, draggableDescriptor.scaledSize)
+                    : null;
 
                 switch (type) {
                 case 'start':
                     this.props.onDropStart(
                         snapTargetSpecificDraggableDescriptor,
                         this.getSelfDescriptor(),
-                        qrDecompose(globalSnapMatrix)
-                    ); // TODO: FIGURE OUT IF THIS SHOULD INFACT BE GLOABEL? PROBABLY NOT!!!
+                        snapTargetSpecificAdditionalTransform
+                    );
                     break;
                 case 'complete':
-                    this.props.onDropComplete(snapTargetSpecificDraggableDescriptor, this.getSelfDescriptor());
+                    this.props.onDropComplete(
+                        snapTargetSpecificDraggableDescriptor,
+                        this.getSelfDescriptor(),
+                        snapTargetSpecificAdditionalTransform
+                    );
                     break;
                 case 'cancel':
                     this.props.onDropCancel(snapTargetSpecificDraggableDescriptor, this.getSelfDescriptor());
@@ -153,12 +163,12 @@ function configure(customConfig = {}, collect = SnapTargetCollectors.staticAndLo
                 const { collectedDragProps } = this.state;
 
                 return isArray(collectedDragProps)
-                    ? { ...shallowCloneExcluding(this.props, LIBRARY_PROPS), draggedItems: collectedDragProps }
-                    : { ...shallowCloneExcluding(this.props, LIBRARY_PROPS), ...collectedDragProps };
+                    ? { ...shallowCloneExcluding(this.props, LIBRARY_PROPS), snapTargetSize: this.getSize(), draggedItems: collectedDragProps }
+                    : { ...shallowCloneExcluding(this.props, LIBRARY_PROPS), snapTargetSize: this.getSize(), ...collectedDragProps };
             }
 
             getSelfDescriptor() {
-                return { ...this.getSize(), props: this.getProps() };
+                return { ...this.getSize(), props: this.getProps(), snapTarget: this.el };
             }
 
             getParams(draggableDescriptor) {
@@ -279,6 +289,23 @@ function configure(customConfig = {}, collect = SnapTargetCollectors.staticAndLo
                 return criteria.every(criterium => criterium(...params));
             }
 
+            toSnapTargetSpecificTransform(matrix, scaledSize) {
+                const {
+                    x, y, rotate, skewX, skewY,
+                } = qrDecompose(matrix);
+                const localPosition = transformPosition(this.getMatrix(), { x, y });
+                const localRotation = transformRotation(this.getMatrix(), rotate);
+                const localScale = transformScale(this.getScaledSize(), scaledSize);
+                const localSkew = transformSkew(this.getMatrix(), { x: skewX, y: skewY });
+               
+                return {
+                    rotate: localRotation,
+                    ...localPosition,
+                    ...localScale,
+                    ...localSkew,
+                };
+            }
+
             // Converts the descriptor, velocity and cursor point from the global (window) coordinate system,
             // to the local coordinate system of the snap taget.
             makeSnapTargetSpecific({
@@ -292,22 +319,9 @@ function configure(customConfig = {}, collect = SnapTargetCollectors.staticAndLo
                 snapTargetId,
                 snapCount,
             }) {
-                const {
-                    x, y, rotate, skewX, skewY,
-                } = qrDecompose(matrix);
-                const localPosition = transformPosition(this.getMatrix(), { x, y });
-                const localRotation = transformRotation(this.getMatrix(), rotate);
-                const localScale = transformScale(this.getScaledSize(), scaledSize);
-                const localSkew = transformSkew(this.getMatrix(), { x: skewX, y: skewY });
+                const localTransform = this.toSnapTargetSpecificTransform(matrix, scaledSize);
                 const isSnappingToThisTarget = (this.id === snapTargetId);
                 const isSnappingToOtherTarget = !isNullOrUndefined(snapTargetId) && !isSnappingToThisTarget;
-
-                const localTransform = {
-                    rotate: localRotation,
-                    ...localPosition,
-                    ...localScale,
-                    ...localSkew,
-                };
 
                 return {
                     id,

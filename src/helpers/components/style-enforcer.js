@@ -121,14 +121,8 @@ class StyleEnforcer extends React.Component {
         const borderWidth = this.props.DOMElementHelper.getBorderWidth();
         const computedStyles = StyleEnforcer.cleanUpComputedStyles(this.props.DOMElementHelper.getComputedStyles());
 
-        const width = parseFloat(computedStyles.base.get('width'));
-        const height = parseFloat(computedStyles.base.get('height'));
-        console.log('computedStyles.base: ', computedStyles.base);
-        console.log('Width is: ', width);
-        console.log('Height is: ', height);
-
         this.injectStyles({
-            /*...size,*/ padding, borderWidth, computedStyles, width, height,
+            ...size, padding, borderWidth, computedStyles,
         });
     }
 

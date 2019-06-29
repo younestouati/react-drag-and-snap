@@ -1,22 +1,20 @@
 import { makeSnapTarget, SnapCriteria, SnapTransforms } from '../lib-proxy';
-import { CardStack, getTransformForCardInCardStack } from './tmp';
+import { CardStack } from './tmp';
 
 const snapToStack = (draggableDescriptor, snapDescriptor) => {
     const numberOfCardsInstack = snapDescriptor.props.children.length;
 
-    const targetIndex = (draggableDescriptor.dragData.stackIndex === snapDescriptor.props.stackIndex)
+    const targetIndex = (draggableDescriptor.dragData.containerIndex === snapDescriptor.props.containerIndex)
         ? numberOfCardsInstack - 1
         : numberOfCardsInstack;
 
-    return {
-        scale: 1,
-        ...getTransformForCardInCardStack(snapDescriptor.props, targetIndex),
-    };
+    return snapDescriptor.snapTarget.predictCardTransform(targetIndex);
 };
 
-const snapAllIncludingCustomSnapProps = ({ rotateY, shadow }) => (
-    SnapTransforms.withCustomSnapProps(snapToStack, { rotateY, shadow })
+const snapAllIncludingCustomSnapProps = ({ faceUp }) => (
+    SnapTransforms.withCustomSnapProps(snapToStack, { faceUp })
 );
+
 /*
 const dragSnapTransform = (draggableDescriptor, targetDescriptor, draggedItems) => {
     const isAlreadyInStack = (draggableDescriptor.dragData.stackIndex === targetDescriptor.props.stackIndex);
@@ -30,6 +28,7 @@ const dragSnapTransform = (draggableDescriptor, targetDescriptor, draggedItems) 
 };
 */
 
+
 const releaseSnapTransform = (draggableDescriptor, targetDescriptor, draggedItems) => {
     const transform = snapAllIncludingCustomSnapProps(targetDescriptor.props);
 
@@ -37,19 +36,17 @@ const releaseSnapTransform = (draggableDescriptor, targetDescriptor, draggedItem
 };
 
 const releaseSnapCriteria = (draggableDescriptor) => {
-    if (draggableDescriptor.dragData.stackIndex === null) {
+    if (draggableDescriptor.dragData.containerIndex === null) {
         return false;
     }
 
     return true;
-}
+};
 
 const config = {
-    /*dragSnapTransform,*/
     releaseSnapTransform,
-    /*snapCriteria: SnapCriteria.isCenterWithinRadius('150%'),*/
-    dragSnapCriteria: SnapCriteria.never,
-    releaseSnapCriteria,/*: SnapCriteria.always,*/
+    snapCriteria: SnapCriteria.isCenterWithinRadius('150%'),
+    dragSnapTransform: SnapTransforms.noSnapping,
 };
 
 export default makeSnapTarget(config)(CardStack);

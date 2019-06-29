@@ -1,4 +1,4 @@
-import { getCSSHidingRulesAsString } from '../helpers/misc/css-hider'; 
+import getCSSHidingRules from '../helpers/misc/css-hider';
 /**
  * Dragging elements around works by rendering a clone of the draggable, which follows the mouse/finger. That means,
  * while dragging is going on, two versions of the element will be rendered (the original may or may not be visible -
@@ -21,7 +21,7 @@ const dragModeStyles = `
     }
     [data-drag-mode-default],
     [data-drag-mode-default][style] {
-        ${getCSSHidingRulesAsString()}
+        ${getCSSHidingRules()}
     }
 `;
 

@@ -10,20 +10,7 @@
 * pointer-event: none is used as a fallback as well:
 */
 
-const invisibilityStyles = {
-    clipPath: 'polygon(0px 0px,0px 0px,0px 0px,0px 0px)!important',
-    WebkitClipPath: 'polygon(0px 0px,0px 0px,0px 0px,0px 0px)!important',
-    opacity: '0!important',
-    pointerEvents: 'none!important',
-};
-
-export function getCSSHidingRulesAsObject() {
-    return {
-        ...invisibilityStyles,
-    };
-}
-
-export function getCSSHidingRulesAsString() {
+export default function getCSSHidingRules() {
     return `
         clip-path: polygon(0px 0px,0px 0px,0px 0px,0px 0px)!important;
         -webkit-clip-path: polygon(0px 0px,0px 0px,0px 0px,0px 0px)!important;
